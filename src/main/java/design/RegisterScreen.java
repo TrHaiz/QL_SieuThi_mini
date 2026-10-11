@@ -4,6 +4,10 @@
  */
 package design;
 
+import java.util.Date;
+import javax.swing.JOptionPane;
+import DAO.AuthDAO;
+import model.User;
 /**
  *
  * @author GIAKHANHPC
@@ -31,7 +35,7 @@ public class RegisterScreen extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        emailTxt = new javax.swing.JTextField();
+        usernameTXT = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         nameTxt = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -53,7 +57,7 @@ public class RegisterScreen extends javax.swing.JFrame {
         jLabel1.setText("Đăng Ký");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Email");
+        jLabel2.setText("Username");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Họ và tên");
@@ -74,6 +78,7 @@ public class RegisterScreen extends javax.swing.JFrame {
         jLabel7.setText("Xác nhận mật khẩu");
 
         jButton1.setText("Đăng Ký");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         jToggleButton1.setText("Hiện mật khẩu");
         jToggleButton1.addActionListener(this::jToggleButton1ActionPerformed);
@@ -93,8 +98,8 @@ public class RegisterScreen extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel3)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2))
                             .addComponent(jLabel6)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(48, 48, 48)
@@ -106,7 +111,7 @@ public class RegisterScreen extends javax.swing.JFrame {
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(usernameTXT, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -134,7 +139,7 @@ public class RegisterScreen extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(emailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(usernameTXT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -165,6 +170,81 @@ public class RegisterScreen extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void handleRegister() {
+    String username = usernameTXT.getText().trim();
+    String name = nameTxt.getText().trim();
+    Date ngaysinh = jDateChooser1.getDate();
+    String diachi = dchiTXT.getText().trim();
+    String password = new String(jPasswordField1.getPassword());
+    String confirmPass = new String(confirmPassTxt.getPassword());
+
+    // 1. Kiểm tra các trường bị bỏ trống
+    if (username.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập username!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        usernameTXT.requestFocus();
+        return;
+    }
+    if (new AuthDAO().checkUsernameExists(username)) {
+     JOptionPane.showMessageDialog(this, "Đã có tài khoản với username này", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (name.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập Họ và tên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        nameTxt.requestFocus();
+        return;
+    }
+
+    if (ngaysinh == null) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn Ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        jDateChooser1.requestFocus();
+        return;
+    }
+
+    if (diachi.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập Địa chỉ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        dchiTXT.requestFocus();
+        return;
+    }
+
+    if (password.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập Mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        jPasswordField1.requestFocus();
+        return;
+    }
+
+    if (confirmPass.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập Xác nhận mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        confirmPassTxt.requestFocus();
+        return;
+    }
+
+    if (ngaysinh.after(new Date())) {
+        JOptionPane.showMessageDialog(this, "Ngày sinh không được vượt quá ngày hiện tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (password.length() < 6) {
+        JOptionPane.showMessageDialog(this, "Mật khẩu phải có ít nhất 6 ký tự!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        jPasswordField1.requestFocus();
+        return;
+    }
+
+    if (!password.equals(confirmPass)) {
+        JOptionPane.showMessageDialog(this, "Xác nhận mật khẩu không trùng khớp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        confirmPassTxt.requestFocus();
+        return;
+    }
+ User user=new AuthDAO().register(username, name, diachi, password, ngaysinh);
+       if (user!=null) {
+           JOptionPane.showMessageDialog(this, "Đăng ký tài khoản thành công!");
+            new QLST(user).setVisible(true);
+           this.dispose();
+       } else {
+           JOptionPane.showMessageDialog(this, "Đăng ký tài khoản thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+       }
+}
+    
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         // TODO add your handling code here:
         if  (jToggleButton1.isSelected()) {
@@ -185,6 +265,11 @@ public class RegisterScreen extends javax.swing.JFrame {
         }
       
     }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        handleRegister();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -214,7 +299,6 @@ public class RegisterScreen extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField confirmPassTxt;
     private javax.swing.JTextField dchiTXT;
-    private javax.swing.JTextField emailTxt;
     private javax.swing.JButton jButton1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
@@ -229,5 +313,6 @@ public class RegisterScreen extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JTextField nameTxt;
+    private javax.swing.JTextField usernameTXT;
     // End of variables declaration//GEN-END:variables
 }

@@ -11,20 +11,30 @@ import java.util.Date;
  * @author GIAKHANHPC
  */
 public class User {
-    private String email,ten,diachi,password;
+    private String username,ten,diachi,password;
     private Date ngaysinh;
 
-    public User(String email, String ten, String diachi, String password, Date ngaysinh) {
-        this.email = email;
+    public User(String username, String ten, String diachi, String password, Date ngaysinh) {
+        this.username = username;
         this.ten = ten;
         this.diachi = diachi;
         this.password = password;
         this.ngaysinh = ngaysinh;
     }
 
-    public String getEmail() {
-        return email;
+    
+    
+    public String getUsername() {
+        return username;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    
+
+   
 
     public String getTen() {
         return ten;
@@ -42,9 +52,7 @@ public class User {
         return ngaysinh;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    
 
     public void setTen(String ten) {
         this.ten = ten;
@@ -64,7 +72,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "email=" + email + ", ten=" + ten + ", diachi=" + diachi + ", password=" + password + ", ngaysinh=" + ngaysinh + '}';
+        return "User{" + "username=" + username + ", ten=" + ten + ", diachi=" + diachi + ", password=" + password + ", ngaysinh=" + ngaysinh + '}';
     }
     
 }

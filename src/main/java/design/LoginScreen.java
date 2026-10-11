@@ -3,7 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package design;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
+import DAO.AuthDAO;
+import javax.swing.JOptionPane;
+import model.User;
 /**
  *
  * @author GIAKHANHPC
@@ -31,7 +33,7 @@ public class LoginScreen extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        EmailTxt = new javax.swing.JTextField();
+        UsernameTxt = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
         registerBtn = new javax.swing.JButton();
@@ -47,7 +49,7 @@ public class LoginScreen extends javax.swing.JFrame {
         jLabel1.setText("Quản lý siêu thị");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Email");
+        jLabel2.setText("Username");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Mật khẩu");
@@ -56,6 +58,7 @@ public class LoginScreen extends javax.swing.JFrame {
         registerBtn.addActionListener(this::registerBtnActionPerformed);
 
         loginBtn1.setText("Đăng nhập");
+        loginBtn1.addActionListener(this::loginBtn1ActionPerformed);
 
         jToggleButton1.setText("Hiện mật khẩu");
         jToggleButton1.addActionListener(this::jToggleButton1ActionPerformed);
@@ -66,12 +69,12 @@ public class LoginScreen extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(87, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(EmailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(UsernameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -94,7 +97,7 @@ public class LoginScreen extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(EmailTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(UsernameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -132,6 +135,35 @@ public class LoginScreen extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
+    private void loginBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtn1ActionPerformed
+        // TODO add your handling code here:
+        String username= UsernameTxt.getText().trim();
+    String password = new String(jPasswordField1.getPassword());
+
+    // 1. Validation lỗi để trống
+    if (username.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập Username!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        UsernameTxt.requestFocus();
+        return;
+    }
+
+    if (password.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập Mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        jPasswordField1.requestFocus();
+        return;
+    }
+User user=new AuthDAO().login(username, password);
+if (user != null) {
+           JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
+           new QLST(user).setVisible(true);
+           
+           this.dispose();
+       } else {
+           JOptionPane.showMessageDialog(this, "Username hoặc mật khẩu không chính xác!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+       }
+ 
+    }//GEN-LAST:event_loginBtn1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -158,7 +190,7 @@ public class LoginScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField EmailTxt;
+    private javax.swing.JTextField UsernameTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

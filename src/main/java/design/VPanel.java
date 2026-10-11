@@ -3,18 +3,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package design;
-
+import java.awt.Color;
+import java.util.ArrayList;
+import model.Vouncher;
+import DAO.vouncherDAO;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author GIAKHANHPC
  */
 public class VPanel extends javax.swing.JPanel {
-
+    DefaultTableModel tablemodel=new DefaultTableModel();
     /**
      * Creates new form vouncherrPanel
      */
     public VPanel() {
         initComponents();
+        
+        String[] header={"Mã voucher", "Tên voucher", "Phần trăm giảm", "Giá từ", "Giá đến", "Ngày bắt đầu", "Ngày kết thúc"};
+        jScrollPane1.getViewport().setBackground(Color.WHITE);
+        jTable1.setModel(tablemodel);
+        tablemodel.setColumnIdentifiers(header);
+        loadData("");
     }
 
     /**
@@ -26,30 +38,575 @@ public class VPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        endPriceTXT = new javax.swing.JTextField();
+        tentxt = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        startDate = new com.toedter.calendar.JDateChooser();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        ptgTXT = new javax.swing.JTextField();
+        endDate1 = new com.toedter.calendar.JDateChooser();
+        jLabel6 = new javax.swing.JLabel();
+        addButton1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        startPriceTXT = new javax.swing.JTextField();
+        updateButton = new javax.swing.JButton();
+        matxt = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        deleteButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        SearchBtn = new javax.swing.JButton();
+        searchTxt1 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
-        jLabel1.setText("vouncher");
+        setBackground(new java.awt.Color(255, 255, 255));
+        setLayout(new java.awt.BorderLayout(10, 10));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(243, 243, 243)
-                .addComponent(jLabel1)
-                .addContainerGap(256, Short.MAX_VALUE))
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setMaximumSize(new java.awt.Dimension(350, 350));
+        jPanel1.setPreferredSize(new java.awt.Dimension(350, 350));
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel4.setText("Tên khuyến mãi");
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel8.setText("Ngày bắt đầu");
+
+        startDate.setDateFormatString("dd/MM/yyyy");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel5.setText("Phần trăm giảm");
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel9.setText("Ngày kết thúc");
+
+        endDate1.setDateFormatString("dd/MM/yyyy");
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel6.setText("Áp dụng hóa đơn từ");
+
+        addButton1.setBackground(new java.awt.Color(0, 204, 204));
+        addButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        addButton1.setForeground(new java.awt.Color(255, 255, 255));
+        addButton1.setText("Thêm mới");
+        addButton1.addActionListener(this::addButton1ActionPerformed);
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel3.setText("Mã khuyến mãi");
+
+        updateButton.setBackground(new java.awt.Color(0, 204, 204));
+        updateButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        updateButton.setForeground(new java.awt.Color(255, 255, 255));
+        updateButton.setText("Sửa");
+        updateButton.addActionListener(this::updateButtonActionPerformed);
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel7.setText("Đến");
+
+        deleteButton.setBackground(new java.awt.Color(0, 204, 204));
+        deleteButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        deleteButton.setForeground(new java.awt.Color(255, 255, 255));
+        deleteButton.setText("Xóa");
+        deleteButton.addActionListener(this::deleteButtonActionPerformed);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(startPriceTXT, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ptgTXT, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                                    .addComponent(tentxt)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(addButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addComponent(endPriceTXT, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel9)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(endDate1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel8)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(startDate, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(matxt, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(28, Short.MAX_VALUE)))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(160, 160, 160)
-                .addComponent(jLabel1)
-                .addContainerGap(217, Short.MAX_VALUE))
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(tentxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(ptgTXT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(startPriceTXT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(endPriceTXT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(startDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel9)
+                    .addComponent(endDate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(matxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(417, Short.MAX_VALUE)))
         );
+
+        add(jPanel1, java.awt.BorderLayout.WEST);
+
+        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jScrollPane1MouseClicked(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jTable1.setAutoscrolls(false);
+        jTable1.setGridColor(new java.awt.Color(255, 255, 255));
+        jTable1.setRowHeight(30);
+        jTable1.setRowMargin(2);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setPreferredSize(new java.awt.Dimension(1393, 30));
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel1.setText("Quản lý khuyến mãi");
+        jLabel1.setVerifyInputWhenFocusTarget(false);
+        jPanel3.add(jLabel1, java.awt.BorderLayout.WEST);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        SearchBtn.setText("Tìm kiếm");
+        SearchBtn.addActionListener(this::SearchBtnActionPerformed);
+
+        searchTxt1.setPreferredSize(new java.awt.Dimension(200, 22));
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 204, 204));
+        jLabel2.setText("Mã:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 810, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(searchTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SearchBtn)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SearchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchTxt1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)))
+        );
+
+        jPanel3.add(jPanel2, java.awt.BorderLayout.CENTER);
+
+        add(jPanel3, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
 
+     void loadData(String cond)
+    {
+        tablemodel.setRowCount(0);
+        ArrayList<Vouncher>v=new vouncherDAO().getAll(cond);
+        for (Vouncher t : v)
+        {
+            tablemodel.addRow(new Object[]{t.getMa(), t.getTen(), t.getPhanTramGiam(), t.getDieukienGiatu(), t.getDieukiengiaden(), t.getNgaybatdau(), t.getNgayketthuc()});
+        }
+    }
+    private void clearForm() {
+        matxt.setText("");
+        matxt.setEnabled(true);
+        tentxt.setText("");
+        ptgTXT.setText("");
+        startPriceTXT.setText("");
+        endPriceTXT.setText("");
+        startDate.setDate(null);
+        endDate1.setDate(null);
+        jTable1.clearSelection();
+    }
 
+
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        int row = jTable1.rowAtPoint(evt.getPoint());;
+        if (row==-1) {clearForm(); return;}
+        tentxt.setText(tablemodel.getValueAt(row, 1).toString());
+        matxt.setText(tablemodel.getValueAt(row, 0).toString());
+        matxt.setEnabled(false);
+        ptgTXT.setText(tablemodel.getValueAt(row, 2).toString());
+        startPriceTXT.setText(tablemodel.getValueAt(row, 3).toString());
+        endPriceTXT.setText(tablemodel.getValueAt(row, 4).toString());
+        startDate.setDate((java.util.Date) tablemodel.getValueAt(row, 5));
+        endDate1.setDate((java.util.Date) tablemodel.getValueAt(row, 6));
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void addButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButton1ActionPerformed
+
+         String ma = matxt.getText().trim();
+        String ten = tentxt.getText().trim();
+        String ptgStr = ptgTXT.getText().trim();
+        String giaTuStr = startPriceTXT.getText().trim();
+        String giaDenStr = endPriceTXT.getText().trim();
+        Date ngayBatDau = startDate.getDate();
+        Date ngayKetThuc = endDate1.getDate();
+
+        // 1. Kiểm tra rỗng các trường bắt buộc
+        if (ma.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Mã khuyến mãi!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            matxt.requestFocus();
+            return;
+        }
+
+        if (ten.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Tên khuyến mãi!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            tentxt.requestFocus();
+            return;
+        }
+
+        if (ptgStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Phần trăm giảm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ptgTXT.requestFocus();
+            return;
+        }
+
+        if (giaTuStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Giá áp dụng từ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            startPriceTXT.requestFocus();
+            return;
+        }
+
+        if (ngayBatDau == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn Ngày bắt đầu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            startDate.requestFocus();
+            return;
+        }
+
+        if (ngayKetThuc == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn Ngày kết thúc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            endDate1.requestFocus();
+            return;
+        }
+
+        // 2. Validate kiểu dữ liệu số & ràng buộc
+        double phanTramGiam, giaTu, giaDen = 0;
+
+        try {
+            phanTramGiam = Double.parseDouble(ptgStr);
+            if (phanTramGiam <= 0 || phanTramGiam > 100) {
+                JOptionPane.showMessageDialog(this, "Phần trăm giảm phải lớn hơn 0 và nhỏ hơn hoặc bằng 100!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                ptgTXT.requestFocus();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Phần trăm giảm phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ptgTXT.requestFocus();
+            return;
+        }
+
+        try {
+            giaTu = Double.parseDouble(giaTuStr);
+            if (giaTu < 0) {
+                JOptionPane.showMessageDialog(this, "Điều kiện 'Giá từ' phải lớn hơn hoặc bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                startPriceTXT.requestFocus();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Định dạng 'Giá từ' phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            startPriceTXT.requestFocus();
+            return;
+        }
+
+        if (!giaDenStr.isEmpty()) {
+            try {
+                giaDen = Double.parseDouble(giaDenStr);
+                if (giaDen < giaTu) {
+                    JOptionPane.showMessageDialog(this, "'Giá đến' phải lớn hơn hoặc bằng 'Giá từ'!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    endPriceTXT.requestFocus();
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Định dạng 'Giá đến' phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                endPriceTXT.requestFocus();
+                return;
+            }
+        }
+
+        // 3. Kiểm tra logic ngày tháng
+        if (ngayKetThuc.before(ngayBatDau)) {
+            JOptionPane.showMessageDialog(this, "Ngày kết thúc phải sau hoặc bằng Ngày bắt đầu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            endDate1.requestFocus();
+            return;
+        }
+
+
+        // 4. Thêm mới vào CSDL
+        Vouncher vNew = new Vouncher(ma, ten, phanTramGiam, giaTu, giaDen, ngayBatDau, ngayKetThuc);
+        int result = new vouncherDAO().add(vNew);
+
+        if (result > 0) {
+            JOptionPane.showMessageDialog(this, "Thêm mới Voucher thành công!");
+            loadData("");
+            clearForm();
+        } else if (result==-2) {
+          JOptionPane.showMessageDialog(this, "Mã khuyến mãi '" + ma + "' đã tồn tại trên hệ thống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        else {
+            JOptionPane.showMessageDialog(this, "Thêm mới thất bại. Vui lòng kiểm tra lại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+           
+        }
+    }//GEN-LAST:event_addButton1ActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 khuyến mãi trên bảng để xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String ma = matxt.getText().trim();
+
+        // Xác nhận xóa
+        int confirm = JOptionPane.showConfirmDialog(
+            this, 
+            "Bạn có chắc chắn muốn xóa khuyến mãi mã '" + ma + "' không?", 
+            "Xác nhận xóa", 
+            JOptionPane.YES_NO_OPTION, 
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            Vouncher vDelete = new Vouncher(ma, "", 0, 0, 0, null, null);
+            int result = new vouncherDAO().delete(vDelete);
+
+            if (result > 0) {
+                JOptionPane.showMessageDialog(this, "Đã xóa khuyến mãi '" + ma + "' thành công!");
+                loadData("");
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại! Khuyến mãi này có thể đang liên kết với Đơn hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 dòng khuyến mãi trên bảng để sửa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String ma = matxt.getText().trim();
+        String ten = tentxt.getText().trim();
+        String ptgStr = ptgTXT.getText().trim();
+        String giaTuStr = startPriceTXT.getText().trim();
+        String giaDenStr = endPriceTXT.getText().trim();
+        Date ngayBatDau = startDate.getDate();
+        Date ngayKetThuc = endDate1.getDate();
+
+        // 1. Kiểm tra rỗng
+        if (ten.isEmpty() || ptgStr.isEmpty() || giaTuStr.isEmpty() || ngayBatDau == null || ngayKetThuc == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ các thông tin cần sửa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 2. Validate số
+        double phanTramGiam, giaTu, giaDen = 0;
+
+        try {
+            phanTramGiam = Double.parseDouble(ptgStr);
+            if (phanTramGiam <= 0 || phanTramGiam > 100) {
+                JOptionPane.showMessageDialog(this, "Phần trăm giảm phải lớn hơn 0 và nhỏ hơn hoặc bằng 100!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Phần trăm giảm phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            giaTu = Double.parseDouble(giaTuStr);
+            if (giaTu < 0) {
+                JOptionPane.showMessageDialog(this, "Điều kiện 'Giá từ' phải lớn hơn hoặc bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Định dạng 'Giá từ' phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!giaDenStr.isEmpty()) {
+            try {
+                giaDen = Double.parseDouble(giaDenStr);
+                if (giaDen < giaTu) {
+                    JOptionPane.showMessageDialog(this, "'Giá đến' phải lớn hơn hoặc bằng 'Giá từ'!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Định dạng 'Giá đến' phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        // 3. Kiểm tra ngày
+        if (ngayKetThuc.before(ngayBatDau)) {
+            JOptionPane.showMessageDialog(this, "Ngày kết thúc phải sau hoặc bằng Ngày bắt đầu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 4. Thực hiện cập nhật
+        java.sql.Date sqlBatDau = new java.sql.Date(ngayBatDau.getTime());
+        java.sql.Date sqlKetThuc = new java.sql.Date(ngayKetThuc.getTime());
+
+        int result = new vouncherDAO().update(ma, ma, ten, phanTramGiam, giaTu, giaDen, sqlBatDau, sqlKetThuc);
+
+        if (result > 0) {
+            JOptionPane.showMessageDialog(this, "Cập nhật Voucher '" + ma + "' thành công!");
+            loadData("");
+            clearForm();
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void jScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseClicked
+        // TODO add your handling code here:
+        clearForm();
+    }//GEN-LAST:event_jScrollPane1MouseClicked
+
+    private void SearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBtnActionPerformed
+        // TODO add your handling code here:
+        System.out.println(searchTxt1.getText());
+        loadData(searchTxt1.getText());
+    }//GEN-LAST:event_SearchBtnActionPerformed
+
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton SearchBtn;
+    private javax.swing.JButton addButton1;
+    private javax.swing.JButton deleteButton;
+    private com.toedter.calendar.JDateChooser endDate1;
+    private javax.swing.JTextField endPriceTXT;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField matxt;
+    private javax.swing.JTextField ptgTXT;
+    private javax.swing.JTextField searchTxt1;
+    private com.toedter.calendar.JDateChooser startDate;
+    private javax.swing.JTextField startPriceTXT;
+    private javax.swing.JTextField tentxt;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

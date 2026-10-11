@@ -9,7 +9,7 @@ import java.sql.*;
  * @author GIAKHANHPC
  */
 public class MyConnection {   private static final String SERVER="localhost";
-    private static final String DATABASE="qlkho";
+    private static final String DATABASE="QuanLyBanHangDB";
     private static final String USER="sa";
     private static final String PASSWORD="Truonghai123";
         private static final String PORT="64186";
