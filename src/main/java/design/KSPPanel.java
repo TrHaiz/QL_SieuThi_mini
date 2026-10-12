@@ -1,13 +1,147 @@
 
 package design;
-
+import DAO.khoDAO;
+import model.khoSP;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 public class KSPPanel extends javax.swing.JPanel {
 
+    DefaultComboBoxModel<String> cbomodelLoai = new DefaultComboBoxModel<>();
+    ArrayList<khoSP> listSanPham = new ArrayList<>();
+    DefaultTableModel tablemodel = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; 
+        }
+    };
+    khoSP sanPhamSelected = null;
+    private final String PLACEHOLDER = "Nhập mã/Tên";
+
+    private JComboBox<String> cbbloai;
+    private JTable tblsanpham;
+    private JTextField txtgianhap;
+    private JTextField txtgiaban;
+    private JTextField txtloai;
+    private JTextField txtmaSP; 
+    private JTextField txtsoluong;
+    private JTextField txtten;
+    private JTextField txttimkiem;
+    
     public KSPPanel() {
         initComponents();
-        
+        this.cbbloai.setModel(this.cbomodelLoai);
+        this.tblsanpham.setModel(this.tablemodel);
+        this.loaddatatocombobox();
+        this.inittable();
+        this.loaddatatable();
+        this.clearForm();
+    }
+    
+    public void setEditableFields(boolean editable) {
+        this.txtmaSP.setEnabled(editable);
+        this.txtmaSP.setEditable(editable);
+        this.txtten.setEnabled(editable);
+        this.txtloai.setEnabled(editable);
+        this.txtsoluong.setEnabled(editable);
+        this.txtgianhap.setEnabled(editable);
+        this.txtgiaban.setEnabled(editable);
     }
 
+    public void loaddatatocombobox() {
+        this.cbomodelLoai.removeAllElements();
+        this.cbomodelLoai.addElement("-- Tất cả loại --");
+        ArrayList<String> listLoai = new khoDAO.getAll();
+        for (String loai : listLoai) {
+            this.cbomodelLoai.addElement(loai);
+        }
+    }
+
+    public void inittable() {
+        String[] header = new String[]{"Mã SP", "Tên SP", "Loại SP", "Số Lượng", "Giá Nhập", "Giá Bán"};
+        this.tablemodel.setColumnIdentifiers(header);
+        this.tblsanpham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.tblsanpham.getSelectionModel().addListSelectionListener((e) -> {
+            int row = this.tblsanpham.getSelectedRow();
+            if (row >= 0 && row < this.listSanPham.size()) {
+                this.sanPhamSelected = this.listSanPham.get(row);
+                this.hienthithongtin();
+            } else {
+                this.sanPhamSelected = null;
+            }
+        });
+    }
+
+    public void loaddatatable() {
+        String keyword = this.txttimkiem.getText().trim();
+        if (keyword.equals(PLACEHOLDER)) {
+            keyword = "";
+        }
+        
+        String loaiChon = "";
+        if (this.cbbloai.getSelectedIndex() > 0 && this.cbbloai.getSelectedItem() != null) {
+            loaiChon = this.cbbloai.getSelectedItem().toString();
+        }
+
+        // Lấy danh sách kết hợp lọc theo loại và từ khóa
+        this.listSanPham = new khoDAO().getAll(loaiChon, keyword);
+        this.tablemodel.setRowCount(0);
+        for (khoSP sp : this.listSanPham) {
+            this.tablemodel.addRow(new Object[]{
+                sp.getMaSP(), 
+                sp.getTenSP(), 
+                sp.getLoaiSP(), 
+                sp.getSoLuong(), 
+                sp.getGiaNhap(), 
+                sp.getGiaBan()
+            });
+        }
+    }
+
+    public void hienthithongtin() {
+        if (this.sanPhamSelected != null) {
+            this.txtmaSP.setText(this.sanPhamSelected.getMaSP());
+            this.txtten.setText(this.sanPhamSelected.getTenSP());
+            this.txtloai.setText(this.sanPhamSelected.getLoaiSP());
+            this.txtsoluong.setText(String.valueOf(this.sanPhamSelected.getSoLuong()));
+            this.txtgianhap.setText(String.valueOf(this.sanPhamSelected.getGiaNhap()));
+            this.txtgiaban.setText(String.valueOf(this.sanPhamSelected.getGiaBan()));
+
+            this.setEditableFields(true);
+            this.txtmaSP.setEditable(false); // Không cho sửa mã khi đang chọn cập nhật
+            this.btncapnhat.setEnabled(true);
+            this.btnxoa.setEnabled(true);
+        }
+    }
+
+    public void clearForm() {
+        this.txtmaSP.setText("");
+        this.txtten.setText("");
+        this.txtloai.setText("");
+        this.txtsoluong.setText("");
+        this.txtgianhap.setText("");
+        this.txtgiaban.setText("");
+        this.tblsanpham.clearSelection();
+        this.sanPhamSelected = null;
+        this.setEditableFields(true); // Cho phép nhập mới khi bấm Thêm
+        this.btncapnhat.setEnabled(false);
+        this.btnxoa.setEnabled(false);
+    }
+
+    private void initComponents() {
+        // Giao diện đã được thiết kế sẵn qua NetBeans Form Designer, các sự kiện nút bấm gắn kết như sau:
+        btnsearch.addActionListener(e -> loaddatatable());
+        txttimkiem.addActionListener(e -> loaddatatable());
+        cbbloai.addActionListener(e -> loaddatatable());
+        
+        btnthem.addActionListener(e -> btnthemActionPerformed(e));
+        btncapnhat.addActionListener(e -> btncapnhatActionPerformed(e));
+        btnxoa.addActionListener(e -> btnxoaActionPerformed(e));
+        btnxuatexcel.addActionListener(e -> btnxuatExcelActionPerformed(e));
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -24,11 +158,11 @@ public class KSPPanel extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        btnxuatexcel = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        btnsearch = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -46,9 +180,9 @@ public class KSPPanel extends javax.swing.JPanel {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jTextField7 = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btncapnhat = new javax.swing.JButton();
+        btnthem = new javax.swing.JButton();
+        btnxoa = new javax.swing.JButton();
 
         jLabel1.setText("Product");
 
@@ -111,8 +245,9 @@ public class KSPPanel extends javax.swing.JPanel {
 
         jPanel3.setBackground(new java.awt.Color(0, 102, 0));
 
-        jButton2.setForeground(new java.awt.Color(0, 102, 0));
-        jButton2.setText("Xuất Excel");
+        btnxuatexcel.setForeground(new java.awt.Color(0, 102, 0));
+        btnxuatexcel.setText("Xuất Excel");
+        btnxuatexcel.addActionListener(this::btnxuatexcelActionPerformed);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -120,14 +255,14 @@ public class KSPPanel extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(btnxuatexcel)
                 .addGap(48, 48, 48))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2)
+                .addComponent(btnxuatexcel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -138,7 +273,8 @@ public class KSPPanel extends javax.swing.JPanel {
         jTextField1.setForeground(new java.awt.Color(255, 102, 102));
         jTextField1.setText("Nhập mã/Tên");
 
-        jButton3.setText("Tìm kiếm");
+        btnsearch.setText("Tìm kiếm");
+        btnsearch.addActionListener(this::btnsearchActionPerformed);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -153,7 +289,7 @@ public class KSPPanel extends javax.swing.JPanel {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
-                        .addComponent(jButton3)
+                        .addComponent(btnsearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39))))
@@ -166,7 +302,7 @@ public class KSPPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3)
+                    .addComponent(btnsearch)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
@@ -214,17 +350,20 @@ public class KSPPanel extends javax.swing.JPanel {
 
         jLabel15.setText("Giá Bán");
 
-        jButton4.setBackground(new java.awt.Color(0, 102, 0));
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Cập Nhật");
+        btncapnhat.setBackground(new java.awt.Color(0, 102, 0));
+        btncapnhat.setForeground(new java.awt.Color(255, 255, 255));
+        btncapnhat.setText("Cập Nhật");
+        btncapnhat.addActionListener(this::btncapnhatActionPerformed);
 
-        jButton5.setBackground(new java.awt.Color(0, 102, 0));
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Thêm");
+        btnthem.setBackground(new java.awt.Color(0, 102, 0));
+        btnthem.setForeground(new java.awt.Color(255, 255, 255));
+        btnthem.setText("Thêm");
+        btnthem.addActionListener(this::btnthemActionPerformed);
 
-        jButton6.setBackground(new java.awt.Color(0, 102, 0));
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("Xóa");
+        btnxoa.setBackground(new java.awt.Color(0, 102, 0));
+        btnxoa.setForeground(new java.awt.Color(255, 255, 255));
+        btnxoa.setText("Xóa");
+        btnxoa.addActionListener(this::btnxoaActionPerformed);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -263,11 +402,11 @@ public class KSPPanel extends javax.swing.JPanel {
                                 .addComponent(jTextField5)
                                 .addComponent(jTextField4))
                             .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jButton4)
+                                .addComponent(btncapnhat)
                                 .addGap(46, 46, 46)
-                                .addComponent(jButton5)
+                                .addComponent(btnthem)
                                 .addGap(56, 56, 56)
-                                .addComponent(jButton6)))))
+                                .addComponent(btnxoa)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
@@ -299,9 +438,9 @@ public class KSPPanel extends javax.swing.JPanel {
                     .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)))
+                    .addComponent(btncapnhat)
+                    .addComponent(btnthem)
+                    .addComponent(btnxoa)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -330,14 +469,34 @@ public class KSPPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btncapnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncapnhatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btncapnhatActionPerformed
+
+    private void btnthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnthemActionPerformed
+
+    private void btnxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnxoaActionPerformed
+
+    private void btnsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnsearchActionPerformed
+
+    private void btnxuatexcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxuatexcelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnxuatexcelActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btncapnhat;
+    private javax.swing.JButton btnsearch;
+    private javax.swing.JButton btnthem;
+    private javax.swing.JButton btnxoa;
+    private javax.swing.JButton btnxuatexcel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
