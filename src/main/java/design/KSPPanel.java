@@ -54,7 +54,7 @@ public class KSPPanel extends javax.swing.JPanel {
     public void loaddatatocombobox() {
         this.cbomodelLoai.removeAllElements();
         this.cbomodelLoai.addElement("-- Tất cả loại --");
-        ArrayList<String> listLoai = new khoDAO.getAll();
+        ArrayList<String> listLoai = new khoDAO().getAllLoai();
         for (String loai : listLoai) {
             this.cbomodelLoai.addElement(loai);
         }
