@@ -140,8 +140,8 @@ public class KSPPanel extends javax.swing.JPanel {
         btnthem.addActionListener(e -> btnthemActionPerformed(e));
         btncapnhat.addActionListener(e -> btncapnhatActionPerformed(e));
         btnxoa.addActionListener(e -> btnxoaActionPerformed(e));
-        btnxuatexcel.addActionListener(e -> btnxuatExcelActionPerformed(e));
     }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -470,15 +470,90 @@ public class KSPPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btncapnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncapnhatActionPerformed
-        // TODO add your handling code here:
+       if (this.sanPhamSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần cập nhật trên bảng!");
+            return;
+        }
+
+        String ma = this.sanPhamSelected.getMaSP();
+        String nma = jTextField2.getText().trim();
+        String ten = jTextField3.getText().trim();
+        String loai = jTextField4.getText().trim();
+
+        try {
+            int soluong = Integer.parseInt(jTextField5.getText().trim());
+            double gianhap = Double.parseDouble(jTextField6.getText().trim());
+            double giaban = Double.parseDouble(jTextField7.getText().trim());
+            
+            khoDAO dao = new khoDAO();
+            khoSP sp = new khoSP(ma, ten, loai, soluong, gianhap, giaban);
+            int kq = dao.update(sp);
+
+            if (kq == 1) {
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+                this.loaddatatable();
+                this.loaddatatocombobox();
+                this.clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số!");
+        }
     }//GEN-LAST:event_btncapnhatActionPerformed
 
     private void btnthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemActionPerformed
-        // TODO add your handling code here:
+      if (this.sanPhamSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần cập nhật trên bảng!");
+            return;
+        }
+
+        String ma = this.sanPhamSelected.getMaSP();
+        String nma = jTextField2.getText().trim();
+        String ten = jTextField3.getText().trim();
+        String loai = jTextField4.getText().trim();
+
+        try {
+            int soluong = Integer.parseInt(jTextField5.getText().trim());
+            double gianhap = Double.parseDouble(jTextField6.getText().trim());
+            double giaban = Double.parseDouble(jTextField7.getText().trim());
+
+             khoDAO dao = new khoDAO();
+            khoSP sp = new khoSP(ma, ten, loai, soluong, gianhap, giaban);
+            int kq = dao.update(sp);
+
+            if (kq == 1) {
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+                this.loaddatatable();
+                this.loaddatatocombobox();
+                this.clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số!");
+        }
     }//GEN-LAST:event_btnthemActionPerformed
 
     private void btnxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaActionPerformed
-        // TODO add your handling code here:
+       if (this.sanPhamSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần xóa!");
+            return;
+        }
+
+        int chon = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa sản phẩm này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (chon == JOptionPane.YES_OPTION) {
+            khoDAO dao = new khoDAO();
+            int kq = dao.delete(this.sanPhamSelected.getMaSP());
+            if (kq > 0) {
+                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                this.loaddatatable();
+                this.loaddatatocombobox();
+                this.clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại!");
+            }
+        }
     }//GEN-LAST:event_btnxoaActionPerformed
 
     private void btnsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsearchActionPerformed
