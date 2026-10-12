@@ -7,15 +7,30 @@ import java.awt.Color;
 import java.util.ArrayList;
 import model.Vouncher;
 import DAO.vouncherDAO;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Date;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 /**
  *
  * @author GIAKHANHPC
  */
 public class VPanel extends javax.swing.JPanel {
     DefaultTableModel tablemodel=new DefaultTableModel();
+    ArrayList<Vouncher>v=new ArrayList<>();
     /**
      * Creates new form vouncherrPanel
      */
@@ -56,6 +71,8 @@ public class VPanel extends javax.swing.JPanel {
         matxt = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         deleteButton = new javax.swing.JButton();
+        ImportExcelBtn = new javax.swing.JButton();
+        ExportExcelBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -122,6 +139,18 @@ public class VPanel extends javax.swing.JPanel {
         deleteButton.setText("Xóa");
         deleteButton.addActionListener(this::deleteButtonActionPerformed);
 
+        ImportExcelBtn.setBackground(new java.awt.Color(0, 204, 204));
+        ImportExcelBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ImportExcelBtn.setForeground(new java.awt.Color(255, 255, 255));
+        ImportExcelBtn.setText("Nhập dữ liệu từ excel");
+        ImportExcelBtn.addActionListener(this::ImportExcelBtnActionPerformed);
+
+        ExportExcelBtn.setBackground(new java.awt.Color(0, 204, 204));
+        ExportExcelBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ExportExcelBtn.setForeground(new java.awt.Color(255, 255, 255));
+        ExportExcelBtn.setText("Xuất ra excel");
+        ExportExcelBtn.addActionListener(this::ExportExcelBtnActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -144,13 +173,6 @@ public class VPanel extends javax.swing.JPanel {
                                     .addComponent(ptgTXT, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
                                     .addComponent(tentxt)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(addButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(15, 15, 15)
-                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -165,7 +187,20 @@ public class VPanel extends javax.swing.JPanel {
                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel8)
                                     .addGap(18, 18, 18)
-                                    .addComponent(startDate, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(startDate, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(addButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(83, 83, 83)
+                        .addComponent(ImportExcelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(83, 83, 83)
+                        .addComponent(ExportExcelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -173,7 +208,7 @@ public class VPanel extends javax.swing.JPanel {
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(18, 18, 18)
                     .addComponent(matxt, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(28, Short.MAX_VALUE)))
+                    .addContainerGap(25, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,19 +237,23 @@ public class VPanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel9)
                     .addComponent(endDate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(44, 44, 44)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28))
+                .addGap(18, 18, 18)
+                .addComponent(ImportExcelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ExportExcelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
                         .addComponent(matxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addContainerGap(417, Short.MAX_VALUE)))
+                    .addContainerGap(510, Short.MAX_VALUE)))
         );
 
         add(jPanel1, java.awt.BorderLayout.WEST);
@@ -302,7 +341,7 @@ public class VPanel extends javax.swing.JPanel {
      void loadData(String cond)
     {
         tablemodel.setRowCount(0);
-        ArrayList<Vouncher>v=new vouncherDAO().getAll(cond);
+        v=new vouncherDAO().getAll(cond);
         for (Vouncher t : v)
         {
             tablemodel.addRow(new Object[]{t.getMa(), t.getTen(), t.getPhanTramGiam(), t.getDieukienGiatu(), t.getDieukiengiaden(), t.getNgaybatdau(), t.getNgayketthuc()});
@@ -320,8 +359,7 @@ public class VPanel extends javax.swing.JPanel {
         jTable1.clearSelection();
     }
 
-
-
+    
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
         int row = jTable1.rowAtPoint(evt.getPoint());;
@@ -578,10 +616,190 @@ public class VPanel extends javax.swing.JPanel {
         System.out.println(searchTxt1.getText());
         loadData(searchTxt1.getText());
     }//GEN-LAST:event_SearchBtnActionPerformed
+ public double getCellDouble(Cell cell)
+    {
+        try {
+            if (cell==null) return 0;
+            if (cell.getCellType()==CellType.NUMERIC) {
+                return (double) cell.getNumericCellValue();
+            }
+            if (cell.getCellType()==CellType.STRING) {
+                String value=cell.getStringCellValue().trim();
+                if (value.isEmpty()) return 0;
+                return Double.parseDouble(value);
+            }
+        }
+        catch (NumberFormatException e) 
+        {
+        System.out.println("loi chuyen du lieu"); return 0;
+        }
+        catch (Exception e) {
+          
+            System.out.println("loi doc du lieu"); return 0;}
+        return 0;
+    }
+  
+    public String getCellString(Cell cell)
+    {
+        if (cell==null) return "";
+        if (cell.getCellType()==CellType.STRING) {
+        return cell.getStringCellValue().trim();
+        }
+          if (cell.getCellType()==CellType.NUMERIC) {
+        return String.valueOf(cell.getNumericCellValue());
+        }
+          return "";
+    }
+    
+    public Date getCellDate(Cell cell)
+    {
+        try {
+            if (cell==null) return null;
+            
+        if (cell.getCellType() == CellType.NUMERIC) {
+            if (DateUtil.isCellDateFormatted(cell)) {
+                return cell.getDateCellValue();
+            }
+            return null;
+        }
+           String value = cell.getStringCellValue().trim();
+
+            if (value.isEmpty()) return null;
+
+            // Chuyển chuỗi ngày thành Date
+            java.text.SimpleDateFormat sdf =
+                    new java.text.SimpleDateFormat("dd/MM/yyyy");
+
+            sdf.setLenient(false);
+            return sdf.parse(value);
+        }
+    catch (java.text.ParseException e) {
+        System.out.println("Loi chuyen du lieu ngay thang");
+    }
+    catch (Exception e) {
+          e.printStackTrace();
+        System.out.println("Loi doc du lieu");
+    }
+
+    return null;
+    }
+    
+ public ArrayList<Vouncher> importDataFromExcel(File f)
+    {
+    ArrayList<Vouncher> list=new ArrayList<>();
+    try (FileInputStream fi=new FileInputStream(f); Workbook w=new XSSFWorkbook(fi); )
+    {
+    Sheet s=w.getSheetAt(0);
+    for (int i=1; i<=s.getLastRowNum(); i++)
+    {
+        Row row=s.getRow(i);
+        if (row==null) continue;
+        String ma=getCellString(row.getCell(1));
+        String ten=getCellString(row.getCell(2));
+        double ptg=getCellDouble(row.getCell(3));
+        double startPrice=getCellDouble(row.getCell(4));
+        double endPrice=getCellDouble(row.getCell(5));
+        Date stDate=getCellDate(row.getCell(6));
+        Date endDate=getCellDate(row.getCell(7));
+        list.add(new Vouncher(ma, ten, ptg, startPrice, endPrice, stDate, endDate));
+    }
+    }
+    catch (Exception e) {e.printStackTrace();}
+    return list;
+    }
+
+     public void ExportDataToExcel(ArrayList<Vouncher> list) {
+        JFileChooser chooser = new JFileChooser();
+        
+        chooser.setFileFilter( new FileNameExtensionFilter("File Excel", "xlsx"));
+        int result = chooser.showSaveDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) { return;  }
+        File file = chooser.getSelectedFile();
+        // Nếu người dùng không nhập .xlsx thì tự thêm vào
+        if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+            file = new File(file.getAbsolutePath() + ".xlsx");
+        }
+        try (Workbook w = new XSSFWorkbook(); FileOutputStream fo = new FileOutputStream(file)) {
+            CreationHelper creationHelper = w.getCreationHelper();
+CellStyle dateStyle = w.createCellStyle();
+dateStyle.setDataFormat(
+    creationHelper.createDataFormat().getFormat("dd/MM/yyyy")
+);
+            Sheet sheet = w.createSheet("DanhSach");//tạo sheet
+            String header[] = {"STT","MÃ VOUCHER", "TÊN VOUCHER", "PHẦN TRĂM GIẢM", "ÁP DỤNG CHO GIÁ TỪ", "ĐẾN", "BẮT ĐẦU TỪ NGÀY", "ĐẾN"};
+            Row rowHeader = sheet.createRow(0);//tạo hàng tiêu đề
+            for (int i = 0; i < header.length; i++) {
+                rowHeader.createCell(i).setCellValue(header[i]);
+            }
+            int index = 1;
+            for (Vouncher s : list) {
+                Row row = sheet.createRow(index++);
+                row.createCell(0).setCellValue(index);
+                row.createCell(1).setCellValue(s.getMa());
+                row.createCell(2).setCellValue(s.getTen());
+                row.createCell(3, CellType.NUMERIC).setCellValue(s.getPhanTramGiam());
+                row.createCell(4, CellType.NUMERIC).setCellValue(s.getDieukienGiatu());
+                        row.createCell(5, CellType.NUMERIC).setCellValue(s.getDieukiengiaden());
+              Cell cellStart = row.createCell(6);
+cellStart.setCellValue(s.getNgaybatdau());
+cellStart.setCellStyle(dateStyle);
+Cell cellEnd = row.createCell(7);
+cellEnd.setCellValue(s.getNgayketthuc());
+cellEnd.setCellStyle(dateStyle);
+            }
+            for (int i = 0; i < header.length; i++) {
+                sheet.autoSizeColumn(i);//// Tự động điều chỉnh độ rộng cột
+            }
+            w.write(fo);// Ghi Workbook xuống file
+            JOptionPane.showMessageDialog(this, "Xuất dữ liệu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi xuất Excel", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    private void ImportExcelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ImportExcelBtnActionPerformed
+        // TODO add your handling code here:
+         JFileChooser chooser=new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("File excel", "xls", "xlsx"));
+        int result = chooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File f = chooser.getSelectedFile();
+            v = importDataFromExcel(f);
+            if (v.isEmpty()) {
+                JOptionPane.showMessageDialog(this,"Không có dữ liệu hợp lệ", "Thông báo", 
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int count = 0;
+            vouncherDAO vouncherDAO = new vouncherDAO();
+            for (Vouncher t : v) {
+                if (vouncherDAO.add(t) > 0) {
+                    count++;
+
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Có " + count + " được thêm vào", "Thông báo", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            loadData("");
+        }      
+    }//GEN-LAST:event_ImportExcelBtnActionPerformed
+
+    private void ExportExcelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExportExcelBtnActionPerformed
+        // TODO add your handling code here:
+        if (v.isEmpty() || v==null) {
+            JOptionPane.showMessageDialog(this, "Khong co du lieu");
+            return;
+        }
+        ExportDataToExcel(v);
+
+    }//GEN-LAST:event_ExportExcelBtnActionPerformed
 
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ExportExcelBtn;
+    private javax.swing.JButton ImportExcelBtn;
     private javax.swing.JButton SearchBtn;
     private javax.swing.JButton addButton1;
     private javax.swing.JButton deleteButton;
