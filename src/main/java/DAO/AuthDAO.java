@@ -4,8 +4,14 @@
  */
 package DAO;
 import MyConnection.MyConnection;
+import design.KHPanel;
+import java.awt.List;
+import java.awt.event.ActionEvent;
 import java.sql.*;
+import javax.swing.JOptionPane;
+import model.KhachHang;
 import model.User;
+
 /**
  *
  * @author GIAKHANHPC
@@ -76,4 +82,7 @@ public class AuthDAO {
         }
         return null;
     }
+    
 }
+
+    
