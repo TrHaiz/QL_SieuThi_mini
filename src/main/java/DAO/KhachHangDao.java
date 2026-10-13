@@ -18,7 +18,7 @@ public class KhachHangDao {
 
         String sql = "SELECT * FROM KhachHang";
 
-        try(Connection conn= MyConnection.getConnection();
+        try(Connection conn=new MyConnection().getConnection();
             PreparedStatement ps=conn.prepareStatement(sql)) {
             ResultSet rs= ps.executeQuery();
             while(rs.next()) {
@@ -48,7 +48,7 @@ public class KhachHangDao {
         sql = sql + " WHERE MaKH LIKE ? OR TenKH LIKE ? OR SoDienThoai LIKE ?";
     }
 
-    try (Connection conn = MyConnection.getConnection();
+    try (Connection conn = new MyConnection().getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -92,7 +92,7 @@ public class KhachHangDao {
 
     String sql = "INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, NgaySinh, SoDienThoai, Email) VALUES (?, ?, ?, ?, ?, ?)";
     
-    try (Connection conn = MyConnection.getConnection();
+    try (Connection conn = new MyConnection().getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
         ps.setString(1, kh.getMaKH().trim());
@@ -129,7 +129,7 @@ public class KhachHangDao {
 
     String sql = "UPDATE KhachHang SET TenKH = ?, GioiTinh = ?, NgaySinh = ?, SoDienThoai = ?, Email = ? WHERE MaKH = ?";
     
-    try (Connection conn = MyConnection.getConnection();
+    try (Connection conn =new MyConnection().getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
         ps.setString(1, kh.getTenKH().trim());
@@ -162,7 +162,7 @@ public class KhachHangDao {
     
     String sql = "DELETE FROM KhachHang WHERE MaKH = ?";
     
-    try (Connection conn = MyConnection.getConnection();
+    try (Connection conn =new MyConnection().getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
         ps.setString(1, maKH.trim());
