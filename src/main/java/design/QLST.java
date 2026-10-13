@@ -51,6 +51,7 @@ public class QLST extends javax.swing.JFrame {
     
     this.pack();
     this.setLocationRelativeTo(null);
+    this.setResizable(false);
 }
 
     /**
