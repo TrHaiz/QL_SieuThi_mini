@@ -41,6 +41,8 @@ public class VPanel extends javax.swing.JPanel {
         jScrollPane1.getViewport().setBackground(Color.WHITE);
         jTable1.setModel(tablemodel);
         tablemodel.setColumnIdentifiers(header);
+        deleteButton.setEnabled(false);
+        updateButton.setEnabled(false);
         loadData("");
     }
 
@@ -372,6 +374,8 @@ public class VPanel extends javax.swing.JPanel {
         endPriceTXT.setText(tablemodel.getValueAt(row, 4).toString());
         startDate.setDate((java.util.Date) tablemodel.getValueAt(row, 5));
         endDate1.setDate((java.util.Date) tablemodel.getValueAt(row, 6));
+                deleteButton.setEnabled(true);
+        updateButton.setEnabled(true);
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void addButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButton1ActionPerformed
@@ -609,6 +613,8 @@ public class VPanel extends javax.swing.JPanel {
     private void jScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseClicked
         // TODO add your handling code here:
         clearForm();
+        updateButton.setEnabled(false);
+        deleteButton.setEnabled(false);
     }//GEN-LAST:event_jScrollPane1MouseClicked
 
     private void SearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBtnActionPerformed
