@@ -1,5 +1,6 @@
 package design;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.util.Date;
 import javax.swing.*;
@@ -26,8 +27,9 @@ public class QLST extends javax.swing.JFrame {
      * Creates new form QLST
      */
     public QLST(User user) {
+        FlatLightLaf.setup();
         initComponents();
-        this.setLocationRelativeTo(this);
+        //this.setLocationRelativeTo(this);
         this.setTitle("Quản lý siêu thị");
         this.currentUser=user;
         nameLbl.setText(currentUser.getTen());
@@ -41,7 +43,7 @@ public class QLST extends javax.swing.JFrame {
         jPanel2.add(khachhangPanel, "QL_KhachHang");
         jPanel2.add(donhangPanel, "QL_Donhang");
         jPanel2.add(vouncherPanel, "QL_Vouncher");
-        
+        this.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -147,9 +149,9 @@ public class QLST extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(QLKHBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(QLKSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                            .addComponent(QLVbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(QLVbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(QLKHBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -161,9 +163,9 @@ public class QLST extends javax.swing.JFrame {
                 .addComponent(nameLbl)
                 .addGap(51, 51, 51)
                 .addComponent(QLKSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
+                .addGap(34, 34, 34)
                 .addComponent(QLKHBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(42, 42, 42)
                 .addComponent(QLDHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(46, 46, 46)
                 .addComponent(QLVbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -187,8 +189,6 @@ public class QLST extends javax.swing.JFrame {
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void setActiveButton(JButton selectedBtn) {
@@ -240,24 +240,8 @@ public class QLST extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
+        FlatLightLaf.setup();
+    
         java.awt.EventQueue.invokeLater(() -> new QLST(new User("a", "a", "a", "123456", new Date(1, 1, 1))).setVisible(true));
     }
 
