@@ -586,7 +586,7 @@ public class DHPanel extends javax.swing.JPanel {
                 .addGroup(pnltinhtienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnltinhtienLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnltinhtienLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(lbldsdangban, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -681,7 +681,7 @@ public class DHPanel extends javax.swing.JPanel {
                 "Mã Hoá Đơn", "Ngày Lập", "Mã KH", "Tổng Tiền", "Mã Giảm Giá"
             }
         ));
-        tblDanhSach.setPreferredSize(new java.awt.Dimension(375, 40));
+        tblDanhSach.setPreferredSize(null);
         tblDanhSach.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblDanhSachMouseClicked(evt);
