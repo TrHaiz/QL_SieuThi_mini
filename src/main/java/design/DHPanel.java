@@ -681,7 +681,6 @@ public class DHPanel extends javax.swing.JPanel {
                 "Mã Hoá Đơn", "Ngày Lập", "Mã KH", "Tổng Tiền", "Mã Giảm Giá"
             }
         ));
-        tblDanhSach.setPreferredSize(new java.awt.Dimension(375, 40));
         tblDanhSach.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblDanhSachMouseClicked(evt);
