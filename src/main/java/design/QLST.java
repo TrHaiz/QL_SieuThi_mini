@@ -1,5 +1,6 @@
 package design;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.*;
 import java.util.Date;
 import javax.swing.*;
@@ -25,24 +26,32 @@ public class QLST extends javax.swing.JFrame {
     /**
      * Creates new form QLST
      */
-    public QLST(User user) {
-        initComponents();
-        this.setLocationRelativeTo(this);
-        this.setTitle("Quản lý siêu thị");
-        this.currentUser=user;
-        nameLbl.setText(currentUser.getTen());
-        nameLbl.setHorizontalAlignment(SwingConstants.CENTER);
-        jPanel2.setLayout(layout);
-        DHPanel donhangPanel=new DHPanel();
-        KHPanel khachhangPanel=new KHPanel();
-        KSPPanel khosanphamPanel=new KSPPanel();
-        VPanel vouncherPanel=new  VPanel();
-        jPanel2.add(khosanphamPanel, "QL_Sanpham");
-        jPanel2.add(khachhangPanel, "QL_KhachHang");
-        jPanel2.add(donhangPanel, "QL_Donhang");
-        jPanel2.add(vouncherPanel, "QL_Vouncher");
-        
-    }
+  public QLST(User user) {
+    // 1. Khởi tạo linh kiện UI trước
+    initComponents();
+    
+    // 2. Thiết lập tiêu đề và hiển thị người dùng
+    this.setTitle("Quản lý siêu thị");
+    this.currentUser = user;
+    nameLbl.setText(currentUser.getTen());
+    nameLbl.setHorizontalAlignment(SwingConstants.CENTER);
+    
+    // 3. Cấu hình Layout cho Panel chứa (jPanel2)
+    jPanel2.setLayout(layout);
+    
+    DHPanel donhangPanel = new DHPanel();
+    KHPanel khachhangPanel = new KHPanel();
+    KSPPanel sanphamPanel = new KSPPanel();
+    VPanel voucherPanel = new VPanel();
+    
+    jPanel2.add(sanphamPanel, "QL_Sanpham");
+    jPanel2.add(khachhangPanel, "QL_KhachHang");
+    jPanel2.add(donhangPanel, "QL_Donhang");
+    jPanel2.add(voucherPanel, "QL_Voucher");
+    
+    this.pack();
+    this.setLocationRelativeTo(null);
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,28 +64,23 @@ public class QLST extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        nameLbl = new javax.swing.JLabel();
         QLDHbtn = new javax.swing.JButton();
         QLKSPBtn = new javax.swing.JButton();
         QLKHBtn = new javax.swing.JButton();
         QLVbtn = new javax.swing.JButton();
         QLVbtn1 = new javax.swing.JButton();
+        nameLbl = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1300, 720));
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 204));
         jPanel1.setPreferredSize(new java.awt.Dimension(220, 468));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Chào mừng");
-
-        nameLbl.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        nameLbl.setForeground(new java.awt.Color(255, 255, 255));
-        nameLbl.setText("jLabel2");
-        nameLbl.setAutoscrolls(true);
-        nameLbl.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         QLDHbtn.setBackground(new java.awt.Color(0, 204, 204));
         QLDHbtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -131,25 +135,31 @@ public class QLST extends javax.swing.JFrame {
         QLVbtn1.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         QLVbtn1.addActionListener(this::QLVbtn1ActionPerformed);
 
+        nameLbl.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        nameLbl.setForeground(new java.awt.Color(255, 255, 255));
+        nameLbl.setText("jLabel2");
+        nameLbl.setAutoscrolls(true);
+        nameLbl.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(QLVbtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(nameLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(QLDHbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(QLKHBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
                         .addComponent(jLabel1)
-                        .addGap(72, 72, 72))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(QLKHBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(QLKSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                            .addComponent(QLVbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(nameLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(QLVbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(QLKSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -157,17 +167,17 @@ public class QLST extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nameLbl)
-                .addGap(51, 51, 51)
+                .addGap(26, 26, 26)
+                .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(QLKSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
+                .addGap(37, 37, 37)
                 .addComponent(QLKHBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(48, 48, 48)
                 .addComponent(QLDHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
+                .addGap(44, 44, 44)
                 .addComponent(QLVbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                .addGap(85, 85, 85)
                 .addComponent(QLVbtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -179,16 +189,14 @@ public class QLST extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 934, Short.MAX_VALUE)
+            .addGap(0, 977, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 601, Short.MAX_VALUE)
+            .addGap(0, 608, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void setActiveButton(JButton selectedBtn) {
@@ -227,7 +235,7 @@ public class QLST extends javax.swing.JFrame {
     private void QLVbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLVbtnActionPerformed
         // TODO add your handling code here:
         setActiveButton(QLVbtn);
-        layout.show(jPanel2, "QL_Vouncher");
+        layout.show(jPanel2, "QL_Voucher");
     }//GEN-LAST:event_QLVbtnActionPerformed
 
     private void QLVbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLVbtn1ActionPerformed
@@ -240,24 +248,8 @@ public class QLST extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
+        FlatLightLaf.setup();
+    
         java.awt.EventQueue.invokeLater(() -> new QLST(new User("a", "a", "a", "123456", new Date(1, 1, 1))).setVisible(true));
     }
 
