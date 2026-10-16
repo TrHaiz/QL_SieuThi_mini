@@ -10,6 +10,8 @@ import DAO.vouncherDAO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -347,9 +349,10 @@ public class VPanel extends javax.swing.JPanel {
     {
         tablemodel.setRowCount(0);
         v=new vouncherDAO().getAll(cond);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         for (Vouncher t : v)
-        {
-            tablemodel.addRow(new Object[]{t.getMa(), t.getTen(), t.getPhanTramGiam(), t.getDieukienGiatu(), t.getDieukiengiaden(), t.getNgaybatdau(), t.getNgayketthuc()});
+        {   
+            tablemodel.addRow(new Object[]{t.getMa(), t.getTen(), t.getPhanTramGiam(), t.getDieukienGiatu(), t.getDieukiengiaden()==0 ? "Không giới hạn" : t.getDieukiengiaden(), sdf.format(t.getNgaybatdau()), sdf.format(t.getNgayketthuc())});
         }
     }
     private void clearForm() {
@@ -367,16 +370,22 @@ public class VPanel extends javax.swing.JPanel {
     
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        int row = jTable1.rowAtPoint(evt.getPoint());;
+        int row = jTable1.rowAtPoint(evt.getPoint());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         if (row==-1) {clearForm(); return;}
         tentxt.setText(tablemodel.getValueAt(row, 1).toString());
         matxt.setText(tablemodel.getValueAt(row, 0).toString());
         matxt.setEnabled(false);
         ptgTXT.setText(tablemodel.getValueAt(row, 2).toString());
         startPriceTXT.setText(tablemodel.getValueAt(row, 3).toString());
-        endPriceTXT.setText(tablemodel.getValueAt(row, 4).toString());
-        startDate.setDate((java.util.Date) tablemodel.getValueAt(row, 5));
-        endDate1.setDate((java.util.Date) tablemodel.getValueAt(row, 6));
+        if (!tablemodel.getValueAt(row, 4).toString().equals("Không giới hạn")) endPriceTXT.setText(tablemodel.getValueAt(row, 4).toString());
+        else endPriceTXT.setText("");
+        try {
+        startDate.setDate(sdf.parse(tablemodel.getValueAt(row, 5).toString()));
+        endDate1.setDate(sdf.parse(tablemodel.getValueAt(row, 6).toString()));
+        }
+        catch (Exception e) {JOptionPane.showMessageDialog(tentxt, "Lỗi chuyển dữ liệu Date");}
+        addButton1.setEnabled(false);
                 deleteButton.setEnabled(true);
         updateButton.setEnabled(true);
     }//GEN-LAST:event_jTable1MouseClicked
@@ -622,7 +631,6 @@ public class VPanel extends javax.swing.JPanel {
 
     private void SearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBtnActionPerformed
         // TODO add your handling code here:
-        System.out.println(searchTxt1.getText());
         loadData(searchTxt1.getText());
     }//GEN-LAST:event_SearchBtnActionPerformed
  public double getCellDouble(Cell cell)
@@ -724,7 +732,6 @@ public class VPanel extends javax.swing.JPanel {
         int result = chooser.showSaveDialog(this);
         if (result != JFileChooser.APPROVE_OPTION) { return;  }
         File file = chooser.getSelectedFile();
-        // Nếu người dùng không nhập .xlsx thì tự thêm vào
         if (!file.getName().toLowerCase().endsWith(".xlsx")) {
             file = new File(file.getAbsolutePath() + ".xlsx");
         }
@@ -743,7 +750,7 @@ dateStyle.setDataFormat(
             int index = 1;
             for (Vouncher s : list) {
                 Row row = sheet.createRow(index++);
-                row.createCell(0).setCellValue(index);
+                row.createCell(0).setCellValue(index-1);
                 row.createCell(1).setCellValue(s.getMa());
                 row.createCell(2).setCellValue(s.getTen());
                 row.createCell(3, CellType.NUMERIC).setCellValue(s.getPhanTramGiam());

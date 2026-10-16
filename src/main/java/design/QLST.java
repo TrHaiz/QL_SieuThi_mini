@@ -27,28 +27,28 @@ public class QLST extends javax.swing.JFrame {
      * Creates new form QLST
      */
   public QLST(User user) {
-    // 1. Khởi tạo linh kiện UI trước
     initComponents();
-    
-    // 2. Thiết lập tiêu đề và hiển thị người dùng
+
     this.setTitle("Quản lý siêu thị");
     this.currentUser = user;
     nameLbl.setText(currentUser.getTen());
     nameLbl.setHorizontalAlignment(SwingConstants.CENTER);
-    
-    // 3. Cấu hình Layout cho Panel chứa (jPanel2)
     jPanel2.setLayout(layout);
-    
     DHPanel donhangPanel = new DHPanel();
     KHPanel khachhangPanel = new KHPanel();
     KSPPanel sanphamPanel = new KSPPanel();
     VPanel voucherPanel = new VPanel();
-    
+    NCCPanel nCCPanel=new NCCPanel();
+    TKPanel thongkePanel=new TKPanel();
+    LSPPanel loaiSPPanel=new LSPPanel();
     jPanel2.add(sanphamPanel, "QL_Sanpham");
     jPanel2.add(khachhangPanel, "QL_KhachHang");
     jPanel2.add(donhangPanel, "QL_Donhang");
     jPanel2.add(voucherPanel, "QL_Voucher");
-    
+    jPanel2.add(nCCPanel, "QL_NCC");
+    jPanel2.add(thongkePanel, "Thong_Ke");
+    jPanel2.add(loaiSPPanel, "QL_LSP");
+      setActiveButton(QLSPBtn);
     this.pack();
     this.setLocationRelativeTo(null);
     this.setResizable(false);
@@ -66,11 +66,14 @@ public class QLST extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         QLDHbtn = new javax.swing.JButton();
-        QLKSPBtn = new javax.swing.JButton();
+        QLSPBtn = new javax.swing.JButton();
         QLKHBtn = new javax.swing.JButton();
         QLVbtn = new javax.swing.JButton();
-        QLVbtn1 = new javax.swing.JButton();
         nameLbl = new javax.swing.JLabel();
+        QLNCCBtn = new javax.swing.JButton();
+        TKBtn = new javax.swing.JButton();
+        QLVbtn1 = new javax.swing.JButton();
+        QLLSPBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -93,17 +96,17 @@ public class QLST extends javax.swing.JFrame {
         QLDHbtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         QLDHbtn.addActionListener(this::QLDHbtnActionPerformed);
 
-        QLKSPBtn.setBackground(new java.awt.Color(0, 204, 204));
-        QLKSPBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        QLKSPBtn.setForeground(new java.awt.Color(255, 255, 255));
-        QLKSPBtn.setText("Quản lý kho sản phẩm");
-        QLKSPBtn.setBorder(null);
-        QLKSPBtn.setContentAreaFilled(false);
-        QLKSPBtn.setFocusPainted(false);
-        QLKSPBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        QLKSPBtn.setInheritsPopupMenu(true);
-        QLKSPBtn.setMargin(new java.awt.Insets(2, 20, 3, 14));
-        QLKSPBtn.addActionListener(this::QLKSPBtnActionPerformed);
+        QLSPBtn.setBackground(new java.awt.Color(0, 204, 204));
+        QLSPBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        QLSPBtn.setForeground(new java.awt.Color(255, 255, 255));
+        QLSPBtn.setText("Quản lý sản phẩm");
+        QLSPBtn.setBorder(null);
+        QLSPBtn.setContentAreaFilled(false);
+        QLSPBtn.setFocusPainted(false);
+        QLSPBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        QLSPBtn.setInheritsPopupMenu(true);
+        QLSPBtn.setMargin(new java.awt.Insets(2, 20, 3, 14));
+        QLSPBtn.addActionListener(this::QLSPBtnActionPerformed);
 
         QLKHBtn.setBackground(new java.awt.Color(0, 204, 204));
         QLKHBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -127,6 +130,34 @@ public class QLST extends javax.swing.JFrame {
         QLVbtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         QLVbtn.addActionListener(this::QLVbtnActionPerformed);
 
+        nameLbl.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        nameLbl.setForeground(new java.awt.Color(255, 255, 255));
+        nameLbl.setText("jLabel2");
+        nameLbl.setAutoscrolls(true);
+        nameLbl.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        QLNCCBtn.setBackground(new java.awt.Color(0, 204, 204));
+        QLNCCBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        QLNCCBtn.setForeground(new java.awt.Color(255, 255, 255));
+        QLNCCBtn.setText("Quản lý nhà cung cấp");
+        QLNCCBtn.setBorder(null);
+        QLNCCBtn.setContentAreaFilled(false);
+        QLNCCBtn.setFocusPainted(false);
+        QLNCCBtn.setHideActionText(true);
+        QLNCCBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        QLNCCBtn.setMargin(new java.awt.Insets(2, 20, 3, 14));
+        QLNCCBtn.addActionListener(this::QLNCCBtnActionPerformed);
+
+        TKBtn.setBackground(new java.awt.Color(0, 204, 204));
+        TKBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        TKBtn.setForeground(new java.awt.Color(255, 255, 255));
+        TKBtn.setText("Thống kê");
+        TKBtn.setBorder(null);
+        TKBtn.setContentAreaFilled(false);
+        TKBtn.setFocusPainted(false);
+        TKBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        TKBtn.addActionListener(this::TKBtnActionPerformed);
+
         QLVbtn1.setBackground(new java.awt.Color(255, 153, 0));
         QLVbtn1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         QLVbtn1.setForeground(new java.awt.Color(255, 255, 255));
@@ -136,49 +167,64 @@ public class QLST extends javax.swing.JFrame {
         QLVbtn1.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         QLVbtn1.addActionListener(this::QLVbtn1ActionPerformed);
 
-        nameLbl.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        nameLbl.setForeground(new java.awt.Color(255, 255, 255));
-        nameLbl.setText("jLabel2");
-        nameLbl.setAutoscrolls(true);
-        nameLbl.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        QLLSPBtn.setBackground(new java.awt.Color(0, 204, 204));
+        QLLSPBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        QLLSPBtn.setForeground(new java.awt.Color(255, 255, 255));
+        QLLSPBtn.setText("Quản lý loại sản phẩm");
+        QLLSPBtn.setBorder(null);
+        QLLSPBtn.setContentAreaFilled(false);
+        QLLSPBtn.setFocusPainted(false);
+        QLLSPBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        QLLSPBtn.setInheritsPopupMenu(true);
+        QLLSPBtn.setMargin(new java.awt.Insets(2, 20, 3, 14));
+        QLLSPBtn.addActionListener(this::QLLSPBtnActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(QLVbtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(jLabel1)
+                .addContainerGap(50, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(QLDHbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(QLKHBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(QLNCCBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameLbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(QLVbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(QLKSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))))
+                            .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(QLVbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(TKBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(QLVbtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
+            .addComponent(QLSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(QLLSPBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(40, 40, 40)
                 .addComponent(jLabel1)
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(31, 31, 31)
+                .addComponent(QLSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(QLKSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addComponent(QLLSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(QLKHBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
+                .addGap(18, 18, 18)
+                .addComponent(QLNCCBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(QLDHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
+                .addGap(21, 21, 21)
                 .addComponent(QLVbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(85, 85, 85)
+                .addGap(18, 18, 18)
+                .addComponent(TKBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(QLVbtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -190,11 +236,11 @@ public class QLST extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 977, Short.MAX_VALUE)
+            .addGap(0, 1070, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 608, Short.MAX_VALUE)
+            .addGap(0, 694, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -215,11 +261,11 @@ public class QLST extends javax.swing.JFrame {
     currentActiveButton = selectedBtn;
 }
     
-    private void QLKSPBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLKSPBtnActionPerformed
+    private void QLSPBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLSPBtnActionPerformed
         // TODO add your handling code here:
-        setActiveButton(QLKSPBtn);
+        setActiveButton(QLSPBtn);
         layout.show(jPanel2, "QL_Sanpham");
-    }//GEN-LAST:event_QLKSPBtnActionPerformed
+    }//GEN-LAST:event_QLSPBtnActionPerformed
 
     private void QLKHBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLKHBtnActionPerformed
         // TODO add your handling code here:
@@ -245,6 +291,25 @@ public class QLST extends javax.swing.JFrame {
         new LoginScreen().setVisible(true);
     }//GEN-LAST:event_QLVbtn1ActionPerformed
 
+    private void QLNCCBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLNCCBtnActionPerformed
+        // TODO add your handling code here:
+        setActiveButton(QLNCCBtn);
+        layout.show(jPanel2,  "QL_NCC");
+    }//GEN-LAST:event_QLNCCBtnActionPerformed
+
+    private void TKBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TKBtnActionPerformed
+        // TODO add your handling code here:
+        setActiveButton(TKBtn);
+        layout.show(jPanel2,  "Thong_Ke");
+
+    }//GEN-LAST:event_TKBtnActionPerformed
+
+    private void QLLSPBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLLSPBtnActionPerformed
+        // TODO add your handling code here:
+        setActiveButton(QLLSPBtn);
+        layout.show(jPanel2, "QL_LSP");
+    }//GEN-LAST:event_QLLSPBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -257,9 +322,12 @@ public class QLST extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton QLDHbtn;
     private javax.swing.JButton QLKHBtn;
-    private javax.swing.JButton QLKSPBtn;
+    private javax.swing.JButton QLLSPBtn;
+    private javax.swing.JButton QLNCCBtn;
+    private javax.swing.JButton QLSPBtn;
     private javax.swing.JButton QLVbtn;
     private javax.swing.JButton QLVbtn1;
+    private javax.swing.JButton TKBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

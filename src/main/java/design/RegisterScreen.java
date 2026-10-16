@@ -49,6 +49,7 @@ public class RegisterScreen extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jToggleButton1 = new javax.swing.JToggleButton();
         jToggleButton2 = new javax.swing.JToggleButton();
+        outBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,6 +86,9 @@ public class RegisterScreen extends javax.swing.JFrame {
 
         jToggleButton2.setText("Hiện mật khẩu");
         jToggleButton2.addActionListener(this::jToggleButton2ActionPerformed);
+
+        outBtn.setText("Thoát");
+        outBtn.addActionListener(this::outBtnActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -127,8 +131,10 @@ public class RegisterScreen extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(260, 260, 260))
             .addGroup(layout.createSequentialGroup()
-                .addGap(240, 240, 240)
+                .addGap(81, 81, 81)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(102, 102, 102)
+                .addComponent(outBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -162,9 +168,11 @@ public class RegisterScreen extends javax.swing.JFrame {
                     .addComponent(jLabel7)
                     .addComponent(confirmPassTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(35, 35, 35))
+                .addGap(49, 49, 49)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(outBtn)
+                    .addComponent(jButton1))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         pack();
@@ -271,6 +279,12 @@ public class RegisterScreen extends javax.swing.JFrame {
         handleRegister();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void outBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outBtnActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        new  LoginScreen().setVisible(true);
+    }//GEN-LAST:event_outBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -313,6 +327,7 @@ public class RegisterScreen extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JTextField nameTxt;
+    private javax.swing.JButton outBtn;
     private javax.swing.JTextField usernameTXT;
     // End of variables declaration//GEN-END:variables
 }

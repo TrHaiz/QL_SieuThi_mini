@@ -21,7 +21,6 @@ public class vouncherDAO {
     String sql = "SELECT * FROM voucher WHERE 1=1";
     
     if (cond != null && !cond.trim().isEmpty()) {
-        // Thêm dấu ngoặc đơn () bao quanh mệnh đề OR
         sql += " AND mavoucher LIKE ? ";
     }
     
