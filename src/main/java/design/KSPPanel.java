@@ -16,7 +16,7 @@ public class KSPPanel extends javax.swing.JPanel {
 
     DefaultComboBoxModel<String> cbomodelLoai = new DefaultComboBoxModel<>();
     ArrayList<SanPham> listSanPham = new ArrayList<>();
-    DefaultTableModel tablemodel = new DefaultTableModel() {
+    DefaultTableModel tablemodel = new DefaultTableModel(){
         @Override
         public boolean isCellEditable(int row, int column) {
             return false; 
@@ -559,57 +559,71 @@ public class KSPPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btncapnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncapnhatActionPerformed
-       if (sanPhamSelected == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần cập nhật trên bảng!");
-            return;
-        }
-
-        String ma = sanPhamSelected.getMaSP();
-        String ten = txtten.getText().trim();
-        String loai = txtloai.getText().trim();
- if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || txtnhacc.getText().trim().isEmpty() || txttonkho.getText().trim().isEmpty() || txtgiaban.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ các dữ liệu!");
+   if (sanPhamSelected == null) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần cập nhật trên bảng!");
         return;
     }
-        try {
-            String soluong = Integer.parseInt(txtnhacc.getText().trim());
-            int tonkho = int.parse(txttonkho.getText().trim());
-            double giaban = Double.parseDouble(txtgiaban.getText().trim());
-                if (soluong<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng lớn hơn hoặc bằng 0"); return;}
-            if (gianhap<0 || giaban<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng, giá nhập, giá bán lớn hơn 0"); return;}
-            khoDAO dao = new khoDAO();
-            SanPham sp = new SanPham(ma, ten, loai, soluong, gianhap, giaban);
-            int kq = dao.update(sp);
 
-            if (kq == 1) {
-                JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
-                loaddatatable();
-                loaddatatocombobox();
-                clearForm();
-            } else {
-                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số!");
-        }
-    }//GEN-LAST:event_btncapnhatActionPerformed
-
-    private void btnthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemActionPerformed
-   String ma = txtmaSP.getText().trim();
+    String ma = sanPhamSelected.getMaSP();
     String ten = txtten.getText().trim();
     String loai = txtloai.getText().trim();
+    String nhacc = txtnhacc.getText().trim();
+    String tonkhoStr = txttonkho.getText().trim();
+    String giabanStr = txtgiaban.getText().trim();
 
-    if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || txtnhacc.getText().trim().isEmpty() || txttonkho.getText().trim().isEmpty() || txtgiaban.getText().trim().isEmpty()) {
+    if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || nhacc.isEmpty() || tonkhoStr.isEmpty() || giabanStr.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ các dữ liệu!");
         return;
     }
     try {
-        int soluong = Integer.parseInt(txtnhacc.getText().trim());
-        double gianhap = Double.parseDouble(txttonkho.getText().trim());
-        double giaban = Double.parseDouble(txtgiaban.getText().trim());
-          if (soluong<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng lớn hơn hoặc bằng 0"); return;}
-            if (gianhap<0 || giaban<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng, giá nhập, giá bán lớn hơn 0"); return;}
-        khoSP sp = new khoSP(ma, ten, loai, soluong, gianhap, giaban);
+        int tonkho = Integer.parseInt(tonkhoStr);
+        double giaban = Double.parseDouble(giabanStr);
+        
+        if (tonkho < 0 || giaban < 0) {
+            JOptionPane.showMessageDialog(this, "Tồn kho và giá bán phải lớn hơn hoặc bằng 0!");
+            return;
+        }
+
+        SanPham sp = new SanPham(ma, ten, loai, nhacc, tonkho, giaban);
+        
+        khoDAO dao = new khoDAO();
+        int kq = dao.update(sp);
+
+        if (kq > 0) {
+            JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+            loaddatatable();
+            loaddatatocombobox();
+            clearForm();
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số cho Tồn kho và Giá bán!");
+    }
+    }//GEN-LAST:event_btncapnhatActionPerformed
+
+    private void btnthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemActionPerformed
+ String ma = txtmaSP.getText().trim();
+    String ten = txtten.getText().trim();
+    String loai = txtloai.getText().trim();
+    String nhacc = txtnhacc.getText().trim();
+    String tonkhoStr = txttonkho.getText().trim();
+    String giabanStr = txtgiaban.getText().trim();
+
+    if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || nhacc.isEmpty() || tonkhoStr.isEmpty() || giabanStr.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ các dữ liệu!");
+        return;
+    }
+    try {
+        int tonkho = Integer.parseInt(tonkhoStr);
+        double giaban = Double.parseDouble(giabanStr);
+
+        if (tonkho < 0 || giaban < 0) {
+            JOptionPane.showMessageDialog(this, "Tồn kho và giá bán phải lớn hơn hoặc bằng 0!");
+            return;
+        }
+
+        SanPham sp = new SanPham(ma, ten, loai, nhacc, tonkho, giaban);
         int kq = new khoDAO().insert(sp);
 
         if (kq > 0) {
@@ -617,15 +631,13 @@ public class KSPPanel extends javax.swing.JPanel {
             loaddatatocombobox();
             loaddatatable();
             clearForm();
-        } else if (kq==-2)  {
-            
-            JOptionPane.showMessageDialog(this, "Mã sản phẩm đã tồn tại");
-        }
-        else {
-         JOptionPane.showMessageDialog(this, "Thêm thất bại (có thể mã đã tồn tại)!");
+        } else if (kq == -2) {
+            JOptionPane.showMessageDialog(this, "Mã sản phẩm đã tồn tại!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại!");
         }
     } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số!");
+        JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số cho Tồn kho và Giá bán!");
     }
     }//GEN-LAST:event_btnthemActionPerformed
 
@@ -672,7 +684,7 @@ public class KSPPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtloaiActionPerformed
 public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Quản Lý Kho");
+            JFrame frame = new JFrame("Quản Lý Sản Phẩm");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(new KSPPanel());
             frame.pack();

@@ -220,9 +220,9 @@ public class DHPanel extends javax.swing.JPanel {
             modelSP.addRow(new Object[]{
                 sp.getMaSP(),
                 sp.getTenSP(),
-                sp.getLoaiSP(),
-                sp.getSoLuong(),
-                formatVND(sp.getGiaBan())
+                sp.getMaLoaiSP(),
+                sp.getTonkho(),
+                formatVND(sp.getGia())
             });
         }
     }

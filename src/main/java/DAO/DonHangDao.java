@@ -19,7 +19,7 @@ import model.DonHang;
 public class DonHangDao {
     public static List<SanPham> getandsearchSanPhamDangBan(String tuKhoa) {
       List<SanPham> list = new ArrayList<>();
-        String sql = "SELECT MaSP, TenSP, LoaiSP, SoLuong, GiaNhap, GiaBan "
+        String sql = "SELECT MaSP, TenSP, MaLoaiSP, MãNCC, Tồnkho, Gia "
                    + "FROM SanPham WHERE SoLuong > 0 AND (MaSP LIKE ?)";
         try (Connection conn =new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -33,8 +33,8 @@ public class DonHangDao {
                         rs.getString("MaSP"),
                         rs.getString("TenSP"),
                         rs.getString("LoaiSP"),
-                        rs.getInt("SoLuong"),
-                        rs.getDouble("GiaNhap"),
+                        rs.getString("MaNCC"),
+                        rs.getInt("TồnKho"),
                         rs.getDouble("GiaBan")
                     ));
                 }
