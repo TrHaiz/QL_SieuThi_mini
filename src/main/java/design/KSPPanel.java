@@ -2,7 +2,7 @@
 package design;
 import DAO.khoDAO;
 import java.awt.Color;
-import model.khoSP;
+import model.SanPham;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;                 
@@ -15,15 +15,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class KSPPanel extends javax.swing.JPanel {
 
     DefaultComboBoxModel<String> cbomodelLoai = new DefaultComboBoxModel<>();
-    ArrayList<khoSP> listSanPham = new ArrayList<>();
+    ArrayList<SanPham> listSanPham = new ArrayList<>();
     DefaultTableModel tablemodel = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false; 
         }
     };
-    khoSP sanPhamSelected = null;
-    private final String PLACEHOLDER = "Nhập mã/Tên";
+    SanPham sanPhamSelected = null;
 
     
     public KSPPanel() {
@@ -42,8 +41,8 @@ public class KSPPanel extends javax.swing.JPanel {
         txtmaSP.setEditable(editable);
         txtten.setEnabled(editable);
         txtloai.setEnabled(editable);
-        txtsoluong.setEnabled(editable);
-        txtgianhap.setEnabled(editable);
+        txtnhacc.setEnabled(editable);
+        txttonkho.setEnabled(editable);
         txtgiaban.setEnabled(editable);
     }
 
@@ -64,7 +63,7 @@ public class KSPPanel extends javax.swing.JPanel {
     }
 
     public void inittable() {
-        String[] header = new String[]{"Mã SP", "Tên SP", "Loại SP", "Số Lượng", "Giá Nhập", "Giá Bán"};
+        String[] header = new String[]{"Mã SP", "Tên SP", "Mã Loại SP", "Mã NCC", "Tồn kho", "Giá Bán"};
         tablemodel.setColumnIdentifiers(header);
         tblsanpham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblsanpham.getSelectionModel().addListSelectionListener((e) -> {
@@ -81,9 +80,7 @@ public class KSPPanel extends javax.swing.JPanel {
 
     public void loaddatatable() {
         String keyword = this.txttimkiem.getText().trim();
-        if (keyword.equals(PLACEHOLDER)) {
-            keyword = "";
-        }
+            keyword = "";      
         
         String loaiChon = "";
         if (this.cbbloai.getSelectedIndex() > 0 && this.cbbloai.getSelectedItem() != null) {
@@ -93,14 +90,14 @@ public class KSPPanel extends javax.swing.JPanel {
         // Lấy danh sách kết hợp lọc theo loại và từ khóa
         listSanPham = new khoDAO().getAll(loaiChon, keyword);
         tablemodel.setRowCount(0);
-        for (khoSP sp : listSanPham) {
+        for (SanPham sp : listSanPham) {
             tablemodel.addRow(new Object[]{
                 sp.getMaSP(), 
                 sp.getTenSP(), 
-                sp.getLoaiSP(), 
-                sp.getSoLuong(), 
-                sp.getGiaNhap(), 
-                sp.getGiaBan()
+                sp.getMaLoaiSP(), 
+                sp.getMaNCC(), 
+                sp.getTonkho(), 
+                sp.getGia()
             });
         }
     }
@@ -109,10 +106,10 @@ public class KSPPanel extends javax.swing.JPanel {
         if (sanPhamSelected != null) {
             txtmaSP.setText(sanPhamSelected.getMaSP());
             txtten.setText(sanPhamSelected.getTenSP());
-            txtloai.setText(sanPhamSelected.getLoaiSP());
-            txtsoluong.setText(String.valueOf(sanPhamSelected.getSoLuong()));
-            txtgianhap.setText(String.valueOf(sanPhamSelected.getGiaNhap()));
-            txtgiaban.setText(String.valueOf(sanPhamSelected.getGiaBan()));
+            txtloai.setText(sanPhamSelected.getMaLoaiSP());
+            txtnhacc.setText(sanPhamSelected.getMaNCC());
+            txttonkho.setText(String.valueOf(sanPhamSelected.getTonkho()));
+            txtgiaban.setText(String.valueOf(sanPhamSelected.getGia()));
 
             setEditableFields(true);
             txtmaSP.setEditable(false); // Không cho sửa mã khi đang chọn cập nhật
@@ -125,8 +122,8 @@ public class KSPPanel extends javax.swing.JPanel {
         txtmaSP.setText("");
         txtten.setText("");
         txtloai.setText("");
-        txtsoluong.setText("");
-        txtgianhap.setText("");
+        txtnhacc.setText("");
+        txttonkho.setText("");
         txtgiaban.setText("");
         tblsanpham.clearSelection();
         sanPhamSelected = null;
@@ -173,7 +170,7 @@ public class KSPPanel extends javax.swing.JPanel {
 
     return "";
 }
-  public void exportSanPhamToExcel(ArrayList<khoSP> list) {
+  public void exportSanPhamToExcel(ArrayList<SanPham> list) {
     JFileChooser chooser = new JFileChooser();
     chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("File Excel", "xlsx"));
     if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
@@ -186,21 +183,21 @@ public class KSPPanel extends javax.swing.JPanel {
     try (Workbook w = new XSSFWorkbook();
          java.io.FileOutputStream fo = new java.io.FileOutputStream(file)) {
         Sheet sheet = w.createSheet("SanPham");
-        String[] header = {"STT", "MÃ SP", "TÊN SP", "LOẠI SP", "SỐ LƯỢNG", "GIÁ NHẬP", "GIÁ BÁN"};
+        String[] header = {"STT", "MÃ SP", "TÊN SP", "MÃ LOẠI SP", "MÃ NCC", "TỒN KHO", "GIÁ BÁN"};
         Row rowHeader = sheet.createRow(0);
         for (int i = 0; i < header.length; i++) {
             rowHeader.createCell(i).setCellValue(header[i]);
         }
         int stt = 1;
-        for (khoSP sp : list) {
+        for (SanPham sp : list) {
             Row row = sheet.createRow(stt);
             row.createCell(0).setCellValue(stt);
             row.createCell(1).setCellValue(sp.getMaSP());
             row.createCell(2).setCellValue(sp.getTenSP());
-            row.createCell(3).setCellValue(sp.getLoaiSP());
-            row.createCell(4).setCellValue(sp.getSoLuong());
-            row.createCell(5).setCellValue(sp.getGiaNhap());
-            row.createCell(6).setCellValue(sp.getGiaBan());
+            row.createCell(3).setCellValue(sp.getMaLoaiSP());
+            row.createCell(4).setCellValue(sp.getMaNCC());
+            row.createCell(5).setCellValue(sp.getTonkho());
+            row.createCell(6).setCellValue(sp.getGia());
             stt++;
         }
         for (int i = 0; i < header.length; i++) {
@@ -237,6 +234,7 @@ public class KSPPanel extends javax.swing.JPanel {
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblsanpham = new javax.swing.JTable();
+        jLabel16 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -247,8 +245,8 @@ public class KSPPanel extends javax.swing.JPanel {
         txtmaSP = new javax.swing.JTextField();
         txtten = new javax.swing.JTextField();
         txtloai = new javax.swing.JTextField();
-        txtsoluong = new javax.swing.JTextField();
-        txtgianhap = new javax.swing.JTextField();
+        txtnhacc = new javax.swing.JTextField();
+        txttonkho = new javax.swing.JTextField();
         txtgiaban = new javax.swing.JTextField();
         btncapnhat = new javax.swing.JButton();
         btnthem = new javax.swing.JButton();
@@ -365,7 +363,7 @@ public class KSPPanel extends javax.swing.JPanel {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Mã SP", "Tên SP", "Loại SP", "Số Lượng", "Giá Nhập", "Giá Bán"
+                "Mã SP", "Tên SP", "Mã Loại SP", "Nhà Cung Cấp", "Tồn Kho", "Giá Bán"
             }
         ));
         jScrollPane1.setViewportView(tblsanpham);
@@ -387,6 +385,9 @@ public class KSPPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel16.setText("Nhập mã/Tên");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -394,16 +395,18 @@ public class KSPPanel extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(cbbloai, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
+                        .addGap(17, 17, 17)
+                        .addComponent(jLabel16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
+                        .addGap(18, 18, 18)
                         .addComponent(btnsearch, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addComponent(btnxuatexcel, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbbloai, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnxuatexcel, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -412,10 +415,12 @@ public class KSPPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnxuatexcel, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                        .addComponent(btnxuatexcel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbbloai))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnsearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(cbbloai))
+                        .addComponent(btnsearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel16)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -428,11 +433,11 @@ public class KSPPanel extends javax.swing.JPanel {
 
         jLabel11.setText("Tên SP");
 
-        jLabel12.setText("Loại SP");
+        jLabel12.setText("Mã Loại SP");
 
-        jLabel13.setText("Số Lượng");
+        jLabel13.setText("Nhà CC");
 
-        jLabel14.setText("Giá Nhập");
+        jLabel14.setText("Tồn Kho");
 
         jLabel15.setText("Giá Bán");
 
@@ -469,15 +474,16 @@ public class KSPPanel extends javax.swing.JPanel {
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtten, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtloai, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(txtten, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(43, 43, 43)
-                        .addComponent(btncapnhat, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(102, 102, 102)
+                        .addComponent(btncapnhat, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtloai, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(122, 122, 122)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel14)
@@ -490,12 +496,11 @@ public class KSPPanel extends javax.swing.JPanel {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(42, 42, 42)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtsoluong, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
-                            .addComponent(txtgianhap)
+                            .addComponent(txtnhacc, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                            .addComponent(txttonkho)
                             .addComponent(txtgiaban))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(173, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnxoa, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(63, 63, 63))))
         );
@@ -507,13 +512,13 @@ public class KSPPanel extends javax.swing.JPanel {
                     .addComponent(txtmaSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtnhacc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtgianhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txttonkho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -523,9 +528,8 @@ public class KSPPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnxoa, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnthem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                        .addComponent(btncapnhat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btnthem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(btncapnhat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(14, 14, 14))
         );
 
@@ -563,18 +567,18 @@ public class KSPPanel extends javax.swing.JPanel {
         String ma = sanPhamSelected.getMaSP();
         String ten = txtten.getText().trim();
         String loai = txtloai.getText().trim();
- if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || txtsoluong.getText().trim().isEmpty() || txtgianhap.getText().trim().isEmpty() || txtgiaban.getText().trim().isEmpty()) {
+ if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || txtnhacc.getText().trim().isEmpty() || txttonkho.getText().trim().isEmpty() || txtgiaban.getText().trim().isEmpty()) {
         JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ các dữ liệu!");
         return;
     }
         try {
-            int soluong = Integer.parseInt(txtsoluong.getText().trim());
-            double gianhap = Double.parseDouble(txtgianhap.getText().trim());
+            String soluong = Integer.parseInt(txtnhacc.getText().trim());
+            int tonkho = int.parse(txttonkho.getText().trim());
             double giaban = Double.parseDouble(txtgiaban.getText().trim());
                 if (soluong<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng lớn hơn hoặc bằng 0"); return;}
             if (gianhap<0 || giaban<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng, giá nhập, giá bán lớn hơn 0"); return;}
             khoDAO dao = new khoDAO();
-            khoSP sp = new khoSP(ma, ten, loai, soluong, gianhap, giaban);
+            SanPham sp = new SanPham(ma, ten, loai, soluong, gianhap, giaban);
             int kq = dao.update(sp);
 
             if (kq == 1) {
@@ -595,13 +599,13 @@ public class KSPPanel extends javax.swing.JPanel {
     String ten = txtten.getText().trim();
     String loai = txtloai.getText().trim();
 
-    if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || txtsoluong.getText().trim().isEmpty() || txtgianhap.getText().trim().isEmpty() || txtgiaban.getText().trim().isEmpty()) {
+    if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || txtnhacc.getText().trim().isEmpty() || txttonkho.getText().trim().isEmpty() || txtgiaban.getText().trim().isEmpty()) {
         JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ các dữ liệu!");
         return;
     }
     try {
-        int soluong = Integer.parseInt(txtsoluong.getText().trim());
-        double gianhap = Double.parseDouble(txtgianhap.getText().trim());
+        int soluong = Integer.parseInt(txtnhacc.getText().trim());
+        double gianhap = Double.parseDouble(txttonkho.getText().trim());
         double giaban = Double.parseDouble(txtgiaban.getText().trim());
           if (soluong<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng lớn hơn hoặc bằng 0"); return;}
             if (gianhap<0 || giaban<0) {JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng, giá nhập, giá bán lớn hơn 0"); return;}
@@ -692,6 +696,7 @@ public static void main(String[] args) {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -709,11 +714,11 @@ public static void main(String[] args) {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblsanpham;
     private javax.swing.JTextField txtgiaban;
-    private javax.swing.JTextField txtgianhap;
     private javax.swing.JTextField txtloai;
     private javax.swing.JTextField txtmaSP;
-    private javax.swing.JTextField txtsoluong;
+    private javax.swing.JTextField txtnhacc;
     private javax.swing.JTextField txtten;
     private javax.swing.JTextField txttimkiem;
+    private javax.swing.JTextField txttonkho;
     // End of variables declaration//GEN-END:variables
 }
