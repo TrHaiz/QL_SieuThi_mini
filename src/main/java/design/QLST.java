@@ -41,6 +41,7 @@ public class QLST extends javax.swing.JFrame {
     NCCPanel nCCPanel=new NCCPanel();
     TKPanel thongkePanel=new TKPanel();
     LSPPanel loaiSPPanel=new LSPPanel();
+    NHPanel nhapHangPanel=new NHPanel();
     jPanel2.add(sanphamPanel, "QL_Sanpham");
     jPanel2.add(khachhangPanel, "QL_KhachHang");
     jPanel2.add(donhangPanel, "QL_Donhang");
@@ -48,6 +49,7 @@ public class QLST extends javax.swing.JFrame {
     jPanel2.add(nCCPanel, "QL_NCC");
     jPanel2.add(thongkePanel, "Thong_Ke");
     jPanel2.add(loaiSPPanel, "QL_LSP");
+    jPanel2.add(nhapHangPanel, "QL_NH");
       setActiveButton(QLSPBtn);
     this.pack();
     this.setLocationRelativeTo(null);
@@ -74,10 +76,11 @@ public class QLST extends javax.swing.JFrame {
         TKBtn = new javax.swing.JButton();
         QLVbtn1 = new javax.swing.JButton();
         QLLSPBtn = new javax.swing.JButton();
+        QLNHbtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1300, 720));
+        setPreferredSize(new java.awt.Dimension(1300, 750));
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 204));
         jPanel1.setPreferredSize(new java.awt.Dimension(220, 468));
@@ -179,17 +182,28 @@ public class QLST extends javax.swing.JFrame {
         QLLSPBtn.setMargin(new java.awt.Insets(2, 20, 3, 14));
         QLLSPBtn.addActionListener(this::QLLSPBtnActionPerformed);
 
+        QLNHbtn.setBackground(new java.awt.Color(0, 204, 204));
+        QLNHbtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        QLNHbtn.setForeground(new java.awt.Color(255, 255, 255));
+        QLNHbtn.setText("Quản lý nhập hàng");
+        QLNHbtn.setBorder(null);
+        QLNHbtn.setContentAreaFilled(false);
+        QLNHbtn.setFocusPainted(false);
+        QLNHbtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        QLNHbtn.addActionListener(this::QLNHbtnActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(QLSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(QLLSPBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addGap(45, 45, 45)
                 .addComponent(jLabel1)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(QLDHbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(QLKHBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(QLNCCBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -198,49 +212,53 @@ public class QLST extends javax.swing.JFrame {
                             .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(QLVbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(TKBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(QLVbtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(QLVbtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(QLDHbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(QLNHbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addComponent(QLSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(QLLSPBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
+                .addGap(28, 28, 28)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(31, 31, 31)
-                .addComponent(QLSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
+                .addComponent(QLSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(QLLSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(QLKHBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(QLNCCBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
+                .addComponent(QLNHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(QLDHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(QLVbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(TKBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(QLVbtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(QLVbtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.WEST);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setPreferredSize(new java.awt.Dimension(1230, 750));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1070, Short.MAX_VALUE)
+            .addGap(0, 1062, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 694, Short.MAX_VALUE)
+            .addGap(0, 704, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -310,6 +328,12 @@ public class QLST extends javax.swing.JFrame {
         layout.show(jPanel2, "QL_LSP");
     }//GEN-LAST:event_QLLSPBtnActionPerformed
 
+    private void QLNHbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLNHbtnActionPerformed
+        // TODO add your handling code here:
+        setActiveButton(QLNHbtn);
+        layout.show(jPanel2, "QL_NH");
+    }//GEN-LAST:event_QLNHbtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -324,6 +348,7 @@ public class QLST extends javax.swing.JFrame {
     private javax.swing.JButton QLKHBtn;
     private javax.swing.JButton QLLSPBtn;
     private javax.swing.JButton QLNCCBtn;
+    private javax.swing.JButton QLNHbtn;
     private javax.swing.JButton QLSPBtn;
     private javax.swing.JButton QLVbtn;
     private javax.swing.JButton QLVbtn1;

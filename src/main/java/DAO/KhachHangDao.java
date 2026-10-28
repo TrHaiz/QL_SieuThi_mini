@@ -18,10 +18,10 @@ public class KhachHangDao {
 
         String sql = "SELECT * FROM KhachHang";
 
-        try(Connection conn=new MyConnection().getConnection();
-            PreparedStatement ps=conn.prepareStatement(sql)) {
+        try(Connection conn=new MyConnection().getConnection(); //kết nối cơ sở dữ liệu
+            PreparedStatement ps=conn.prepareStatement(sql)) { //khởi tạo ps để thực thi câu lệnh
             ResultSet rs= ps.executeQuery();
-            while(rs.next()) {
+            while(rs.next())  { //duyệt từng đòng dữ liệu
               KhachHang kh = new KhachHang(
                     rs.getString("MaKH"),
                     rs.getString("TenKH"),
@@ -140,7 +140,7 @@ public class KhachHangDao {
         if (kh.getEmail() == null || kh.getEmail().trim().isEmpty()) {
             ps.setNull(5, Types.VARCHAR);
         } else {
-            ps.setString(5, kh.getEmail().trim());
+            ps.setString(5, kh.getEmail().trim()); //lưu giá trị null thay vì chuỗi rỗng
         }
         
         ps.setString(6, kh.getMaKH().trim());

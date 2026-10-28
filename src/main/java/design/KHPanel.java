@@ -18,7 +18,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.CreationHelper; //làm việc với các định dạng và kiểu dữ liệu trong file Excel
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,8 +33,8 @@ public class KHPanel extends javax.swing.JPanel {
             return false; // Khóa không cho sửa trực tiếp trên bảng
         }
     };
-    private KhachHang khSelected = null;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+     KhachHang khSelected = null;
+     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     
     public KHPanel() {
         initComponents();
@@ -70,6 +70,7 @@ public class KHPanel extends javax.swing.JPanel {
         cboModelGioiTinh.addElement("--Chọn giới tính--");
         cboModelGioiTinh.addElement("Nam");
         cboModelGioiTinh.addElement("Nữ");
+        cboModelGioiTinh.addElement("Khác");
     }
     
     public void inittable() {
@@ -88,7 +89,7 @@ public class KHPanel extends javax.swing.JPanel {
                 khSelected = null;
             }
         });
-        jScrollPane1.getViewport().setBackground(Color.white);
+        jScrollPane1.getViewport().setBackground(Color.white); //màu nền cho phần trống bên trong khung cuộn thành màu trắng
     }
     
     public void loaddatatable() {
@@ -311,7 +312,7 @@ public class KHPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel9)))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -389,46 +390,44 @@ public class KHPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(43, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(88, 88, 88)
+                        .addGap(32, 32, 32)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btntimkiem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnxuatexcel, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnxuatexcel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(8, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(9, 9, 9)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btntimkiem)
                             .addComponent(btnxuatexcel)
-                            .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22))))
+                            .addComponent(jLabel2)))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -437,21 +436,21 @@ public class KHPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btntimkiemActionPerformed
 
     public void ExportDataToExcel(ArrayList<KhachHang> list) {
-        JFileChooser chooser = new JFileChooser();
+        JFileChooser chooser = new JFileChooser(); //cửa sổ hệ thống để chọn thư mục và đặt tên file khi lưu
         
-        chooser.setFileFilter( new FileNameExtensionFilter("File Excel", "xlsx"));
-        int result = chooser.showSaveDialog(this);
-        if (result != JFileChooser.APPROVE_OPTION) { return;  }
-        File file = chooser.getSelectedFile();
+        chooser.setFileFilter( new FileNameExtensionFilter("File Excel", "xlsx")); //hiển thị các file có phần mở rộng là .xlsx
+        int result = chooser.showSaveDialog(this); //mở hộp thoại ở chế độ lưu file
+        if (result != JFileChooser.APPROVE_OPTION) { return;  } //nếu không lưu thì cancel tắt đi thoát
+        File file = chooser.getSelectedFile(); //gán file được chọn
         // Nếu người dùng không nhập .xlsx thì tự thêm vào
         if (!file.getName().toLowerCase().endsWith(".xlsx")) {
             file = new File(file.getAbsolutePath() + ".xlsx");
-        }
+        } ////////tạo file excel mới/////////////////////mở luồng ghi dữ liệu xuống file vừa chọn
         try (Workbook w = new XSSFWorkbook(); FileOutputStream fo = new FileOutputStream(file)) {
-            CreationHelper creationHelper = w.getCreationHelper();
-            CellStyle dateStyle = w.createCellStyle();
+            CreationHelper creationHelper = w.getCreationHelper(); //tạo biến để định dạng
+            CellStyle dateStyle = w.createCellStyle(); 
             dateStyle.setDataFormat(
-                    creationHelper.createDataFormat().getFormat("dd/MM/yyyy")
+                    creationHelper.createDataFormat().getFormat("dd/MM/yyyy") //định dạng trong excel
 );
             Sheet sheet = w.createSheet("DanhSach");//tạo sheet
             String header[] = {
@@ -459,7 +458,7 @@ public class KHPanel extends javax.swing.JPanel {
         };
             Row rowHeader = sheet.createRow(0);//tạo hàng tiêu đề
             for (int i = 0; i < header.length; i++) {
-                rowHeader.createCell(i).setCellValue(header[i]);
+                rowHeader.createCell(i).setCellValue(header[i]); //ghi lần lượt
             }
             int index = 1;
             for (KhachHang kh : list) {
@@ -501,14 +500,6 @@ public class KHPanel extends javax.swing.JPanel {
         }
     }
     
-    private void btnxuatexcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxuatexcelActionPerformed
-        if (listKH == null || listKH.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Khong co du lieu");
-            return;
-        }
-        ExportDataToExcel(listKH);
-    }//GEN-LAST:event_btnxuatexcelActionPerformed
-
     private void btnthoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthoatActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_btnthoatActionPerformed
@@ -569,7 +560,7 @@ public class KHPanel extends javax.swing.JPanel {
             txtsdt.requestFocus();
             return;
         }
-
+        
         String email = txtemal.getText().trim();
         String regexEmail = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         if (!email.isEmpty() && !email.matches(regexEmail)) {
@@ -682,6 +673,14 @@ public class KHPanel extends javax.swing.JPanel {
         txtmkh.requestFocus();
 
     }//GEN-LAST:event_btnthemActionPerformed
+
+    private void btnxuatexcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxuatexcelActionPerformed
+        if (listKH == null || listKH.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Khong co du lieu");
+            return;
+        }
+        ExportDataToExcel(listKH);
+    }//GEN-LAST:event_btnxuatexcelActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
