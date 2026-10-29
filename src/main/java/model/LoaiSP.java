@@ -6,6 +6,9 @@ public class LoaiSP {
     private String TenLoaiSP;
     private String MoTa;
 
+    public LoaiSP() {
+    }
+
     public LoaiSP(String MaLoaiSP, String TenLoaiSP, String MoTa) {
         this.MaLoaiSP = MaLoaiSP;
         this.TenLoaiSP = TenLoaiSP;

@@ -60,34 +60,8 @@ public class khoDao {
    }
     public ArrayList<khoSP> getAll(String loai, String key) {
         ArrayList<khoSP> list = new ArrayList<>();
-        String sql = "SELECT * FROM KhoSanPham WHERE (MaLoaiSP LIKE ? OR TenSP LIKE ?) AND (? = '' OR MaLoaiSP = ?)";
 
-        try (Connection c = new MyConnection().getConnection();
-                PreparedStatement ps = c.prepareStatement(sql)) {
 
-            String searchPattern = "%" + (key == null ? "" : key.trim()) + "%";
-            ps.setString(1, searchPattern);
-            ps.setString(2, searchPattern);
-            ps.setString(3, loai == null ? "" : loai.trim());
-            ps.setString(4, loai == null ? "" : loai.trim());
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String ma = rs.getString("MaSP");
-                    String ten = rs.getString("TenSP");
-                    String l = rs.getString("MaLoaiSP");
-                    String mancc = rs.getString("MaNCC");
-                    double tonkho = rs.getInt("TonKho");
-                    Date ngaynhap = rs.getDate("NgayNhap");
-                    String tt=rs.getString("TrangThai");
-
-                    list.add(new khoSP(ma, ten, loai, mancc, tonkho, ngaynhap));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
+ 
     }
-    
 }
