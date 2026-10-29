@@ -32,8 +32,7 @@ public class sanphamDAO {
     }
 
     public int update(SanPham sp) {
-        String sql = "UPDATE SanPham SET TenSP = ?, MaLoaiSP = ?, DV = ?, "
-                + "GiaNhap = ?, GiaBan = ?, TrangThai=? , WHERE MaSP = ?";
+        String sql = "UPDATE SanPham SET TenSP = ?, MaLoaiSP = ?, DV = ?, GiaNhap = ?, GiaBan = ?, TrangThai=? , WHERE MaSP = ?";
         try (Connection conn =new MyConnection().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, sp.getTenSP());
             st.setString(2, sp.getTenLoaiSP());

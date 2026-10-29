@@ -378,7 +378,7 @@ public class SPPanel extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã SP", "Tên SP", "Tên Loại SP", "Đơn vị", "Giá Bán", "Giá Nhập", "Trạng Thái"
+                "Mã SP", "Tên SP", "Loại SP", "Đơn vị", "Giá Bán", "Giá Nhập", "Trạng Thái"
             }
         ));
         jScrollPane1.setViewportView(tblsanpham);
@@ -505,7 +505,6 @@ public class SPPanel extends javax.swing.JPanel {
                         .addComponent(btnthem, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel17)
                             .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
