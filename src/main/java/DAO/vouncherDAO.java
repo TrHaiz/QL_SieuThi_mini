@@ -105,6 +105,63 @@ public class vouncherDAO {
         catch (SQLException e) {e.printStackTrace(); if (e.getErrorCode()==2627) return -2;}
         return -1;
     }
+    
+    public int addAll(ArrayList<Vouncher> list) {
+    int count = 0;
+    String sql = "INSERT INTO voucher  VALUES (?, ?, ?, ?, ?, ?, ?)"; 
+    
+    Connection conn=null;
+    PreparedStatement ps = null;
+    
+    try  {
+        conn = new MyConnection().getConnection();
+        conn.setAutoCommit(false); 
+        
+        ps = conn.prepareStatement(sql);
+        
+        for (Vouncher t : list) {
+            ps.setString(1, t.getMa());
+                ps.setString(2, t.getTen());
+            ps.setDouble(3, t.getPhanTramGiam());
+            ps.setDouble(4, t.getDieukienGiatu());
+            ps.setDouble(5, t.getDieukiengiaden());
+            ps.setDate(6, new java.sql.Date(t.getNgaybatdau().getTime()));
+            ps.setDate(7,  new java.sql.Date(t.getNgayketthuc().getTime()));
+            
+            ps.addBatch(); 
+        }
+        
+        int[] result = ps.executeBatch();
+        conn.commit();
+        
+        for (int r : result) {
+            if (r > 0 || r == Statement.SUCCESS_NO_INFO) {
+                count++;
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        if (conn != null) {
+            try {
+                conn.rollback(); 
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return -1; 
+    } finally {
+        try {
+            if (ps != null) ps.close();
+            if (conn != null) {
+                conn.setAutoCommit(true);
+                conn.close();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    return count;
+}
     public static void main(String[] args) {
         ArrayList<Vouncher>v=new vouncherDAO().getAll("");
   

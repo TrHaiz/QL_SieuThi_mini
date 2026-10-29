@@ -10,6 +10,7 @@ import DAO.vouncherDAO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import static java.lang.Integer.max;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -787,15 +788,8 @@ cellEnd.setCellStyle(dateStyle);
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            int count = 0;
-            vouncherDAO vouncherDAO = new vouncherDAO();
-            for (Vouncher t : v) {
-                if (vouncherDAO.add(t) > 0) {
-                    count++;
-
-                }
-            }
-            JOptionPane.showMessageDialog(this, "Có " + count + " được thêm vào", "Thông báo", 
+            int count = new vouncherDAO().addAll(v);
+            JOptionPane.showMessageDialog(this, "Có " + max(count,0) + " được thêm vào", "Thông báo", 
                     JOptionPane.INFORMATION_MESSAGE);
             loadData("");
         }      

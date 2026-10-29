@@ -63,7 +63,7 @@ public class SPPanel extends javax.swing.JPanel {
     }
 
     public void inittable() {
-        String[] header = new String[]{"Mã SP", "Tên SP", "Tên Loại SP", "DV", "Giá Nhập", "Giá Bán","Trạng Thái"};
+        String[] header = new String[]{"Mã SP", "Tên SP", "Tên Loại SP", "Trạng Thái", "Đơn vị", "Giá Nhập","Giá Bán"};
         tablemodel.setColumnIdentifiers(header);
         tblsanpham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblsanpham.getSelectionModel().addListSelectionListener((e) -> {
@@ -440,7 +440,7 @@ public class SPPanel extends javax.swing.JPanel {
 
         jLabel11.setText("Tên SP");
 
-        jLabel12.setText("Tên Loại SP");
+        jLabel12.setText("Loại SP");
 
         jLabel13.setText("Đơn vị");
 
@@ -479,18 +479,17 @@ public class SPPanel extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(txtmaSP, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(64, 64, 64)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtten, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(43, 43, 43)
                         .addComponent(btncapnhat, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtloai, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(61, 61, 61)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtloai, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtten, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(119, 119, 119)
@@ -514,11 +513,10 @@ public class SPPanel extends javax.swing.JPanel {
                         .addGap(42, 42, 42)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txttrangthai, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
-                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtdv, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
-                                .addComponent(txtgiaban)
-                                .addComponent(txtgianhap)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(txtdv, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                            .addComponent(txtgiaban)
+                            .addComponent(txtgianhap))
+                        .addContainerGap(173, Short.MAX_VALUE))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -5,7 +5,6 @@
 package design;
 
 import DAO.ThongKeDao;
-import java.awt.BorderLayout;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -59,11 +58,9 @@ public class TKPanel extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
         MaLB = new javax.swing.JLabel();
         TenLB = new javax.swing.JLabel();
         LSPLB = new javax.swing.JLabel();
-        NCCLB = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(1029, 729));
@@ -151,16 +148,11 @@ public class TKPanel extends javax.swing.JPanel {
         jLabel7.setForeground(new java.awt.Color(0, 204, 204));
         jLabel7.setText("Loại sản phẩm:");
 
-        jLabel8.setForeground(new java.awt.Color(0, 204, 204));
-        jLabel8.setText("Nhà cung cấp:");
-
         MaLB.setText("MaLb");
 
         TenLB.setText("TenLB");
 
         LSPLB.setText("LSPLB");
-
-        NCCLB.setText("NCCLB");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -172,7 +164,6 @@ public class TKPanel extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel7)
-                            .addComponent(jLabel8)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel5)
                                 .addComponent(jLabel6)))
@@ -181,8 +172,7 @@ public class TKPanel extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(TenLB, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(LSPLB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(NCCLB, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(LSPLB, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -210,11 +200,7 @@ public class TKPanel extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(LSPLB))
-                .addGap(30, 30, 30)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(NCCLB))
-                .addGap(39, 39, 39))
+                .addGap(85, 85, 85))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -302,7 +288,6 @@ public class TKPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LSPLB;
     private javax.swing.JLabel MaLB;
-    private javax.swing.JLabel NCCLB;
     private javax.swing.JLabel TenLB;
     private javax.swing.JLabel TotalLB;
     private javax.swing.JPanel chartPanel;
@@ -314,7 +299,6 @@ public class TKPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton nxtBTN;
@@ -387,8 +371,6 @@ public class TKPanel extends javax.swing.JPanel {
             TenLB.setText("---");
             TenLB.setToolTipText(null);
             LSPLB.setText("---");
-            NCCLB.setText("---");
-            NCCLB.setToolTipText(null);
         } else {
             SanPhamBanChay sp = res.getBestSellers();
            
@@ -397,8 +379,6 @@ public class TKPanel extends javax.swing.JPanel {
             
             TenLB.setToolTipText(sp.getTenSP() + " - Đã bán: " + sp.getTongSoLuongBan() + " " + sp.getDonViTinh());
             LSPLB.setText(sp.getLoaiSP());
-            NCCLB.setText(sp.getTenNCC());
-            NCCLB.setToolTipText(sp.getTenNCC());
         }
     } catch (Exception ex) {
         ex.printStackTrace();

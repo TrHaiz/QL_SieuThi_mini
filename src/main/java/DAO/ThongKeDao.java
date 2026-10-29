@@ -71,48 +71,48 @@ public class ThongKeDao {
     }
 
     public static SanPhamBanChay laySanPhamBanChayNhat(LocalDate startDate, LocalDate endDateExclusive) {
-        String sql = "SELECT TOP 1 "
-                   + "    sp.MaSP, "
-                   + "    sp.TenSP, "
-                   + "    COALESCE(lsp.TenLoaiSP, N'Khác') AS TenLoaiSP, "
-                   + "    COALESCE(ncc.tenNCC, N'N/A') AS TenNCC, "
-                   + "    SUM(ct.SoLuongMua) AS TongSoLuongBan, "
-                   + "    SUM(ct.ThanhTien) AS TongDoanhThu "
-                   + "FROM DonHang dh "
-                   + "INNER JOIN ChiTietDonHang ct ON dh.MaDH = ct.MaDH "
-                   + "INNER JOIN SanPham sp ON ct.MaSP = sp.MaSP "
-                   + "LEFT JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP "
-                   + "LEFT JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC "
-                   + "WHERE dh.NgayMua >= ? AND dh.NgayMua < ? "
-                   + "GROUP BY sp.MaSP, sp.TenSP, COALESCE(lsp.TenLoaiSP, N'Khác'), COALESCE(ncc.tenNCC, N'N/A') "
-                   + "ORDER BY SUM(ct.SoLuongMua) DESC";
+    String sql = "SELECT TOP 1 "
+               + "    sp.MaSP, "
+               + "    sp.TenSP, "
+               + "    COALESCE(lsp.TenLoaiSP, N'Khác') AS TenLoaiSP, "
+               + "    sp.DV AS DonViTinh, "
+               + "    SUM(ct.SoLuongMua) AS TongSoLuongBan, "
+               + "    SUM(ct.ThanhTien) AS TongDoanhThu "
+               + "FROM DonHang dh "
+               + "INNER JOIN ChiTietDonHang ct ON dh.MaDH = ct.MaDH "
+               + "INNER JOIN SanPham sp ON ct.MaSP = sp.MaSP "
+               + "LEFT JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP "
+               + "WHERE dh.NgayMua >= ? AND dh.NgayMua < ? "
+               + "GROUP BY sp.MaSP, sp.TenSP, COALESCE(lsp.TenLoaiSP, N'Khác'), sp.DV "
+               + "ORDER BY SUM(ct.SoLuongMua) DESC";
 
-        LocalDateTime startLdt = startDate.atStartOfDay();
-        LocalDateTime endLdt = endDateExclusive.atStartOfDay();
+    LocalDateTime startLdt = startDate.atStartOfDay();
+    LocalDateTime endLdt = endDateExclusive.atStartOfDay();
 
-        try (Connection conn = new MyConnection().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(startLdt));
-            ps.setTimestamp(2, Timestamp.valueOf(endLdt));
+    try (Connection conn = new MyConnection().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        ps.setTimestamp(1, Timestamp.valueOf(startLdt));
+        ps.setTimestamp(2, Timestamp.valueOf(endLdt));
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    String maSP = rs.getString("MaSP");
-                    String tenSP = rs.getString("TenSP");
-                    String loaiSP = rs.getString("TenLoaiSP");
-                    String tenNCC = rs.getString("TenNCC");
-                    int tongSL = rs.getInt("TongSoLuongBan");
-                    double tongDoanhThu = rs.getDouble("TongDoanhThu");
-                    String donViTinh = "Cái / Hộp";
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String maSP = rs.getString("MaSP");
+                String tenSP = rs.getString("TenSP");
+                String loaiSP = rs.getString("TenLoaiSP");
+                String donViTinh = rs.getString("DonViTinh");
+                int tongSL = rs.getInt("TongSoLuongBan");
+                double tongDoanhThu = rs.getDouble("TongDoanhThu");
 
-                    return new SanPhamBanChay(maSP, tenSP, loaiSP, tenNCC, tongSL, donViTinh, tongDoanhThu);
-                }
+                // Đặt tenNCC = null hoặc "" tùy theo Constructor của class SanPhamBanChay
+                return new SanPhamBanChay(maSP, tenSP, loaiSP, tongSL, donViTinh, tongDoanhThu);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return null;
+}
 
     public static double layTongDoanhThuTuan(LocalDate startDate, LocalDate endDateExclusive) {
         String sql = "SELECT COALESCE(SUM(TongTien), 0) AS TongDoanhThu "
