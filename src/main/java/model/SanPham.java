@@ -17,10 +17,13 @@ public class SanPham {
     private double GiaBan;
     private String TrangThai;
 
-    public SanPham(String MaSP, String TenSP, String MaLoaiSP, String DV, double GiaNhap, double GiaBan, String TrangThai) {
+    public SanPham() {
+    }
+
+    public SanPham(String MaSP, String TenSP, String TenLoaiSP, String DV, double GiaNhap, double GiaBan, String TrangThai) {
         this.MaSP = MaSP;
         this.TenSP = TenSP;
-        this.TenLoaiSP = MaLoaiSP;
+        this.TenLoaiSP = TenLoaiSP;
         this.DV = DV;
         this.GiaNhap = GiaNhap;
         this.GiaBan = GiaBan;

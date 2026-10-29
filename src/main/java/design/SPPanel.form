@@ -119,6 +119,11 @@
         <Property name="text" type="java.lang.String" value="T&#x1ea1;o m&#x1edb;i SP"/>
       </Properties>
     </Component>
+    <Component class="javax.swing.JTextField" name="txtloai">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtloaiActionPerformed"/>
+      </Events>
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -360,7 +365,7 @@
                       <Table columnCount="7" rowCount="4">
                         <Column editable="true" title="M&#xe3; SP" type="java.lang.Object"/>
                         <Column editable="true" title="T&#xea;n SP" type="java.lang.Object"/>
-                        <Column editable="true" title="T&#xea;n Lo&#x1ea1;i SP" type="java.lang.Object"/>
+                        <Column editable="true" title="Lo&#x1ea1;i SP" type="java.lang.Object"/>
                         <Column editable="true" title="&#x110;&#x1a1;n v&#x1ecb;" type="java.lang.Object"/>
                         <Column editable="true" title="Gi&#xe1; B&#xe1;n" type="java.lang.Object"/>
                         <Column editable="true" title="Gi&#xe1; Nh&#x1ead;p" type="java.lang.Object"/>
@@ -456,18 +461,19 @@
                           <Component id="btncapnhat" min="-2" pref="116" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtloai" min="-2" pref="219" max="-2" attributes="0"/>
-                              <Component id="txtten" min="-2" pref="214" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="txtten" pref="214" max="32767" attributes="0"/>
+                              <Component id="cbbloaisp" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
+                  <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="119" max="-2" attributes="0"/>
@@ -475,7 +481,6 @@
                           <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -497,12 +502,12 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="txttrangthai" pref="225" max="32767" attributes="0"/>
+                              <Component id="txttrangthai" max="32767" attributes="0"/>
                               <Component id="txtdv" pref="225" max="32767" attributes="0"/>
                               <Component id="txtgiaban" alignment="0" max="32767" attributes="0"/>
                               <Component id="txtgianhap" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="173" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -527,10 +532,10 @@
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txtloai" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel12" alignment="3" min="-2" pref="24" max="-2" attributes="0"/>
                       <Component id="jLabel15" alignment="3" max="32767" attributes="0"/>
                       <Component id="txtgianhap" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbbloaisp" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -561,7 +566,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel12">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Lo&#x1ea1;i SP"/>
+            <Property name="text" type="java.lang.String" value=" Lo&#x1ea1;i SP"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel13">
@@ -582,11 +587,6 @@
         <Component class="javax.swing.JTextField" name="txtmaSP">
         </Component>
         <Component class="javax.swing.JTextField" name="txtten">
-        </Component>
-        <Component class="javax.swing.JTextField" name="txtloai">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtloaiActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtdv">
         </Component>
@@ -642,6 +642,19 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txttrangthai">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="cbbloaisp">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbbloaispActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

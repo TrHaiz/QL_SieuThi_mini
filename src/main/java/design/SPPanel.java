@@ -28,18 +28,20 @@ public class SPPanel extends javax.swing.JPanel {
     public SPPanel() {
         initComponents();
         cbbloai.setModel(cbomodelLoai);
+        cbbloaisp.setModel(cbomodelLoai);
         tblsanpham.setModel(tablemodel);
         loaddatatocombobox();
         inittable();
         loaddatatable();
         clearForm();
         cbbloai.addActionListener(e -> loaddatatable());
+        cbbloaisp.addActionListener(e -> loaddatatable());
     }
     
     public void setEditableFields(boolean editable) {
         txtmaSP.setEnabled(editable);
         txtten.setEnabled(editable);
-        txtloai.setEnabled(editable);
+        cbbloaisp.setEnabled(editable);
         txtdv.setEnabled(editable);
         txtgiaban.setEnabled(editable);
         txtgianhap.setEnabled(editable);
@@ -63,7 +65,7 @@ public class SPPanel extends javax.swing.JPanel {
     }
 
     public void inittable() {
-        String[] header = new String[]{"Mã SP", "Tên SP", "Tên Loại SP", "Trạng Thái", "Đơn vị", "Giá Nhập","Giá Bán"};
+        String[] header = new String[]{"Mã SP", "Tên SP", "Tên Loại SP", "Đơn Vị", "Giá Nhập", "Giá Bán","Trạng Thái"};
         tablemodel.setColumnIdentifiers(header);
         tblsanpham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblsanpham.getSelectionModel().addListSelectionListener((e) -> {
@@ -85,6 +87,9 @@ public class SPPanel extends javax.swing.JPanel {
         String loaiChon = "";
         if (this.cbbloai.getSelectedIndex() > 0 && this.cbbloai.getSelectedItem() != null) {
             loaiChon = this.cbbloai.getSelectedItem().toString();
+        }
+        if (this.cbbloaisp.getSelectedIndex() > 0 && this.cbbloaisp.getSelectedItem() != null) {
+            loaiChon = this.cbbloaisp.getSelectedItem().toString();
         }
 
         // Lấy danh sách kết hợp lọc theo loại và từ khóa
@@ -108,7 +113,6 @@ public class SPPanel extends javax.swing.JPanel {
         if (sanPhamSelected != null) {
             txtmaSP.setText(sanPhamSelected.getMaSP());
             txtten.setText(sanPhamSelected.getTenSP());
-            txtloai.setText(sanPhamSelected.getTenLoaiSP());
             txtdv.setText(String.valueOf(sanPhamSelected.getDV()));
             txtgianhap.setText(String.valueOf(sanPhamSelected.getGiaNhap()));
             txtgiaban.setText(String.valueOf(sanPhamSelected.getGiaBan()));
@@ -116,6 +120,8 @@ public class SPPanel extends javax.swing.JPanel {
 
             setEditableFields(true);
             txtmaSP.setEditable(false);
+            txtgianhap.setEditable(false);
+            txtgiaban.setEditable(false);
             btncapnhat.setEnabled(true);
             btnxoa.setEnabled(true);
         }
@@ -124,7 +130,6 @@ public class SPPanel extends javax.swing.JPanel {
     public void clearForm() {
         txtmaSP.setText("");
         txtten.setText("");
-        txtloai.setText("");
         txtdv.setText("");
         txtgiaban.setText("");
         txtgianhap.setText("");
@@ -187,7 +192,7 @@ public class SPPanel extends javax.swing.JPanel {
     try (Workbook w = new XSSFWorkbook();
          java.io.FileOutputStream fo = new java.io.FileOutputStream(file)) {
         Sheet sheet = w.createSheet("SanPham");
-        String[] header = {"STT", "MÃ SP", "TÊN SP", "MÃ LOẠI SP", "DV", "Giá Nhập", "Giá Bán","Trạng Thái"};
+        String[] header = {"STT", "MÃ SP", "TÊN SP", "Tên LOẠI SP", "Đơn VỊ", "Giá Nhập", "Giá Bán","Trạng Thái"};
         Row rowHeader = sheet.createRow(0);
         for (int i = 0; i < header.length; i++) {
             rowHeader.createCell(i).setCellValue(header[i]);
@@ -229,6 +234,7 @@ public class SPPanel extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        txtloai = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -249,7 +255,6 @@ public class SPPanel extends javax.swing.JPanel {
         jLabel15 = new javax.swing.JLabel();
         txtmaSP = new javax.swing.JTextField();
         txtten = new javax.swing.JTextField();
-        txtloai = new javax.swing.JTextField();
         txtdv = new javax.swing.JTextField();
         txtgiaban = new javax.swing.JTextField();
         txtgianhap = new javax.swing.JTextField();
@@ -258,6 +263,7 @@ public class SPPanel extends javax.swing.JPanel {
         btnxoa = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
         txttrangthai = new javax.swing.JTextField();
+        cbbloaisp = new javax.swing.JComboBox<>();
 
         jLabel1.setText("Product");
 
@@ -318,6 +324,8 @@ public class SPPanel extends javax.swing.JPanel {
         jButton1.setForeground(new java.awt.Color(0, 102, 51));
         jButton1.setText("Tạo mới SP");
 
+        txtloai.addActionListener(this::txtloaiActionPerformed);
+
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -370,7 +378,7 @@ public class SPPanel extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã SP", "Tên SP", "Tên Loại SP", "Đơn vị", "Giá Bán", "Giá Nhập", "Trạng Thái"
+                "Mã SP", "Tên SP", "Loại SP", "Đơn vị", "Giá Bán", "Giá Nhập", "Trạng Thái"
             }
         ));
         jScrollPane1.setViewportView(tblsanpham);
@@ -440,15 +448,13 @@ public class SPPanel extends javax.swing.JPanel {
 
         jLabel11.setText("Tên SP");
 
-        jLabel12.setText("Loại SP");
+        jLabel12.setText(" Loại SP");
 
         jLabel13.setText("Đơn vị");
 
         jLabel14.setText("Giá Bán");
 
         jLabel15.setText("Giá Nhập");
-
-        txtloai.addActionListener(this::txtloaiActionPerformed);
 
         btncapnhat.setBackground(new java.awt.Color(0, 204, 204));
         btncapnhat.setForeground(new java.awt.Color(255, 255, 255));
@@ -467,6 +473,8 @@ public class SPPanel extends javax.swing.JPanel {
 
         jLabel17.setText("Trạng Thái");
 
+        cbbloaisp.addActionListener(this::cbbloaispActionPerformed);
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -482,21 +490,21 @@ public class SPPanel extends javax.swing.JPanel {
                         .addGap(43, 43, 43)
                         .addComponent(btncapnhat, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
+                        .addGap(58, 58, 58)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12))
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtloai, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtten, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtten, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                            .addComponent(cbbloaisp, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(3, 3, 3)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(119, 119, 119)
                         .addComponent(btnthem, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel17)
                             .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -512,11 +520,11 @@ public class SPPanel extends javax.swing.JPanel {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(42, 42, 42)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txttrangthai, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                            .addComponent(txttrangthai)
                             .addComponent(txtdv, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
                             .addComponent(txtgiaban)
                             .addComponent(txtgianhap))
-                        .addContainerGap(173, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -535,10 +543,10 @@ public class SPPanel extends javax.swing.JPanel {
                     .addComponent(txtgiaban, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtloai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtgianhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtgianhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbbloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
@@ -702,6 +710,10 @@ public class SPPanel extends javax.swing.JPanel {
     private void txtloaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtloaiActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtloaiActionPerformed
+
+    private void cbbloaispActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbloaispActionPerformed
+        loaddatatable();
+    }//GEN-LAST:event_cbbloaispActionPerformed
 public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Quản Lý Sản Phẩm");
@@ -720,6 +732,7 @@ public static void main(String[] args) {
     private javax.swing.JButton btnxoa;
     private javax.swing.JButton btnxuatexcel;
     private javax.swing.JComboBox<String> cbbloai;
+    private javax.swing.JComboBox<String> cbbloaisp;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
