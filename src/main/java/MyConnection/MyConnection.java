@@ -8,12 +8,13 @@ import java.sql.*;
  *
  * @author GIAKHANHPC
  */
-public class MyConnection {   private static final String SERVER="localhost";
+public class MyConnection {   
+    private static final String SERVER="localhost";
     private static final String DATABASE="QuanLyBanHangDB";
     private static final String USER="sa";
-    private static final String PASSWORD="1";
-        private static final String PORT="1433";
-   private static final String URL = "jdbc:sqlserver://" + SERVER + ":" + PORT + 
+    private static final String PASSWORD="l@ngSql67";
+    private static final String PORT="1433";
+    private static final String URL = "jdbc:sqlserver://" + SERVER + ":" + PORT + 
         ";databaseName=" + DATABASE + 
         ";encrypt=true;trustServerCertificate=true;";
     

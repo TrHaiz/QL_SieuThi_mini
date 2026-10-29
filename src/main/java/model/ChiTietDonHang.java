@@ -11,6 +11,7 @@ package model;
 public class ChiTietDonHang {
     private String maDH;
     private String maSP;
+    private String maLoaiSP;
     private String tenSP;
     private int soLuongMua;
     private double donGia;
@@ -19,13 +20,22 @@ public class ChiTietDonHang {
     public ChiTietDonHang() {
     }
 
-    public ChiTietDonHang(String maDH, String maSP, String tenSP, int soLuongMua, double donGia, double thanhTien) {
+    public ChiTietDonHang(String maDH, String maSP, String maLoaiSP, String tenSP, int soLuongMua, double donGia, double thanhTien) {
         this.maDH = maDH;
         this.maSP = maSP;
+        this.maLoaiSP = maLoaiSP;
         this.tenSP = tenSP;
         this.soLuongMua = soLuongMua;
         this.donGia = donGia;
         this.thanhTien = thanhTien;
+    }
+
+    public String getMaLoaiSP() {
+        return maLoaiSP;
+    }
+
+    public void setMaLoaiSP(String maLoaiSP) {
+        this.maLoaiSP = maLoaiSP;
     }
 
     public String getMaDH() {
@@ -75,6 +85,4 @@ public class ChiTietDonHang {
     public void setThanhTien(double thanhTien) {
         this.thanhTien = thanhTien;
     }
-    
-    
 }

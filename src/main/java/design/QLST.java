@@ -19,7 +19,9 @@ public class QLST extends javax.swing.JFrame {
     private JButton currentActiveButton = null;
     private User currentUser;
     CardLayout layout=new CardLayout();
-    
+    private DHPanel donhangPanel;
+    private XHPanel xuatHangPanel;
+    private SPPanel sanphamPanel;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(QLST.class.getName());
 
@@ -34,15 +36,15 @@ public class QLST extends javax.swing.JFrame {
     nameLbl.setText(currentUser.getTen());
     nameLbl.setHorizontalAlignment(SwingConstants.CENTER);
     jPanel2.setLayout(layout);
-    DHPanel donhangPanel = new DHPanel();
+    donhangPanel = new DHPanel(currentUser.getTen());
     KHPanel khachhangPanel = new KHPanel();
-    SPPanel sanphamPanel = new SPPanel();
+    sanphamPanel = new SPPanel();
     VPanel voucherPanel = new VPanel();
     NCCPanel nCCPanel=new NCCPanel();
     TKPanel thongkePanel=new TKPanel();
     KhoPanel loaiSPPanel=new KhoPanel();
     NHPanel nhapHangPanel=new NHPanel();
-    XHPanel xuatHangPanel=new XHPanel();
+    xuatHangPanel=new XHPanel();
     jPanel2.add(sanphamPanel, "QL_Sanpham");
     jPanel2.add(khachhangPanel, "QL_KhachHang");
     jPanel2.add(donhangPanel, "QL_Donhang");
@@ -296,6 +298,9 @@ public class QLST extends javax.swing.JFrame {
         // TODO add your handling code here:
         setActiveButton(QLSPBtn);
         layout.show(jPanel2, "QL_Sanpham");
+        if (sanphamPanel != null) {
+            sanphamPanel.loaddatatable();
+        }
     }//GEN-LAST:event_QLSPBtnActionPerformed
 
     private void QLKHBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLKHBtnActionPerformed
@@ -308,6 +313,9 @@ public class QLST extends javax.swing.JFrame {
         // TODO add your handling code here:
         setActiveButton(QLDHbtn);
         layout.show(jPanel2, "QL_Donhang");
+        if (donhangPanel != null) {
+            donhangPanel.loadBangSanPham("");
+        }
     }//GEN-LAST:event_QLDHbtnActionPerformed
 
     private void QLVbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLVbtnActionPerformed
@@ -351,6 +359,10 @@ public class QLST extends javax.swing.JFrame {
         // TODO add your handling code here:
           setActiveButton(QLXHbtn);
         layout.show(jPanel2, "QL_XH");
+        if (xuatHangPanel != null) {
+            xuatHangPanel.loadBangSanPhamTrenKe();
+            xuatHangPanel.loadBangLichSu();
+        }
     }//GEN-LAST:event_QLXHbtnActionPerformed
 
     /**

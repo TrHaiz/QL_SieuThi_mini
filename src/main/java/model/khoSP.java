@@ -10,10 +10,10 @@ public class khoSP {
     private double TonKho;
     private Date NgayNhap;
 
-    public khoSP(String MaSP, String TenSP, String MaLoaiSP, String MaNCC, double TonKho, Date NgayNhap) {
+    public khoSP(String MaSP, String TenSP, String TenLoaiSP, String MaNCC, double TonKho, Date NgayNhap) {
         this.MaSP = MaSP;
         this.TenSP = TenSP;
-        this.TenLoaiSP = MaLoaiSP;
+        this.TenLoaiSP = TenLoaiSP;
         this.MaNCC = MaNCC;
         this.TonKho = TonKho;
         this.NgayNhap = NgayNhap;
