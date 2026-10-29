@@ -18,9 +18,9 @@ import model.DonHang;
  */
 public class DonHangDao {
     public static List<SanPham> getandsearchSanPhamDangBan(String tuKhoa) {
-      List<SanPham> list = new ArrayList<>();
-        String sql = "SELECT MaSP, TenSP, LoaiSP, SoLuong, GiaNhap, GiaBan "
-                   + "FROM SanPham WHERE SoLuong > 0 AND (MaSP LIKE ?)";
+  /*    List<SanPham> list = new ArrayList<>();
+        String sql = "SELECT MaSP, TenSP, MaLoaiSP,DV, GiaNhap, GiaBan ,TrangThai "
+                 + "FROM SanPham WHERE SoLuong > 0 AND (MaSP LIKE ?)";
         try (Connection conn =new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -29,20 +29,21 @@ public class DonHangDao {
             
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(new SanPham(
-                        rs.getString("MaSP"),
-                        rs.getString("TenSP"),
-                        rs.getString("LoaiSP"),
-                        rs.getInt("SoLuong"),
-                        rs.getDouble("GiaNhap"),
-                        rs.getDouble("GiaBan")
-                    ));
+                  list.add(new SanPham(
+                      rs.getString("MaSP"),
+                      rs.getString("TenSP"),
+                       rs.getString("LoaiSP"),
+                        rs.getString("MaNCC"),
+                        rs.getInt("TồnKho"),
+                       rs.getDouble("GiaBan")
+                   );
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return list;
+        return list;*/
+  return null;
     }
     
     public static int laySoLuongTonKho(String maSP) {
