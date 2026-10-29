@@ -36,7 +36,7 @@ public class QLST extends javax.swing.JFrame {
     jPanel2.setLayout(layout);
     DHPanel donhangPanel = new DHPanel();
     KHPanel khachhangPanel = new KHPanel();
-    KSPPanel sanphamPanel = new KSPPanel();
+    SPPanel sanphamPanel = new SPPanel();
     VPanel voucherPanel = new VPanel();
     NCCPanel nCCPanel=new NCCPanel();
     TKPanel thongkePanel=new TKPanel();

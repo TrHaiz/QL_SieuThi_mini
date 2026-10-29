@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-public class KSPPanel extends javax.swing.JPanel {
+public class SPPanel extends javax.swing.JPanel {
 
     DefaultComboBoxModel<String> cbomodelLoai = new DefaultComboBoxModel<>();
     ArrayList<SanPham> listSanPham = new ArrayList<>();
@@ -25,7 +25,7 @@ public class KSPPanel extends javax.swing.JPanel {
     SanPham sanPhamSelected = null;
 
     
-    public KSPPanel() {
+    public SPPanel() {
         initComponents();
         cbbloai.setModel(cbomodelLoai);
         tblsanpham.setModel(tablemodel);
@@ -63,7 +63,7 @@ public class KSPPanel extends javax.swing.JPanel {
     }
 
     public void inittable() {
-        String[] header = new String[]{"Mã SP", "Tên SP", "Mã Loại SP", "DV", "Giá Nhập", "Giá Bán","Trạng Thái"};
+        String[] header = new String[]{"Mã SP", "Tên SP", "Tên Loại SP", "DV", "Giá Nhập", "Giá Bán","Trạng Thái"};
         tablemodel.setColumnIdentifiers(header);
         tblsanpham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblsanpham.getSelectionModel().addListSelectionListener((e) -> {
@@ -708,7 +708,7 @@ public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Quản Lý Sản Phẩm");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new KSPPanel());
+            frame.add(new SPPanel());
             frame.pack();
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);

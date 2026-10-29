@@ -65,7 +65,7 @@ public class sanphamDAO {
    }
     public ArrayList<SanPham> getAll(String loai, String key) {
         ArrayList<SanPham> list = new ArrayList<>();
-        String sql = "SELECT *, lsp.TenLoaiSP FROM SanPham JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP WHERE (MaLoaiSP LIKE ? OR TenSP LIKE ?) AND (? = '' OR MaLoaiSP = ?)";
+        String sql = "SELECT sp.*, lsp.TenLoaiSP FROM SanPham sp JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP WHERE (sp.MaLoaiSP LIKE ? OR TenSP LIKE ?) AND (? = '' OR sp.MaLoaiSP = ?)";
 
         try (Connection conn = new MyConnection().getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -97,7 +97,7 @@ public class sanphamDAO {
 
     public ArrayList<String> getAllLoai() {
         ArrayList<String> list = new ArrayList<>();
-        String sql = "SELECT DISTINCT   lsp.TenLoaiSP FROM SanPham JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP ORDER BY lsp.TenLoaiSP";
+        String sql = "SELECT DISTINCT   lsp.TenLoaiSP FROM SanPham sp JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP ORDER BY lsp.TenLoaiSP";
         try (Connection c = new MyConnection().getConnection(); 
                 PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
