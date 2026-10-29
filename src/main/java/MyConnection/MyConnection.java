@@ -8,31 +8,27 @@ import java.sql.*;
  *
  * @author GIAKHANHPC
  */
-public class MyConnection {   private static final String SERVER="localhost";
-    private static final String DATABASE="QuanLyBanHangDB";
-    private static final String USER="sa";
-    private static final String PASSWORD="1";
-        private static final String PORT="1433";
-   private static final String URL = "jdbc:sqlserver://" + SERVER + ":" + PORT + 
-        ";databaseName=" + DATABASE + 
-        ";encrypt=true;trustServerCertificate=true;";
-    
-    public Connection getConnection()
-    {
-        Connection c=null;
+public class MyConnection {   private final static String SERVER="localhost";
+    private final static String DATABASE="QuanLyBanHangDB";
+    private final static String USER="sa";
+    private final static String PASSWORD="123";
+    private final static String URL="jdbc:sqlserver://"
+                                + SERVER + ":1433;"
+                                +"databaseName=" +DATABASE+";"
+                                +"encrypt=true;trustServerCertificate=true;";
+    public static Connection getConnection(){
         try {
-            c=DriverManager.getConnection(URL, USER, PASSWORD);
-            
-        }   
-        catch (SQLException e) {e.printStackTrace();}
-        return c;
-    }
-    public void closeConnection(Connection c)
-    {
-        try {
-            if (c!=null) c.close();
-            System.out.println("xoa thanh cong");
+            return DriverManager.getConnection(URL,USER,PASSWORD);
+        } catch (SQLException ex) {
+            System.out.println("khong the ket noi csdl!");
+            ex.printStackTrace();
+            return null;
         }
-        catch (SQLException e) {e.printStackTrace();}
+    }
+    public static void main(String[] args) {
+        if(MyConnection.getConnection()!=null)
+            System.out.println("ket noi thanh cong");
+        else
+            System.out.println("that bai!");
     }
 }
