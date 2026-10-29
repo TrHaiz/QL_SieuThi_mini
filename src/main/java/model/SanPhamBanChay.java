@@ -4,7 +4,6 @@ public class SanPhamBanChay {
     private String maSP;
     private String tenSP;
     private String loaiSP;
-    private String tenNCC;
     private int tongSoLuongBan;
     private String donViTinh;
     private double tongDoanhThu;
@@ -12,11 +11,10 @@ public class SanPhamBanChay {
     public SanPhamBanChay() {
     }
 
-    public SanPhamBanChay(String maSP, String tenSP, String loaiSP, String tenNCC, int tongSoLuongBan, String donViTinh, double tongDoanhThu) {
+    public SanPhamBanChay(String maSP, String tenSP, String loaiSP, int tongSoLuongBan, String donViTinh, double tongDoanhThu) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.loaiSP = loaiSP;
-        this.tenNCC = tenNCC;
         this.tongSoLuongBan = tongSoLuongBan;
         this.donViTinh = donViTinh;
         this.tongDoanhThu = tongDoanhThu;
@@ -46,13 +44,7 @@ public class SanPhamBanChay {
         this.loaiSP = loaiSP;
     }
 
-    public String getTenNCC() {
-        return tenNCC;
-    }
-
-    public void setTenNCC(String tenNCC) {
-        this.tenNCC = tenNCC;
-    }
+    
 
     public int getTongSoLuongBan() {
         return tongSoLuongBan;

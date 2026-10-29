@@ -4,46 +4,43 @@
  */
 package DAO;
 import MyConnection.MyConnection;
-import design.KHPanel;
-import java.awt.List;
-import java.awt.event.ActionEvent;
-import java.sql.*;
-import javax.swing.JOptionPane;
-import model.KhachHang;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import model.User;
 
-/**
- *
- * @author GIAKHANHPC
- */
 public class AuthDAO {
-   public User login(String username, String password) {
-        String sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = ? AND MatKhau = ?";
+
+    public User login(String username, String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         
-        try (Connection conn =new MyConnection().getConnection();
+        String sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = ?";
+        
+        try (Connection conn = new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, username);
-            ps.setString(2, password);
             
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new User(
-                        rs.getString("TenDangNhap"),
-                        rs.getString("HoTen"),
-                        rs.getString("Diachi"),
-                        rs.getString("MatKhau"),
-                        rs.getDate("ngaysinh")
-                    );
+                    String hashedPasswordFromDB = rs.getString("MatKhau");
+                    if (encoder.matches(password, hashedPasswordFromDB)) {
+                        return new User(
+                            rs.getString("TenDangNhap"),
+                            rs.getString("HoTen"),
+                            rs.getString("Diachi"),
+                            hashedPasswordFromDB,
+                            rs.getDate("ngaysinh")
+                        );
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return null; 
     }
-
- 
     public boolean checkUsernameExists(String username) {
         String sql = "SELECT 1 FROM TaiKhoan WHERE TenDangNhap = ?";
         
@@ -61,28 +58,34 @@ public class AuthDAO {
 
 
     public User register(String username, String ten, String diachi, String password, java.util.Date ngaysinh) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String sql = "INSERT INTO TaiKhoan (TenDangNhap, MatKhau, HoTen, Diachi, ngaysinh) VALUES (?, ?, ?, ?, ?)";
         
         try (Connection conn = new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
+            // Mã hóa mật khẩu trước khi lưu vào Database
+            String hashedPassword = encoder.encode(password);
+            
             ps.setString(1, username);
-            ps.setString(2, password);
+            ps.setString(2, hashedPassword);
             ps.setString(3, ten);
             ps.setString(4, diachi);
             
-            // Chuyển java.util.Date sang java.sql.Date
-            java.sql.Date sqlDate = new java.sql.Date(ngaysinh.getTime());
-            ps.setDate(5, sqlDate);
+            if (ngaysinh != null) {
+                ps.setDate(5, new java.sql.Date(ngaysinh.getTime()));
+            } else {
+                ps.setNull(5, java.sql.Types.DATE);
+            }
             
             int rowsAffected = ps.executeUpdate();
-            if (rowsAffected>0) {return new User(username, ten, diachi, password, ngaysinh);} 
+            if (rowsAffected > 0) {
+                return new User(username, ten, diachi, hashedPassword, ngaysinh);
+            } 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
-    
 }
-
     
