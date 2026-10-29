@@ -11,8 +11,8 @@ import java.sql.*;
 public class MyConnection {   private static final String SERVER="localhost";
     private static final String DATABASE="QuanLyBanHangDB";
     private static final String USER="sa";
-    private static final String PASSWORD="Truonghai123";
-        private static final String PORT="64186";
+    private static final String PASSWORD="1";
+        private static final String PORT="1433";
    private static final String URL = "jdbc:sqlserver://" + SERVER + ":" + PORT + 
         ";databaseName=" + DATABASE + 
         ";encrypt=true;trustServerCertificate=true;";
