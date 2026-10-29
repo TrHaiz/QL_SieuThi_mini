@@ -1,16 +1,12 @@
 package design;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.text.NumberFormat;
-import java.time.LocalDate;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import model.ThongKeLoaiSPNgay;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -27,10 +23,7 @@ import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-/**
- * Biểu đồ cột nhóm (Grouped Bar Chart) theo ngày và loại sản phẩm sử dụng thư viện JFreeChart.
- * Thay thế hoặc sử dụng song song với GroupedBarChart vẽ bằng Java 2D thuần.
- */
+
 public class Chart extends JPanel {
 
     private static final Color[] PALETTE = new Color[]{
@@ -43,7 +36,7 @@ public class Chart extends JPanel {
         new Color(52, 73, 94)    // Xám than
     };
 
-    private static final String[] THU_VIET = new String[]{
+    private static final String[] DAY = new String[]{
         "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"
     };
 
@@ -60,6 +53,7 @@ public class Chart extends JPanel {
         initChart();
     }
 
+    
    private void initChart() {
     DefaultCategoryDataset emptyDataset = new DefaultCategoryDataset();
 
@@ -75,17 +69,15 @@ public class Chart extends JPanel {
     );
 
     chart.setBackgroundPaint(Color.WHITE);
-    // Bỏ padding thừa quanh chart để tối ưu diện tích render
     chart.setPadding(new RectangleInsets(2, 2, 2, 2));
 
-    // Tinh chỉnh Legend (Loại sản phẩm)
+    // Tinh chỉnh Loại sản phẩm
     LegendTitle legend = chart.getLegend();
     if (legend != null) {
         legend.setPosition(RectangleEdge.TOP);
         legend.setItemFont(new Font("Segoe UI", Font.PLAIN, 11));
         legend.setBackgroundPaint(Color.WHITE);
-        legend.setBorder(0, 0, 0, 0);
-        legend.setPadding(new RectangleInsets(2, 5, 4, 5));
+        legend.setPadding(new RectangleInsets(10,10,10,10));
     }
 
     plot = chart.getCategoryPlot();
@@ -125,8 +117,9 @@ public class Chart extends JPanel {
     renderer.setBarPainter(new StandardBarPainter());
     renderer.setShadowVisible(false);
     renderer.setDrawBarOutline(true);
-    renderer.setItemMargin(0.02);
-    renderer.setDefaultItemLabelsVisible(false);
+    renderer.setItemMargin(0.1);
+   renderer.setDefaultItemLabelsVisible(false);
+ // renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 
     renderer.setDefaultToolTipGenerator(new StandardCategoryToolTipGenerator(
             "{1} - {0}: {2} sản phẩm",
@@ -141,15 +134,13 @@ public class Chart extends JPanel {
     chartPanel.setDisplayToolTips(true);
     chartPanel.setDomainZoomable(false);
     chartPanel.setRangeZoomable(false);
-    chartPanel.setPopupMenu(null); 
+    chartPanel.setPopupMenu(JPopupMenu.class.cast(chartPanel.getPopupMenu()));
 
-    // QUAN TRỌNG: Tắt chế độ scale vẽ lại cứng, cho phép render theo size thực tế của Panel
     chartPanel.setMinimumDrawWidth(0);
     chartPanel.setMinimumDrawHeight(0);
     chartPanel.setMaximumDrawWidth(Integer.MAX_VALUE);
     chartPanel.setMaximumDrawHeight(Integer.MAX_VALUE);
 
-    // Tự động lắng nghe sự thay đổi kích thước của Container để re-render sắc nét
     chartPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
         @Override
         public void componentResized(java.awt.event.ComponentEvent e) {
@@ -161,13 +152,7 @@ public class Chart extends JPanel {
     add(chartPanel, BorderLayout.CENTER);
 }
 
-    /**
-     * Cập nhật dữ liệu vào biểu đồ theo cùng chữ ký hàm của GroupedBarChart.
-     *
-     * @param days           Danh sách ngày trong tuần
-     * @param allCategories  Map MaLoaiSP -> TenLoaiSP
-     * @param rawData        Danh sách ThongKeLoaiSPNgay
-     */
+    
     public void setData(ArrayList<LocalDate> days, Map<String, String> allCategories, ArrayList<ThongKeLoaiSPNgay> rawData) {
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -180,7 +165,6 @@ public class Chart extends JPanel {
     ArrayList<String> categoryOrder = new ArrayList<>(allCategories.keySet());
     categoryOrder.sort(String::compareTo);
 
-    // Map lưu dữ liệu bán hàng: "YYYY-MM-DD_MaLoai" -> SoLuong
     Map<String, Integer> salesData = new HashMap<>();
 
     if (rawData != null) {
@@ -192,17 +176,17 @@ public class Chart extends JPanel {
         }
     }
 
-    // Thiết lập màu sắc tương ứng cho từng loại sản phẩm
+    // Thiết lập màu sắc cho cột
     for (int i = 0; i < categoryOrder.size(); i++) {
         Color color = PALETTE[i % PALETTE.length];
         renderer.setSeriesPaint(i, color);
         renderer.setSeriesOutlinePaint(i, color.darker());
     }
 
-    // Đổ dữ liệu vào dataset theo từng loại sản phẩm và từng ngày trong tuần
-    for (int dayIdx = 0; dayIdx < days.size(); dayIdx++) {
-        LocalDate date = days.get(dayIdx);
-        String thuName = (dayIdx < THU_VIET.length) ? THU_VIET[dayIdx] : ("Ngày " + (dayIdx + 1));
+    // Đổ dữ liệu vào dataset 
+    for (int i = 0; i < days.size(); i++) {
+        LocalDate date = days.get(i);
+        String thuName = (i < DAY.length) ? DAY[i] : ("Ngày " + (i + 1));
         String dayLabel = thuName + " (" + date.format(dtfNgay) + ")";
 
         for (String maLoai : categoryOrder) {
@@ -216,7 +200,6 @@ public class Chart extends JPanel {
 
     plot.setDataset(dataset);
 
-    // SỬA LỖI TRỤC Y: Tự động căn chỉnh dải Y luôn bắt đầu từ 0 và vừa vặn đỉnh
     NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
     rangeAxis.setAutoRangeIncludesZero(true); // Luôn hiện gốc 0 ở chân biểu đồ
     rangeAxis.setAutoRange(true);             // Tự tính khoảng Max Y theo kích thước JPanel
