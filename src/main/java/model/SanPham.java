@@ -11,18 +11,20 @@ package model;
 public class SanPham {
     private String MaSP;
     private String TenSP;
-    private String MaLoaiSP;
-    private String MaNCC;
-    private int Tonkho;
-    private double Gia;
+    private String TenLoaiSP;
+    private String DV;
+    private double GiaNhap;
+    private double GiaBan;
+    private String TrangThai;
 
-    public SanPham(String MaSP, String TenSP, String MaLoaiSP, String MaNCC, int Tonkho, double Gia) {
+    public SanPham(String MaSP, String TenSP, String MaLoaiSP, String DV, double GiaNhap, double GiaBan, String TrangThai) {
         this.MaSP = MaSP;
         this.TenSP = TenSP;
-        this.MaLoaiSP = MaLoaiSP;
-        this.MaNCC = MaNCC;
-        this.Tonkho = Tonkho;
-        this.Gia = Gia;
+        this.TenLoaiSP = MaLoaiSP;
+        this.DV = DV;
+        this.GiaNhap = GiaNhap;
+        this.GiaBan = GiaBan;
+        this.TrangThai = TrangThai;
     }
 
     public String getMaSP() {
@@ -41,36 +43,44 @@ public class SanPham {
         this.TenSP = TenSP;
     }
 
-    public String getMaLoaiSP() {
-        return MaLoaiSP;
+    public String getTenLoaiSP() {
+        return TenLoaiSP;
     }
 
-    public void setMaLoaiSP(String MaLoaiSP) {
-        this.MaLoaiSP = MaLoaiSP;
+    public void setTenLoaiSP(String TenLoaiSP) {
+        this.TenLoaiSP = TenLoaiSP;
     }
 
-    public String getMaNCC() {
-        return MaNCC;
+    public String getDV() {
+        return DV;
     }
 
-    public void setMaNCC(String MaNCC) {
-        this.MaNCC = MaNCC;
+    public void setDV(String DV) {
+        this.DV = DV;
     }
 
-    public int getTonkho() {
-        return Tonkho;
+    public double getGiaNhap() {
+        return GiaNhap;
     }
 
-    public void setTonkho(int Tonkho) {
-        this.Tonkho = Tonkho;
+    public void setGiaNhap(double GiaNhap) {
+        this.GiaNhap = GiaNhap;
     }
 
-    public double getGia() {
-        return Gia;
+    public double getGiaBan() {
+        return GiaBan;
     }
 
-    public void setGia(double Gia) {
-        this.Gia = Gia;
+    public void setGiaBan(double GiaBan) {
+        this.GiaBan = GiaBan;
+    }
+
+    public String getTrangThai() {
+        return TrangThai;
+    }
+
+    public void setTrangThai(String TrangThai) {
+        this.TrangThai = TrangThai;
     }
     
 }

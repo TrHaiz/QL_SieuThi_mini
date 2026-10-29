@@ -4,19 +4,21 @@ import java.sql.*;
 import model.SanPham;
 import MyConnection.MyConnection;
 import java.util.ArrayList;
+import model.LoaiSP;
 
-public class khoDAO {
+public class sanphamDAO {
 
     public int insert(SanPham sp) {
         String sql = "INSERT INTO SanPham VALUES (?,?,?,?,?,?)";
-        try (Connection c = new MyConnection().getConnection()) {
-            PreparedStatement ps = c.prepareStatement(sql);
+        try (Connection conn = new MyConnection().getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, sp.getMaSP());
             ps.setString(2, sp.getTenSP());
-            ps.setString(3, sp.getMaLoaiSP());
-            ps.setString(4, sp.getMaNCC());
-            ps.setInt(5, sp.getTonkho());
-            ps.setDouble(6, sp.getGia());
+            ps.setString(3, sp.getTenLoaiSP());
+            ps.setString(4, sp.getDV());
+            ps.setDouble(5, sp.getGiaNhap());
+            ps.setDouble(6, sp.getGiaBan());
+            ps.setString(7, sp.getTrangThai());
 
             ps.executeUpdate();
             return 1;
@@ -30,15 +32,16 @@ public class khoDAO {
     }
 
     public int update(SanPham sp) {
-        String sql = "UPDATE SanPham SET TenSP = ?, LoaiSP = ?, SoLuong = ?, "
-                + "GiaNhap = ?, GiaBan = ? WHERE MaSP = ?";
+        String sql = "UPDATE SanPham SET TenSP = ?, MaLoaiSP = ?, DV = ?, "
+                + "GiaNhap = ?, GiaBan = ?, TrangThai=? , WHERE MaSP = ?";
         try (Connection conn =new MyConnection().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, sp.getTenSP());
-            st.setString(2, sp.getMaLoaiSP());
-            st.setString(3, sp.getMaNCC());
-            st.setInt(4, sp.getTonkho());
-            st.setDouble(5, sp.getGia());
-            st.setString(6, sp.getMaSP());
+            st.setString(2, sp.getTenLoaiSP());
+            st.setString(3, sp.getDV());
+            st.setDouble(4, sp.getGiaNhap());
+            st.setDouble(5, sp.getGiaBan());
+            st.setString(6, sp.getTrangThai());
+            st.setString(7, sp.getMaSP());
             return st.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -62,10 +65,10 @@ public class khoDAO {
    }
     public ArrayList<SanPham> getAll(String loai, String key) {
         ArrayList<SanPham> list = new ArrayList<>();
-        String sql = "SELECT * FROM SanPham WHERE (MaSP LIKE ? OR TenSP LIKE ?) AND (? = '' OR MaLoaiSP = ?)";
+        String sql = "SELECT *, lsp.TenLoaiSP FROM SanPham JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP WHERE (MaLoaiSP LIKE ? OR TenSP LIKE ?) AND (? = '' OR MaLoaiSP = ?)";
 
-        try (Connection c = new MyConnection().getConnection();
-                PreparedStatement ps = c.prepareStatement(sql)) {
+        try (Connection conn = new MyConnection().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String searchPattern = "%" + (key == null ? "" : key.trim()) + "%";
             ps.setString(1, searchPattern);
@@ -75,14 +78,15 @@ public class khoDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String ma = rs.getString("MaSP");
-                    String ten = rs.getString("TenSP");
-                    String l = rs.getString("MaLoaiSP");
-                    String ncc = rs.getString("MaNCC");
-                    int tonkho = rs.getInt("Tonkho");
-                    double gia = rs.getDouble("Gia");
-
-                    list.add(new SanPham(ma, ten, l, ncc, tonkho, gia));
+                    SanPham sp = new SanPham(sql, sql, sql, sql, 0, 0, sql);
+                sp.setMaSP(rs.getString("MaSP"));
+                sp.setTenSP(rs.getString("TenSP"));
+                sp.setTenLoaiSP(rs.getString("TenLoaiSP")); 
+                sp.setDV(rs.getString("DV"));
+                sp.setGiaNhap(rs.getDouble("GiaNhap"));
+                sp.setGiaBan(rs.getDouble("GiaBan"));
+                sp.setTrangThai(rs.getString("TrangThai")); 
+                list.add(sp);
                 }
             }
         } catch (Exception e) {
@@ -93,11 +97,11 @@ public class khoDAO {
 
     public ArrayList<String> getAllLoai() {
         ArrayList<String> list = new ArrayList<>();
-        String sql = "SELECT DISTINCT MaLoaiSP FROM SanPham ORDER BY MaLoaiSP";
+        String sql = "SELECT DISTINCT   lsp.TenLoaiSP FROM SanPham JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP ORDER BY lsp.TenLoaiSP";
         try (Connection c = new MyConnection().getConnection(); 
                 PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                String loai = rs.getString("MaLoaiSP");
+                String loai = rs.getString("TenLoaiSP");
                 if (loai != null && !loai.trim().isEmpty()) {
                     list.add(loai);
                 }

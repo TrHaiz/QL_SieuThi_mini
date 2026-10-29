@@ -213,18 +213,20 @@ public class DHPanel extends javax.swing.JPanel {
     }
     
     public void loadBangSanPham(String tuKhoa) {
-        DefaultTableModel modelSP = (DefaultTableModel) tblSanPham.getModel();
+     /*   DefaultTableModel modelSP = (DefaultTableModel) tblSanPham.getModel();
         modelSP.setRowCount(0);
         List<SanPham> ds = DonHangDao.getandsearchSanPhamDangBan(tuKhoa);
         for (SanPham sp : ds) {
             modelSP.addRow(new Object[]{
                 sp.getMaSP(),
                 sp.getTenSP(),
-                sp.getMaLoaiSP(),
-                sp.getTonkho(),
-                formatVND(sp.getGia())
+                sp.getTenLoaiSP(),
+                sp.getDV(),
+                formatVND(sp.getGiaNhap()),
+                formatVND(sp.getGiaBan()),
+                sp.getTrangThai()
             });
-        }
+        }*/
     }
     
     private void setTrangThaiGiaoDien(boolean kichHoat) {

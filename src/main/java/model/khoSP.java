@@ -1,21 +1,22 @@
 
 package model;
+import java.util.Date;
 
 public class khoSP {
     private String MaSP;
     private String TenSP;
-    private String LoaiSP;
-    private int SoLuong;
-    private double GiaNhap;
-    private double GiaBan;
+    private String TenLoaiSP;
+    private String MaNCC;
+    private double TonKho;
+    private Date NgayNhap;
 
-    public khoSP(String MaSP, String TenSP, String LoaiSP, int SoLuong, double GiaNhap, double GiaBan) {
+    public khoSP(String MaSP, String TenSP, String MaLoaiSP, String MaNCC, double TonKho, Date NgayNhap) {
         this.MaSP = MaSP;
         this.TenSP = TenSP;
-        this.LoaiSP = LoaiSP;
-        this.SoLuong = SoLuong;
-        this.GiaNhap = GiaNhap;
-        this.GiaBan = GiaBan;
+        this.TenLoaiSP = MaLoaiSP;
+        this.MaNCC = MaNCC;
+        this.TonKho = TonKho;
+        this.NgayNhap = NgayNhap;
     }
 
     public String getMaSP() {
@@ -34,36 +35,36 @@ public class khoSP {
         this.TenSP = TenSP;
     }
 
-    public String getLoaiSP() {
-        return LoaiSP;
+    public String getTenLoaiSP() {
+        return TenLoaiSP;
     }
 
-    public void setLoaiSP(String LoaiSP) {
-        this.LoaiSP = LoaiSP;
+    public void setTenLoaiSP(String TenLoaiSP) {
+        this.TenLoaiSP = TenLoaiSP;
     }
 
-    public int getSoLuong() {
-        return SoLuong;
+    public String getMaNCC() {
+        return MaNCC;
     }
 
-    public void setSoLuong(int SoLuong) {
-        this.SoLuong = SoLuong;
+    public void setMaNCC(String MaNCC) {
+        this.MaNCC = MaNCC;
     }
 
-    public double getGiaNhap() {
-        return GiaNhap;
+    public double getTonKho() {
+        return TonKho;
     }
 
-    public void setGiaNhap(double GiaNhap) {
-        this.GiaNhap = GiaNhap;
+    public void setTonKho(double TonKho) {
+        this.TonKho = TonKho;
     }
 
-    public double getGiaBan() {
-        return GiaBan;
+    public Date getNgayNhap() {
+        return NgayNhap;
     }
 
-    public void setGiaBan(double GiaBan) {
-        this.GiaBan = GiaBan;
+    public void setNgayNhap(Date NgayNhap) {
+        this.NgayNhap = NgayNhap;
     }
-    
+
 }
