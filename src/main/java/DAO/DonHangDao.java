@@ -17,42 +17,50 @@ import model.DonHang;
  * @author Long
  */
 public class DonHangDao {
-    public static List<SanPham> getandsearchSanPhamDangBan(String tuKhoa) {
-  /*    List<SanPham> list = new ArrayList<>();
-        String sql = "SELECT MaSP, TenSP, MaLoaiSP,DV, GiaNhap, GiaBan ,TrangThai "
-                 + "FROM SanPham WHERE SoLuong > 0 AND (MaSP LIKE ?)";
-        try (Connection conn =new MyConnection().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            String searchPattern = "%" + tuKhoa.trim()+"%";
-            ps.setString(1, searchPattern);
-            
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                  list.add(new SanPham(
-                      rs.getString("MaSP"),
-                      rs.getString("TenSP"),
-                       rs.getString("LoaiSP"),
-                        rs.getString("MaNCC"),
-                        rs.getInt("TồnKho"),
-                       rs.getDouble("GiaBan")
-                   );
-                }
+    public static List<Object[]> getandsearchSanPhamDangBan(String tuKhoa) {
+    List<Object[]> dsSanPham = new ArrayList<>();
+
+    String sql = "SELECT sp.MaSP, sp.TenSP, lsp.TenLoaiSP, k.SoLuongTrenKe, sp.GiaBan " +
+                 "FROM SanPham sp " +
+                 "INNER JOIN KeHang k ON sp.MaSP = k.MaSP " +
+                 "INNER JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP " +
+                 "WHERE k.SoLuongTrenKe > 0 " +
+                 "AND sp.Trangthai = N'Đang kinh doanh' " +
+                 "AND (sp.MaSP LIKE ? OR sp.TenSP LIKE ?)";
+                 
+    try (Connection conn = new MyConnection().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        
+        String searchPattern = "%" + tuKhoa + "%";
+        ps.setString(1, searchPattern);
+        ps.setString(2, searchPattern);
+        
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Object[] row = new Object[]{
+                    rs.getString("MaSP"),
+                    rs.getString("TenSP"),
+                    rs.getString("TenLoaiSP"),
+                    rs.getInt("SoLuongTrenKe"), 
+                    rs.getLong("GiaBan")
+                };
+                dsSanPham.add(row);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return list;*/
-  return null;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
     
-    public static int laySoLuongTonKho(String maSP) {
-        String sql = "SELECT SoLuong FROM SanPham WHERE MaSP = ?";
-        try (Connection conn =new MyConnection().getConnection();
+    return dsSanPham;
+}
+    
+    public static int laySoLuongTrenKe(String maSP) {
+        String sql = "SELECT SoLuongTrenKe FROM KeHang WHERE MaSP = ?";
+        try (Connection conn = new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maSP);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getInt("SoLuong");
+                if (rs.next()) return rs.getInt("SoLuongTrenKe");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,60 +133,85 @@ public class DonHangDao {
         return "DH01";
     }
     
-    //Lưu 1 dòng thông tin chung vào bảng DonHang
-    public static boolean themDonHang(String maDH, String maKH, String maVoucher, double tongTien) {
-        String sql = "INSERT INTO DonHang (MaDH, MaKH, MaVoucher, NgayMua, TongTien) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn =new MyConnection().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setString(1, maDH);
-            ps.setString(2, maKH);
-            ps.setString(3, maVoucher); // Nếu maVoucher là null, JDBC tự động hiểu là lưu NULL vào SQL
-            ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            ps.setDouble(5, tongTien);
-            
-            return ps.executeUpdate() > 0;
+    public static boolean thanhToanGiaoDich(String maHD, String maKH, String maVoucher, long tongTien, javax.swing.JTable tblGioHang) {
+        String sqlDonHang = "INSERT INTO DonHang (MaDH, MaKH, MaVoucher, NgayMua, TongTien) VALUES (?, ?, ?, ?, ?)";
+
+        // Đã xóa cột MaLoaiSP khỏi câu lệnh INSERT để chuẩn hóa CSDL
+        String sqlChiTiet = "INSERT INTO ChiTietDonHang (MaDH, MaSP, SoLuongMua, DonGia, ThanhTien) VALUES (?, ?, ?, ?, ?)";
+
+        // Trừ số lượng thẳng vào bảng KeHang thay vì SanPham
+        String sqlTruKe   = "UPDATE KeHang SET SoLuongTrenKe = SoLuongTrenKe - ? WHERE MaSP = ?"; 
+
+        Connection conn = null;
+        try {
+            conn = new MyConnection().getConnection();
+            conn.setAutoCommit(false); 
+
+            // 1. Lưu Hóa Đơn
+            try (PreparedStatement psDH = conn.prepareStatement(sqlDonHang)) {
+                psDH.setString(1, maHD);
+                psDH.setString(2, maKH);
+                psDH.setString(3, maVoucher);
+                psDH.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+                psDH.setDouble(5, tongTien);
+                psDH.executeUpdate();
+            }
+
+            // 2. Lưu Chi Tiết và Trừ Kệ Hàng
+            try (PreparedStatement psCT = conn.prepareStatement(sqlChiTiet);
+                 PreparedStatement psKe = conn.prepareStatement(sqlTruKe)) {
+
+                for (int i = 0; i < tblGioHang.getRowCount(); i++) {
+                    String maSP = tblGioHang.getValueAt(i, 0).toString();
+                    int slMua = Integer.parseInt(tblGioHang.getValueAt(i, 2).toString());
+                    long donGia = Long.parseLong(tblGioHang.getValueAt(i, 3).toString().replaceAll("[^0-9]", ""));
+                    long tongTienDong = Long.parseLong(tblGioHang.getValueAt(i, 4).toString().replaceAll("[^0-9]", ""));
+
+                    // Gắn tham số cho bảng Chi Tiết (Chỉ còn 5 tham số)
+                    psCT.setString(1, maHD);
+                    psCT.setString(2, maSP);     
+                    psCT.setInt(3, slMua);
+                    psCT.setDouble(4, donGia);
+                    psCT.setDouble(5, tongTienDong);
+                    psCT.addBatch();
+
+                    // Gắn tham số cho lệnh Trừ Kệ
+                    psKe.setInt(1, slMua);
+                    psKe.setString(2, maSP);
+                    psKe.addBatch();
+                }
+
+                psCT.executeBatch();  
+                psKe.executeBatch(); 
+            }
+
+            conn.commit(); 
+            return true;
+
         } catch (Exception e) {
             e.printStackTrace();
+            if (conn != null) {
+                try { 
+                    conn.rollback(); 
+                } catch (Exception ex) {
+                    ex.printStackTrace(); 
+                }
+            }
             return false;
-        }
-    }
-
-    //Lưu 1 món hàng trong giỏ vào bảng ChiTietDonHang
-    public static void themChiTietDonHang(String maDH, String maSP, int soLuongMua, double donGia, double thanhTien) {
-        String sql = "INSERT INTO ChiTietDonHang (MaDH, MaSP, SoLuongMua, DonGia, ThanhTien) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn =new MyConnection().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setString(1, maDH);
-            ps.setString(2, maSP);
-            ps.setInt(3, soLuongMua);
-            ps.setDouble(4, donGia);
-            ps.setDouble(5, thanhTien);
-            
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //Trừ đi số lượng tồn kho trong bảng SanPham sau khi bán
-    public static void truSoLuongTonKho(String maSP, int soLuongBan) {
-        String sql = "UPDATE SanPham SET SoLuong = SoLuong - ? WHERE MaSP = ?";
-        try (Connection conn =new MyConnection().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setInt(1, soLuongBan);
-            ps.setString(2, maSP);
-            
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try { 
+                    conn.setAutoCommit(true); 
+                    conn.close(); 
+                } catch (Exception ex) { 
+                    ex.printStackTrace(); 
+                }
+            }
         }
     }
     
     public static List<DonHang> layDanhSachDonHang(String tuKhoa) {
-        List<model.DonHang> list = new ArrayList<>();
+        List<DonHang> list = new ArrayList<>();
         String sql = "SELECT MaDH, MaKH, MaVoucher, NgayMua, TongTien FROM DonHang "
                    + "WHERE MaDH LIKE ? ORDER BY NgayMua DESC";
         try (Connection conn =new MyConnection().getConnection();
@@ -205,20 +238,23 @@ public class DonHangDao {
     }
     
     public static List<ChiTietDonHang> layChiTietTheoMaDH(String maDH) {
-        List<model.ChiTietDonHang> list = new ArrayList<>();
-        String sql = "SELECT ct.MaDH, ct.MaSP, sp.TenSP, ct.SoLuongMua, ct.DonGia, ct.ThanhTien "
+        List<ChiTietDonHang> list = new ArrayList<>();
+   
+        String sql = "SELECT ct.MaDH, ct.MaSP, sp.MaLoaiSP, sp.TenSP, ct.SoLuongMua, ct.DonGia, ct.ThanhTien "
                    + "FROM ChiTietDonHang ct "
                    + "INNER JOIN SanPham sp ON ct.MaSP = sp.MaSP "
                    + "WHERE ct.MaDH = ?";
-        try (Connection conn =new MyConnection().getConnection();
+
+        try (Connection conn = new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+
             ps.setString(1, maDH);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(new model.ChiTietDonHang(
                         rs.getString("MaDH"),
                         rs.getString("MaSP"),
+                        rs.getString("MaLoaiSP"),
                         rs.getString("TenSP"),
                         rs.getInt("SoLuongMua"),
                         rs.getDouble("DonGia"),
@@ -239,8 +275,8 @@ public class DonHangDao {
         try (Connection conn =new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setDate(1, new java.sql.Date(tuNgay.getTime()));
-            ps.setDate(2, new java.sql.Date(denNgay.getTime()));
+            ps.setDate(1, new Date(tuNgay.getTime()));
+            ps.setDate(2, new Date(denNgay.getTime()));
             
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

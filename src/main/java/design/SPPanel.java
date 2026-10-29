@@ -82,7 +82,9 @@ public class SPPanel extends javax.swing.JPanel {
 
     public void loaddatatable() {
         String keyword = this.txttimkiem.getText().trim();
-            keyword = "";      
+        if (keyword.equals("Nhập mã/Tên")) {
+            keyword = "";
+        }    
         
         String loaiChon = "";
         if (this.cbbloai.getSelectedIndex() > 0 && this.cbbloai.getSelectedItem() != null) {
@@ -97,13 +99,13 @@ public class SPPanel extends javax.swing.JPanel {
         tablemodel.setRowCount(0);
         for (SanPham sp : listSanPham) {
             tablemodel.addRow(new Object[]{
-                sp.getMaSP(), 
-                sp.getTenSP(), 
-                sp.getTenLoaiSP(), 
-                sp.getTrangThai(), 
-                sp.getDV(), 
-                sp.getGiaNhap(),
-                sp.getGiaBan()
+                sp.getMaSP(),       // [0] Mã SP
+                sp.getTenSP(),      // [1] Tên SP
+                sp.getTenLoaiSP(),  // [2] Tên Loại SP
+                sp.getDV(),         // [3] Đơn vị (SỬA LẠI CHO ĐÚNG THỨ TỰ)
+                sp.getGiaNhap(),    // [4] Giá Nhập
+                sp.getGiaBan(),     // [5] Giá Bán
+                sp.getTrangThai()
             });
         }
         System.out.println(listSanPham.size());

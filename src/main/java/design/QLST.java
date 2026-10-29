@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.Date;
 import javax.swing.*;
 import model.User;
-
+import DAO.ReloadData;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -34,10 +34,9 @@ public class QLST extends javax.swing.JFrame {
     nameLbl.setText(currentUser.getTen());
     nameLbl.setHorizontalAlignment(SwingConstants.CENTER);
     jPanel2.setLayout(layout);
-    DHPanel donhangPanel = new DHPanel();
+    DHPanel donhangPanel = new DHPanel(user.getTen());
     
-    KHPanel khachhangPanel = new KHPanel();
-    SPPanel sanphamPanel = new SPPanel();
+    KHPanel khachhangPanel = new KHPanel();;
     LSPPanel a=new LSPPanel();
     VPanel voucherPanel = new VPanel();
     NCCPanel nCCPanel=new NCCPanel();
@@ -57,7 +56,7 @@ public class QLST extends javax.swing.JFrame {
       setActiveButton(QLSPBtn);
     this.pack();
     this.setLocationRelativeTo(null);
-    this.setResizable(false);
+    this.setResizable(true);
 }
 
     /**
@@ -76,8 +75,8 @@ public class QLST extends javax.swing.JFrame {
         nameLbl = new javax.swing.JLabel();
         QLNCCBtn = new javax.swing.JButton();
         TKBtn = new javax.swing.JButton();
-        QLVbtn1 = new javax.swing.JButton();
-        QLLSPBtn = new javax.swing.JButton();
+        Logoutbtn = new javax.swing.JButton();
+        QLKSPBtn = new javax.swing.JButton();
         QLDHbtn = new javax.swing.JButton();
         QLKHBtn = new javax.swing.JButton();
         QLNHbtn = new javax.swing.JButton();
@@ -85,6 +84,7 @@ public class QLST extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1400, 850));
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 204));
         jPanel1.setPreferredSize(new java.awt.Dimension(220, 468));
@@ -143,26 +143,26 @@ public class QLST extends javax.swing.JFrame {
         TKBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         TKBtn.addActionListener(this::TKBtnActionPerformed);
 
-        QLVbtn1.setBackground(new java.awt.Color(255, 153, 0));
-        QLVbtn1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        QLVbtn1.setForeground(new java.awt.Color(255, 255, 255));
-        QLVbtn1.setText("Đăng xuất");
-        QLVbtn1.setBorder(null);
-        QLVbtn1.setFocusPainted(false);
-        QLVbtn1.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        QLVbtn1.addActionListener(this::QLVbtn1ActionPerformed);
+        Logoutbtn.setBackground(new java.awt.Color(255, 153, 0));
+        Logoutbtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Logoutbtn.setForeground(new java.awt.Color(255, 255, 255));
+        Logoutbtn.setText("Đăng xuất");
+        Logoutbtn.setBorder(null);
+        Logoutbtn.setFocusPainted(false);
+        Logoutbtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        Logoutbtn.addActionListener(this::LogoutbtnActionPerformed);
 
-        QLLSPBtn.setBackground(new java.awt.Color(0, 204, 204));
-        QLLSPBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        QLLSPBtn.setForeground(new java.awt.Color(255, 255, 255));
-        QLLSPBtn.setText("Kho sản phẩm");
-        QLLSPBtn.setBorder(null);
-        QLLSPBtn.setContentAreaFilled(false);
-        QLLSPBtn.setFocusPainted(false);
-        QLLSPBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        QLLSPBtn.setInheritsPopupMenu(true);
-        QLLSPBtn.setMargin(new java.awt.Insets(2, 20, 3, 14));
-        QLLSPBtn.addActionListener(this::QLLSPBtnActionPerformed);
+        QLKSPBtn.setBackground(new java.awt.Color(0, 204, 204));
+        QLKSPBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        QLKSPBtn.setForeground(new java.awt.Color(255, 255, 255));
+        QLKSPBtn.setText("Kho sản phẩm");
+        QLKSPBtn.setBorder(null);
+        QLKSPBtn.setContentAreaFilled(false);
+        QLKSPBtn.setFocusPainted(false);
+        QLKSPBtn.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        QLKSPBtn.setInheritsPopupMenu(true);
+        QLKSPBtn.setMargin(new java.awt.Insets(2, 20, 3, 14));
+        QLKSPBtn.addActionListener(this::QLKSPBtnActionPerformed);
 
         QLDHbtn.setBackground(new java.awt.Color(0, 204, 204));
         QLDHbtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -216,64 +216,64 @@ public class QLST extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(QLVbtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Logoutbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(QLKHBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(QLDHbtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(QLLSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addComponent(QLKSPBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
                     .addComponent(QLSPBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(QLNHbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(QLXHbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nameLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(nameLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(QLDHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(QLNHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(QLXHbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(7, 7, 7)
+                .addGap(24, 24, 24)
                 .addComponent(QLSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(QLLSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(QLKSPBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(QLKHBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(QLNCCBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(QLVbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(24, 24, 24)
                 .addComponent(TKBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(QLVbtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addComponent(Logoutbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.WEST);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setPreferredSize(new java.awt.Dimension(1040, 750));
+        jPanel2.setPreferredSize(new java.awt.Dimension(1020, 750));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1114, Short.MAX_VALUE)
+            .addGap(0, 1142, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
+            .addGap(0, 860, Short.MAX_VALUE)
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -310,6 +310,12 @@ public class QLST extends javax.swing.JFrame {
         // TODO add your handling code here:
         setActiveButton(QLDHbtn);
         layout.show(jPanel2, "QL_Donhang");
+         for (Component comp : jPanel2.getComponents()) {
+        if (comp.isVisible() && comp instanceof ReloadData) {
+            ((ReloadData) comp).reloadData();
+            break;
+        }
+         }
     }//GEN-LAST:event_QLDHbtnActionPerformed
 
     private void QLVbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLVbtnActionPerformed
@@ -318,11 +324,11 @@ public class QLST extends javax.swing.JFrame {
         layout.show(jPanel2, "QL_Voucher");
     }//GEN-LAST:event_QLVbtnActionPerformed
 
-    private void QLVbtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLVbtn1ActionPerformed
+    private void LogoutbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutbtnActionPerformed
         // TODO add your handling code here:
         this.dispose();
         new LoginScreen().setVisible(true);
-    }//GEN-LAST:event_QLVbtn1ActionPerformed
+    }//GEN-LAST:event_LogoutbtnActionPerformed
 
     private void QLNCCBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLNCCBtnActionPerformed
         // TODO add your handling code here:
@@ -334,25 +340,48 @@ public class QLST extends javax.swing.JFrame {
         // TODO add your handling code here:
         setActiveButton(TKBtn);
         layout.show(jPanel2,  "Thong_Ke");
-
+         for (Component comp : jPanel2.getComponents()) {
+        if (comp.isVisible() && comp instanceof ReloadData) {
+            ((ReloadData) comp).reloadData();
+            break;
+        }
+         }
     }//GEN-LAST:event_TKBtnActionPerformed
 
-    private void QLLSPBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLLSPBtnActionPerformed
+    private void QLKSPBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLKSPBtnActionPerformed
         // TODO add your handling code here:
-        setActiveButton(QLLSPBtn);
+        setActiveButton(QLKSPBtn);
         layout.show(jPanel2, "QL_LSP");
-    }//GEN-LAST:event_QLLSPBtnActionPerformed
+        for (Component comp : jPanel2.getComponents()) {
+        if (comp.isVisible() && comp instanceof ReloadData) {
+            ((ReloadData) comp).reloadData();
+            break;
+        }
+         }
+    }//GEN-LAST:event_QLKSPBtnActionPerformed
 
     private void QLNHbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLNHbtnActionPerformed
         // TODO add your handling code here:
         setActiveButton(QLNHbtn);
         layout.show(jPanel2, "QL_NH");
+        for (Component comp : jPanel2.getComponents()) {
+        if (comp.isVisible() && comp instanceof ReloadData) {
+            ((ReloadData) comp).reloadData();
+            break;
+        }
+         }
     }//GEN-LAST:event_QLNHbtnActionPerformed
 
     private void QLXHbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLXHbtnActionPerformed
         // TODO add your handling code here:
           setActiveButton(QLXHbtn);
         layout.show(jPanel2, "QL_XH");
+         for (Component comp : jPanel2.getComponents()) {
+        if (comp.isVisible() && comp instanceof ReloadData) {
+            ((ReloadData) comp).reloadData();
+            break;
+        }
+         }
     }//GEN-LAST:event_QLXHbtnActionPerformed
 
     /**
@@ -365,14 +394,14 @@ public class QLST extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Logoutbtn;
     private javax.swing.JButton QLDHbtn;
     private javax.swing.JButton QLKHBtn;
-    private javax.swing.JButton QLLSPBtn;
+    private javax.swing.JButton QLKSPBtn;
     private javax.swing.JButton QLNCCBtn;
     private javax.swing.JButton QLNHbtn;
     private javax.swing.JButton QLSPBtn;
     private javax.swing.JButton QLVbtn;
-    private javax.swing.JButton QLVbtn1;
     private javax.swing.JButton QLXHbtn;
     private javax.swing.JButton TKBtn;
     private javax.swing.JLabel jLabel1;

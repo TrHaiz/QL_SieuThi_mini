@@ -91,7 +91,7 @@ public class khoDao {
 
         try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                khoSP sp = new khoSP();
+                khoSP sp = new khoSP("","","","",0,null);
                 sp.setMaSP(rs.getString("MaSP"));
                 sp.setTenSP(rs.getString("TenSP"));
                 sp.setTenLoaiSP(rs.getString("TenLoaiSP")); 

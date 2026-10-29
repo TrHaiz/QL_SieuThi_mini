@@ -19,7 +19,7 @@ public class SanPham {
 
     public SanPham() {
     }
-
+    
     public SanPham(String MaSP, String TenSP, String TenLoaiSP, String DV, double GiaNhap, double GiaBan, String TrangThai) {
         this.MaSP = MaSP;
         this.TenSP = TenSP;
@@ -85,5 +85,4 @@ public class SanPham {
     public void setTrangThai(String TrangThai) {
         this.TrangThai = TrangThai;
     }
-    
 }
