@@ -145,7 +145,7 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
             txtdv.setText(sanPhamSelected.getDV());
             txtgianhap.setText(sanPhamSelected.getGiaNhap()!=-1 ? String.valueOf(sanPhamSelected.getGiaNhap()) : "");
             txtgiaban.setText(sanPhamSelected.getGiaBan()!=-1 ? String.valueOf(sanPhamSelected.getGiaBan()) : "");
-
+            TrangThaiTXT.setText(sanPhamSelected.getTrangThai());
             setEditableFields(true);
             txtmaSP.setEditable(false);
             btncapnhat.setEnabled(true);
@@ -161,18 +161,21 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
         txtdv.setText("");
         txtgianhap.setText("");
         txtgiaban.setText("");
+        TrangThaiTXT.setText("");
         tblsanpham.clearSelection();
         sanPhamSelected = null;
         setEditableFields(true);
         btncapnhat.setEnabled(false);
         btnxoa.setEnabled(false);
+        
     }
     private SanPham docSanPhamTuForm(String ma) {
         String ten = txtten.getText().trim();
         String dv = txtdv.getText().trim();
         int index = cbbloaisp.getSelectedIndex();
+        String trangthai=TrangThaiTXT.getText();
         if (ma.isEmpty() || ten.isEmpty() || dv.isEmpty() 
-                || index <= 0 || index > listLoaiSP.size()) {
+                || index <= 0 || index > listLoaiSP.size() || trangthai.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ dữ liệu và chọn loại sản phẩm!");
             return null;
         }
@@ -181,7 +184,7 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
             double gianhap=!txtgianhap.getText().trim().isEmpty() ? Double.parseDouble(txtgianhap.getText()) : -1;
             double giaban=!txtgiaban.getText().trim().isEmpty() ? Double.parseDouble(txtgiaban.getText()) : -1;
             LoaiSP loai = listLoaiSP.get(index - 1);
-            SanPham sp = new SanPham(ma, ten, loai.getTenLoaiSP(), dv, gianhap, giaban, "Đang kinh doanh");
+            SanPham sp = new SanPham(ma, ten, loai.getTenLoaiSP(), dv, gianhap, giaban, trangthai);
             sp.setMaLoaiSP(loai.getMaLoaiSP());
             return sp;
         } catch (Exception e) {
@@ -310,6 +313,8 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
         btnthem = new javax.swing.JButton();
         btnxoa = new javax.swing.JButton();
         cbbloaisp = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
+        TrangThaiTXT = new javax.swing.JTextField();
 
         jLabel1.setText("Product");
 
@@ -453,6 +458,8 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
 
         cbbloaisp.addActionListener(this::cbbloaispActionPerformed);
 
+        jLabel9.setText("Trạng thái");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -482,20 +489,23 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
                         .addComponent(jLabel15)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel14)
-                            .addComponent(jLabel13)))
+                            .addComponent(jLabel13))
+                        .addComponent(jLabel9))
                     .addComponent(btnthem, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtdv, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
-                            .addComponent(txtgiaban)
-                            .addComponent(txtgianhap))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 238, Short.MAX_VALUE)
                         .addComponent(btnxoa, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(60, 60, 60))))
+                        .addGap(60, 60, 60))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(TrangThaiTXT, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtdv, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                                .addComponent(txtgiaban)
+                                .addComponent(txtgianhap)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -518,13 +528,16 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
                     .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtgianhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbbloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnxoa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btncapnhat)
-                        .addComponent(btnthem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(35, 35, 35))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(TrangThaiTXT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnxoa, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnthem)
+                    .addComponent(btncapnhat))
+                .addGap(27, 27, 27))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -593,7 +606,7 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
                     .addGroup(layout.createSequentialGroup()
                         .addGap(38, 38, 38)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 101, Short.MAX_VALUE))))
+                        .addGap(0, 94, Short.MAX_VALUE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -693,6 +706,7 @@ public static void main(String[] args) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField TrangThaiTXT;
     private javax.swing.JButton btncapnhat;
     private javax.swing.JButton btnsearch;
     private javax.swing.JButton btnthem;
@@ -716,6 +730,7 @@ public static void main(String[] args) {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
