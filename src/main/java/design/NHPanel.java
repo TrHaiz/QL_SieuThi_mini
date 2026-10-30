@@ -149,7 +149,6 @@ public class NHPanel extends javax.swing.JPanel {
         jdcngaynhap.setEnabled(false);
         btnluu.setEnabled(false);
         btnsua.setEnabled(false);
-        btnxoa.setEnabled(false);
         btnthem.setEnabled(true);
     }
     
@@ -198,7 +197,6 @@ public class NHPanel extends javax.swing.JPanel {
 
         btnluu.setEnabled(false);
         btnsua.setEnabled(true);
-        btnxoa.setEnabled(true);
         btnthem.setEnabled(true);
     }
     
@@ -262,7 +260,6 @@ public class NHPanel extends javax.swing.JPanel {
         btnthem = new javax.swing.JButton();
         btnsua = new javax.swing.JButton();
         btnluu = new javax.swing.JButton();
-        btnxoa = new javax.swing.JButton();
         btnlammoi = new javax.swing.JButton();
         tbntongtien = new javax.swing.JLabel();
 
@@ -432,7 +429,7 @@ public class NHPanel extends javax.swing.JPanel {
                 .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btntimkiem)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(74, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
@@ -486,12 +483,6 @@ public class NHPanel extends javax.swing.JPanel {
         btnluu.setText("Lưu phiếu");
         btnluu.addActionListener(this::btnluuActionPerformed);
 
-        btnxoa.setBackground(new java.awt.Color(0, 204, 204));
-        btnxoa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnxoa.setForeground(new java.awt.Color(255, 255, 255));
-        btnxoa.setText("Xóa phiếu");
-        btnxoa.addActionListener(this::btnxoaActionPerformed);
-
         btnlammoi.setBackground(new java.awt.Color(0, 204, 204));
         btnlammoi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnlammoi.setForeground(new java.awt.Color(255, 255, 255));
@@ -506,30 +497,26 @@ public class NHPanel extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(btnthem)
-                        .addGap(31, 31, 31)
+                        .addGap(60, 60, 60)
                         .addComponent(btnluu)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                        .addGap(77, 77, 77)
                         .addComponent(btnsua)
-                        .addGap(41, 41, 41)
-                        .addComponent(btnxoa))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel11)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(tbntongtien, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(btnlammoi)
-                        .addContainerGap())))
+                    .addComponent(tbntongtien, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnlammoi))
+                .addGap(21, 21, 21))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -542,13 +529,11 @@ public class NHPanel extends javax.swing.JPanel {
                     .addComponent(tbntongtien, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnlammoi)
-                        .addComponent(btnxoa))
+                    .addComponent(btnlammoi)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnluu)
-                        .addComponent(btnthem))
-                    .addComponent(btnsua))
+                        .addComponent(btnthem)
+                        .addComponent(btnsua)))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
@@ -597,7 +582,6 @@ public class NHPanel extends javax.swing.JPanel {
         setEditingState(true);
         btnluu.setEnabled(true);
         btnsua.setEnabled(false);
-        btnxoa.setEnabled(false);
         txtmaphieu.setEnabled(true);
         txtmaphieu.setEditable(true);
         txtmaphieu.requestFocus();
@@ -711,28 +695,6 @@ public class NHPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnluuActionPerformed
     
     
-    private void btnxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaActionPerformed
-        if (pnSelected == null) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu nhập cần xóa từ bảng!");
-        return;
-    }
-
-    int confirm = JOptionPane.showConfirmDialog(this, 
-            "Bạn có chắc chắn muốn xóa phiếu nhập: " + pnSelected.getMaPN() + "?", 
-            "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-            
-    if (confirm == JOptionPane.YES_OPTION) {
-        boolean success = new PhieuNhapDao().deletePhieuNhap(pnSelected.getMaPN());
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Xóa phiếu nhập thành công!");
-            loadDataToTablePN("");
-            clearForm();
-        } else {
-            JOptionPane.showMessageDialog(this, "Xóa thất bại!");
-        }
-    }
-    }//GEN-LAST:event_btnxoaActionPerformed
-
     private void btnlammoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlammoiActionPerformed
         clearForm();
         loadDataToTablePN("");
@@ -905,7 +867,6 @@ public class NHPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnthem;
     private javax.swing.JButton btnthemvaophieu;
     private javax.swing.JButton btntimkiem;
-    private javax.swing.JButton btnxoa;
     private javax.swing.JButton btnxoasp;
     private javax.swing.JComboBox<NCC> cboncc;
     private javax.swing.JComboBox<khoSP> cbosp;
