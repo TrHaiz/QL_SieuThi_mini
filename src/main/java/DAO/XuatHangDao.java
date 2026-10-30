@@ -22,7 +22,7 @@ public class XuatHangDao {
             "FROM KeHang k " +
             "INNER JOIN SanPham sp ON k.MaSP = sp.MaSP " +
             "INNER JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP " +
-            "WHERE k.SoLuongTrenKe > 0 AND (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) and sp.Trangthai != N'Ngừng kinh doanh' "
+            "WHERE k.SoLuongTrenKe > 0 AND (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) and sp.Trangthai = N'Đang kinh doanh' "
         );
 
         // 1. Xử lý điều kiện Khoảng Giá
@@ -75,7 +75,7 @@ public class XuatHangDao {
         List<Object[]> ds = new ArrayList<>();
         String sql = "SELECT sp.MaSP, sp.TenSP, tk.SoLuongKho, sp.GiaBan FROM SanPham sp " +
                      "INNER JOIN TonKho tk ON sp.MaSP = tk.MaSP " +
-                     "WHERE tk.SoLuongKho > 0 AND sp.Trangthai != N'Ngừng kinh doanh'";
+                     "WHERE tk.SoLuongKho > 0 AND sp.Trangthai = N'Đang kinh doanh'";
         try (Connection conn = new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
