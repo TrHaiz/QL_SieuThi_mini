@@ -61,44 +61,40 @@ public class khoDao {
    public ArrayList<khoSP> getAll(String loai, String key) {
     ArrayList<khoSP> list = new ArrayList<>();
 
-    String sql = "SELECT " +
+    String sql = "SELECT DISTINCT " +
                  "    sp.MaSP, " +
                  "    sp.TenSP, " +
                  "    lsp.TenLoaiSP, " +
                  "    pn.MaNCC, " +
                  "    tk.SoLuongKho AS TonKho, " +
                  "    pn.NgayNhap " +
-                 "FROM SanPham sp " +
+                 "FROM SanPham spgetal " +
                  "LEFT JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP " +
                  "LEFT JOIN TonKho tk ON sp.MaSP = tk.MaSP " +
                  "LEFT JOIN ChiTietPhieuNhap ctpn ON sp.MaSP = ctpn.MaSP " +
                  "LEFT JOIN PhieuNhap pn ON ctpn.MaPN = pn.MaPN " +
                  "WHERE (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) " +
                  "AND (? = '' OR lsp.TenLoaiSP = ?)";
-     
+      
     try (Connection conn = new MyConnection().getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        // 1. Xử lý từ khóa tìm kiếm cho MaSP và TenSP (dấu ?)
         String searchPattern = "%" + (key == null ? "" : key.trim()) + "%";
-        ps.setString(1, searchPattern); // Cho sp.MaSP LIKE ?
-        ps.setString(2, searchPattern); // Cho sp.TenSP LIKE ?
+        ps.setString(1, searchPattern); 
+        ps.setString(2, searchPattern); 
 
-        // 2. Xử lý điều kiện lọc theo loại sản phẩm (dấu ?)
         String loaiFilter = (loai == null || loai.equals("-- Chọn loại sản phẩm --") || loai.trim().isEmpty()) ? "" : loai.trim();
-        ps.setString(3, loaiFilter); // Kiểm tra xem có rỗng không (? = '')
-        ps.setString(4, loaiFilter); // So sánh với tên loại (lsp.TenLoaiSP = ?)
+        ps.setString(3, loaiFilter); 
+        ps.setString(4, loaiFilter); 
 
         try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 khoSP sp = new khoSP("","","","",0,null);
                 sp.setMaSP(rs.getString("MaSP"));
                 sp.setTenSP(rs.getString("TenSP"));
-                sp.setTenLoaiSP(rs.getString("TenLoaiSP")); 
-                
-                // Sửa lại tên cột cho đúng với câu lệnh SELECT (MaNCC và TonKho)
+                sp.setTenLoaiSP(rs.getString("TenLoaiSP"));  
                 sp.setMaNCC(rs.getString("MaNCC"));
-                sp.setTonKho(rs.getDouble("TonKho")); // Sửa từ "GiaNhap" thành "TonKho"
+                sp.setTonKho(rs.getDouble("TonKho")); 
                 
                 java.sql.Date sqlDate = rs.getDate("NgayNhap");
                 if (sqlDate != null) {

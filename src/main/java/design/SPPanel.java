@@ -12,7 +12,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-public class SPPanel extends javax.swing.JPanel {
+import DAO.ReloadData;
+
+public class SPPanel extends javax.swing.JPanel implements ReloadData{
 
     DefaultComboBoxModel<String> cbomodelLoai = new DefaultComboBoxModel<>();
     ArrayList<SanPham> listSanPham = new ArrayList<>();
@@ -36,6 +38,13 @@ public class SPPanel extends javax.swing.JPanel {
         clearForm();
         cbbloai.addActionListener(e -> loaddatatable());
         cbbloaisp.addActionListener(e -> loaddatatable());
+    }
+    
+    @Override
+    public void reloadData() {
+        loaddatatocombobox();
+        loaddatatable();     
+        clearForm();        
     }
     
     public void setEditableFields(boolean editable) {

@@ -3,28 +3,42 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package design;
-
+import DAO.ReloadData;
 /**
  *
  * @author GIAKHANHPC
  */
-public class LSPPanel extends javax.swing.JPanel {
+public class LSPPanel extends javax.swing.JPanel implements  ReloadData{
 
+    private SPPanel spPanel;
     /**
      * Creates new form A
      */
     public LSPPanel() {
         initComponents();
     jPanel1.setLayout(new java.awt.BorderLayout());
-    SPPanel sp = new SPPanel();
+    spPanel = new SPPanel();
     jPanel1.removeAll(); 
-    jPanel1.add(sp, java.awt.BorderLayout.CENTER);
+    jPanel1.add(spPanel, java.awt.BorderLayout.CENTER);
     jPanel1.revalidate();
     jPanel1.repaint();
-        
+      jTabbedPane1.addChangeListener(e -> reloadData());  
         
     }
 
+    @Override
+    public void reloadData() {
+        int selectedIndex = jTabbedPane1.getSelectedIndex();
+        
+        if (selectedIndex == 0 && spPanel != null) {
+            spPanel.reloadData();
+        } 
+       
+        else if (selectedIndex == 1) {
+            // Gọi hàm reload cho màn hình Loại sản phẩm nếu cần
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

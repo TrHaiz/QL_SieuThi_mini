@@ -298,6 +298,12 @@ public class QLST extends javax.swing.JFrame {
         // TODO add your handling code here:
         setActiveButton(QLSPBtn);
         layout.show(jPanel2, "QL_Sanpham");
+         for (Component comp : jPanel2.getComponents()) {
+        if (comp.isVisible() && comp instanceof ReloadData) {
+            ((ReloadData) comp).reloadData();
+            break;
+        }
+         }
     }//GEN-LAST:event_QLSPBtnActionPerformed
 
     private void QLKHBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QLKHBtnActionPerformed

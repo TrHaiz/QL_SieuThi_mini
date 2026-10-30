@@ -1,5 +1,6 @@
 
 package model;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class khoSP {
@@ -66,5 +67,11 @@ public class khoSP {
     public void setNgayNhap(Date NgayNhap) {
         this.NgayNhap = NgayNhap;
     }
+
+    @Override
+    public String toString() {
+        return  this.MaSP +" - "+ this.TenSP;
+    }
+    
 
 }
