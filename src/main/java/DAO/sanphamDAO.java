@@ -49,14 +49,18 @@ public class sanphamDAO {
     }
 
     public int delete(String maSP) {
-        String sql = "DELETE FROM SanPham WHERE MaSP = ?";
-        try (Connection conn = new MyConnection().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
-            st.setString(1, maSP);
-            return st.executeUpdate();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
+        String sql = "UPDATE SanPham SET TrangThai = N'Ngừng kinh doanh' WHERE MaSP = ?";
+    
+   try (Connection conn = new MyConnection().getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, maSP);       
+           ps.executeUpdate();
+            return 1;
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return 0;
     }
 
    public ArrayList<SanPham> getAll(String cond) {

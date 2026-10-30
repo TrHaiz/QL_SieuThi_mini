@@ -44,9 +44,8 @@ public class khoDao {
         return 0;
     }
     public int delete(String maSP) {
-        String sql = "DELETE FROM KhoSanPham WHERE MaSP = ?";
-        try (Connection conn = new MyConnection().getConnection(); 
-            PreparedStatement st = conn.prepareStatement(sql)) {
+        String sql = "DELETE FROM KhoSanPham WHERE MaLoaiSP = ?";
+        try (Connection conn = new MyConnection().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, maSP);
             return st.executeUpdate();
         } catch (SQLException ex) {
