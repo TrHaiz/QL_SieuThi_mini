@@ -12,6 +12,13 @@ import java.awt.*;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import DAO.ReloadData;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.table.TableModel;
 /**
  *
  * @author GIAKHANHPC
@@ -66,6 +73,7 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
         lblChiTiet = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblChiTiet = new javax.swing.JTable();
+        btnXuatExcel = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -245,6 +253,11 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
         ));
         jScrollPane4.setViewportView(tblChiTiet);
 
+        btnXuatExcel.setBackground(new java.awt.Color(0, 204, 204));
+        btnXuatExcel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnXuatExcel.setText("Xuất Excel");
+        btnXuatExcel.addActionListener(this::btnXuatExcelActionPerformed);
+
         javax.swing.GroupLayout pnllichsuthemspLayout = new javax.swing.GroupLayout(pnllichsuthemsp);
         pnllichsuthemsp.setLayout(pnllichsuthemspLayout);
         pnllichsuthemspLayout.setHorizontalGroup(
@@ -271,7 +284,9 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
                                 .addGap(41, 41, 41)
                                 .addComponent(btnLoc)
                                 .addGap(18, 18, 18)
-                                .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(btnXuatExcel))))
                     .addComponent(jLabel2)
                     .addGroup(pnllichsuthemspLayout.createSequentialGroup()
                         .addGroup(pnllichsuthemspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -279,9 +294,9 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
                             .addComponent(lblDanhSach, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(33, 33, 33)
                         .addGroup(pnllichsuthemspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblChiTiet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))))
-                .addContainerGap())
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                            .addComponent(lblChiTiet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         pnllichsuthemspLayout.setVerticalGroup(
             pnllichsuthemspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -301,8 +316,9 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
                     .addComponent(DateChooserketthuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnllichsuthemspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnLoc)
-                        .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(27, 27, 27)
+                        .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnXuatExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26)
                 .addGroup(pnllichsuthemspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDanhSach)
                     .addComponent(lblChiTiet))
@@ -393,6 +409,103 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
         }
     }
    
+    public void xuatExcelLichSuKe(javax.swing.JTable tblPhieuXuat) {
+        if (tblPhieuXuat.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu phiếu xuất kệ để xuất!");
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setSelectedFile(new File("BaoCao_LichSuXuatKe.xlsx"));
+        chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("File Excel", "xlsx"));
+
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File file = chooser.getSelectedFile();
+        if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+            file = new File(file.getAbsolutePath() + ".xlsx");
+        }
+
+        try (Workbook workbook = new XSSFWorkbook();
+             FileOutputStream fo = new FileOutputStream(file)) {
+
+            //SHEET 1: DANH SÁCH PHIẾU XUẤT KỆ 
+            Sheet sheet1 = workbook.createSheet("Danh Sách Phiếu Kệ");
+            TableModel modelPK = tblPhieuXuat.getModel();
+
+            Row rowHeader1 = sheet1.createRow(0);
+            for (int i = 0; i < modelPK.getColumnCount(); i++) {
+                rowHeader1.createCell(i).setCellValue(modelPK.getColumnName(i));
+            }
+
+            // Tạo mảng chứa danh sách Mã Phiếu Kệ (MaPK) để truy vấn Sheet 2
+            ArrayList<String> dsMaPK = new ArrayList<>();
+
+            for (int r = 0; r < modelPK.getRowCount(); r++) {
+                Row row = sheet1.createRow(r + 1);
+                for (int c = 0; c < modelPK.getColumnCount(); c++) {
+                    Object value = modelPK.getValueAt(r, c);
+                    row.createCell(c).setCellValue(value != null ? value.toString() : "");
+                }
+                // Lấy cột Mã PK (Cột đầu tiên, index 0)
+                dsMaPK.add(modelPK.getValueAt(r, 0).toString()); 
+            }
+
+            for (int i = 0; i < modelPK.getColumnCount(); i++) {
+                sheet1.autoSizeColumn(i);
+            }
+
+            //SHEET 2: CHI TIẾT CÁC PHIẾU XUẤT
+            Sheet sheet2 = workbook.createSheet("Chi Tiết Hàng Hóa Lên Kệ");
+
+            // Tạo Header cho Sheet 2
+            String[] headerCT = {"Mã Phiếu Kệ", "Mã Sản Phẩm", "Tên Sản Phẩm", "Loại Sản Phẩm", "Giá Bán", "Số Lượng Xuất"};
+            Row rowHeader2 = sheet2.createRow(0);
+            for (int i = 0; i < headerCT.length; i++) {
+                rowHeader2.createCell(i).setCellValue(headerCT[i]);
+            }
+
+            int currentRow = 1;
+
+            // Duyệt từng Mã Phiếu Kệ để gọi hàm DAO
+            for (String maPK : dsMaPK) {
+               
+                List<Object[]> listCT = XuatHangDao.layChiTietPhieuKe(maPK);
+
+                for (Object[] ct : listCT) {
+                    Row row = sheet2.createRow(currentRow++);
+                    row.createCell(0).setCellValue(maPK); // Gán Mã Phiếu Kệ vào cột đầu tiên
+                    row.createCell(1).setCellValue(ct[0] != null ? ct[0].toString() : ""); // MaSP
+                    row.createCell(2).setCellValue(ct[1] != null ? ct[1].toString() : ""); // TenSP
+                    row.createCell(3).setCellValue(ct[2] != null ? ct[2].toString() : ""); // TenLoaiSP
+
+                    // Xử lý cột Giá Bán (ct[3] là Double)
+                    if (ct[3] != null) {
+                        row.createCell(4).setCellValue(Double.parseDouble(ct[3].toString()));
+                    }
+
+                    // Xử lý cột Số Lượng (ct[4] là Integer)
+                    if (ct[4] != null) {
+                        row.createCell(5).setCellValue(Integer.parseInt(ct[4].toString()));
+                    }
+                }
+            }
+
+            for (int i = 0; i < headerCT.length; i++) {
+                sheet2.autoSizeColumn(i);
+            }
+
+            workbook.write(fo);
+            JOptionPane.showMessageDialog(this, "Xuất Excel thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            java.awt.Desktop.getDesktop().open(file);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi xuất Excel: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     private void cbbSXTheoGiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbSXTheoGiaActionPerformed
         // TODO add your handling code here:
         loadBangSanPhamTrenKe();
@@ -468,6 +581,11 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
         // TODO add your handling code here:
         loadBangSanPhamTrenKe();
     }//GEN-LAST:event_cbbKhoangGiaActionPerformed
+
+    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
+        // TODO add your handling code here:
+        xuatExcelLichSuKe(tblDanhSach);
+    }//GEN-LAST:event_btnXuatExcelActionPerformed
     
     
 
@@ -475,6 +593,7 @@ public class XHPanel extends javax.swing.JPanel implements ReloadData{
     private com.toedter.calendar.JDateChooser DateChooserbatdau;
     private com.toedter.calendar.JDateChooser DateChooserketthuc;
     private javax.swing.JButton btnLoc;
+    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JButton btntimkiem2;
     private javax.swing.JComboBox<String> cbbKhoangGia;
     private javax.swing.JComboBox<String> cbbNgay;

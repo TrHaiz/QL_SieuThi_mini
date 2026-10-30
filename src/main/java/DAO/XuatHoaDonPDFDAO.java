@@ -17,7 +17,7 @@ public class XuatHoaDonPDFDAO {
             JTable tblGioHang, String tongCong, String giamGia,
             String thanhTien, String khachTra, String tienThua) {
         try {
-            // --- THÊM PHẦN KHỞI TẠO THƯ MỤC ---
+            // THÊM PHẦN KHỞI TẠO THƯ MỤC
             String folderPath = "HoaDon_PDF";
             File folder = new File(folderPath);
             if (!folder.exists()) {

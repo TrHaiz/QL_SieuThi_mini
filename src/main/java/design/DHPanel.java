@@ -21,6 +21,13 @@ import java.util.Date;
 import model.ChiTietDonHang;
 import model.DonHang;
 import DAO.ReloadData;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.table.TableModel;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 /**
  *
  * @author GIAKHANHPC
@@ -282,6 +289,95 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
             loadBangSanPham("");
         }
     }
+    
+    public void xuatExcelHoaDon(javax.swing.JTable tblHoaDon) {
+        if (tblHoaDon.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu hóa đơn để xuất!");
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setSelectedFile(new File("BaoCao_HoaDonBanLe.xlsx"));
+        chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("File Excel", "xlsx"));
+
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File file = chooser.getSelectedFile();
+        if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+            file = new File(file.getAbsolutePath() + ".xlsx");
+        }
+
+        try (Workbook workbook = new XSSFWorkbook();
+             FileOutputStream fo = new FileOutputStream(file)) {
+
+            // ================= SHEET 1: DANH SÁCH HÓA ĐƠN =================
+            Sheet sheet1 = workbook.createSheet("Danh Sách Hóa Đơn");
+            TableModel modelHD = tblHoaDon.getModel();
+
+            Row rowHeader1 = sheet1.createRow(0);
+            for (int i = 0; i < modelHD.getColumnCount(); i++) {
+                rowHeader1.createCell(i).setCellValue(modelHD.getColumnName(i));
+            }
+
+            // Tạo mảng chứa danh sách Mã Hóa Đơn để truy vấn Sheet 2
+            ArrayList<String> dsMaHD = new ArrayList<>();
+
+            for (int r = 0; r < modelHD.getRowCount(); r++) {
+                Row row = sheet1.createRow(r + 1);
+                for (int c = 0; c < modelHD.getColumnCount(); c++) {
+                    Object value = modelHD.getValueAt(r, c);
+                    row.createCell(c).setCellValue(value != null ? value.toString() : "");
+                }
+                // Lấy cột Mã HĐ (giả sử cột đầu tiên index 0 là Mã Hóa Đơn)
+                dsMaHD.add(modelHD.getValueAt(r, 0).toString()); 
+            }
+
+            for (int i = 0; i < modelHD.getColumnCount(); i++) {
+                sheet1.autoSizeColumn(i);
+            }
+
+            // ================= SHEET 2: CHI TIẾT TẤT CẢ HÓA ĐƠN =================
+            Sheet sheet2 = workbook.createSheet("Chi Tiết Hóa Đơn");
+            
+            String[] headerCT = {"Mã Hóa Đơn", "Mã SP", "Mã Loại SP", "Tên SP", "Số Lượng", "Đơn Giá", "Thành Tiền"};
+            Row rowHeader2 = sheet2.createRow(0);
+            for (int i = 0; i < headerCT.length; i++) {
+                rowHeader2.createCell(i).setCellValue(headerCT[i]);
+            }
+
+            int currentRow = 1;
+
+            // Duyệt từng Mã Hóa Đơn để lấy danh sách chi tiết tương ứng
+            for (String maHD : dsMaHD) {
+                
+                List<ChiTietDonHang> listCT = DonHangDao.layChiTietTheoMaDH(maHD);
+
+                for (ChiTietDonHang ct : listCT) {
+                    Row row = sheet2.createRow(currentRow++);
+                    row.createCell(0).setCellValue(ct.getMaDH()); 
+                    row.createCell(1).setCellValue(ct.getMaSP());
+                    row.createCell(2).setCellValue(ct.getMaLoaiSP());
+                    row.createCell(3).setCellValue(ct.getTenSP());
+                    row.createCell(4).setCellValue(ct.getSoLuongMua());
+                    row.createCell(5).setCellValue(ct.getDonGia());
+                    row.createCell(6).setCellValue(ct.getThanhTien());
+                }
+            }
+
+        for (int i = 0; i < headerCT.length; i++) {
+            sheet2.autoSizeColumn(i);
+        }
+
+            workbook.write(fo);
+            JOptionPane.showMessageDialog(this, "Xuất dữ liệu thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            java.awt.Desktop.getDesktop().open(file);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi xuất Excel: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -339,6 +435,7 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
         lblChiTiet = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblChiTiet = new javax.swing.JTable();
+        btnXuatExcel = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(950, 630));
         setLayout(new java.awt.BorderLayout());
@@ -449,27 +546,6 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
                     .addComponent(lblThanhTien))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
-                        .addComponent(btnTaoHoaDon)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnHuyHoaDon))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel10))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTraLaiKhach, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtKhachTra, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(109, 109, 109))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -500,6 +576,27 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
                             .addComponent(jLabel3)
                             .addComponent(txtMaKH, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(52, 52, 52)
+                .addComponent(btnTaoHoaDon)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnHuyHoaDon)
+                .addGap(131, 131, 131))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel11))
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtKhachTra, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTraLaiKhach, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(86, 86, 86)
+                        .addComponent(btnThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -544,7 +641,7 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(txtKhachTra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(txtTraLaiKhach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -552,9 +649,9 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnTaoHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnHuyHoaDon))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         lblThoiGian.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -596,12 +693,13 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(lblmasp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 534, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                        .addComponent(txtTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -636,7 +734,7 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -654,13 +752,13 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
             .addGroup(pnltinhtienLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(pnltinhtienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(29, 29, 29)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addGroup(pnltinhtienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblThoiGian, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblThoiGian, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
         pnltinhtienLayout.setVerticalGroup(
             pnltinhtienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -676,7 +774,7 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(1235, Short.MAX_VALUE))
+                .addContainerGap(1236, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Tính tiền", pnltinhtien);
@@ -757,6 +855,11 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
         ));
         jScrollPane4.setViewportView(tblChiTiet);
 
+        btnXuatExcel.setBackground(new java.awt.Color(0, 204, 204));
+        btnXuatExcel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnXuatExcel.setText("Xuất Excel");
+        btnXuatExcel.addActionListener(this::btnXuatExcelActionPerformed);
+
         javax.swing.GroupLayout pnlhoadonLayout = new javax.swing.GroupLayout(pnlhoadon);
         pnlhoadon.setLayout(pnlhoadonLayout);
         pnlhoadonLayout.setHorizontalGroup(
@@ -783,17 +886,19 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
                                 .addGap(41, 41, 41)
                                 .addComponent(btnLoc)
                                 .addGap(18, 18, 18)
-                                .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnXuatExcel))))
                     .addComponent(jLabel2)
                     .addGroup(pnlhoadonLayout.createSequentialGroup()
                         .addGroup(pnlhoadonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
                             .addComponent(lblDanhSach, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(33, 33, 33)
+                        .addGap(18, 18, 18)
                         .addGroup(pnlhoadonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblChiTiet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))))
-                .addContainerGap())
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                            .addComponent(lblChiTiet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         pnlhoadonLayout.setVerticalGroup(
             pnlhoadonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -813,7 +918,8 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
                     .addComponent(DateChooserketthuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlhoadonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnLoc)
-                        .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbbNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnXuatExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(27, 27, 27)
                 .addGroup(pnlhoadonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDanhSach)
@@ -866,7 +972,9 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
 
     private void cbbNgayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbNgayActionPerformed
         // TODO add your handling code here:
-        String luaChon = cbbNgay.getSelectedItem().toString();
+        String luaChon = cbbNgay.getSelectedItem().toString(); 
+            DateChooserbatdau.setDate(null); 
+            DateChooserketthuc.setDate(null);
         List<DonHang> ds = DonHangDao.locDonHangTheoComboBox(luaChon);
         hienThiLenBangDanhSach(ds);
     }//GEN-LAST:event_cbbNgayActionPerformed
@@ -1093,7 +1201,11 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
         }
     }//GEN-LAST:event_jTabbedPane1StateChanged
 
-    
+    private void btnXuatExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatExcelActionPerformed
+        // TODO add your handling code here:
+        xuatExcelHoaDon(tblDanhSach);
+    }//GEN-LAST:event_btnXuatExcelActionPerformed
+
     
     //TAB HOA DON 
     
@@ -1170,6 +1282,7 @@ public class DHPanel extends javax.swing.JPanel implements ReloadData{
     private javax.swing.JButton btnLoc;
     private javax.swing.JButton btnTaoHoaDon;
     private javax.swing.JButton btnThanhToan;
+    private javax.swing.JButton btnXuatExcel;
     private javax.swing.JButton btntimkiem2;
     private javax.swing.JComboBox<String> cbbNgay;
     private javax.swing.JLabel jLabel10;

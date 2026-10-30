@@ -17,7 +17,6 @@ public class XuatHangDao {
    public static List<Object[]> layDanhSachSanPhamTrenKe(String tuKhoa, int indexGia, int indexSapXep) {
         List<Object[]> ds = new ArrayList<>();
         
-        // Dùng StringBuilder để dễ dàng cộng chuỗi SQL tùy theo điều kiện lọc
         StringBuilder sql = new StringBuilder(
             "SELECT sp.MaSP, sp.TenSP, lsp.TenLoaiSP, k.SoLuongTrenKe, sp.DV, sp.GiaBan " +
             "FROM KeHang k " +
@@ -26,7 +25,7 @@ public class XuatHangDao {
             "WHERE k.SoLuongTrenKe > 0 AND (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) "
         );
 
-        // 1. Xử lý điều kiện Khoảng Giá (Dựa vào index của jComboBox2)
+        // 1. Xử lý điều kiện Khoảng Giá
         if (indexGia == 1) {
             sql.append("AND sp.GiaBan < 50000 ");
         } else if (indexGia == 2) {
@@ -37,13 +36,13 @@ public class XuatHangDao {
             sql.append("AND sp.GiaBan > 200000 ");
         }
 
-        // 2. Xử lý điều kiện Sắp Xếp (Dựa vào index của jComboBox1)
+        // 2. Xử lý điều kiện Sắp Xếp
         if (indexSapXep == 1) {
-            sql.append("ORDER BY sp.GiaBan ASC"); // Tăng dần
+            sql.append("ORDER BY sp.GiaBan ASC");
         } else if (indexSapXep == 2) {
-            sql.append("ORDER BY sp.GiaBan DESC"); // Giảm dần
+            sql.append("ORDER BY sp.GiaBan DESC");
         } else {
-            sql.append("ORDER BY sp.MaSP ASC"); // Mặc định sắp xếp theo Mã SP
+            sql.append("ORDER BY sp.MaSP ASC");
         }
 
         try (Connection conn = new MyConnection().getConnection();
@@ -85,14 +84,14 @@ public class XuatHangDao {
                     rs.getString("MaSP"), 
                     rs.getString("TenSP"), 
                     rs.getInt("SoLuongKho"),
-                    rs.getDouble("GiaBan") // index [3]: Giá bán
+                    rs.getDouble("GiaBan")
                 });
             }
         } catch (Exception e) { e.printStackTrace(); }
         return ds;
     }
 
-    // 2. Tạo mã Phiếu Kê tự động (Ví dụ: PK01, PK02...)
+    // 2. Tạo mã Phiếu Kê tự động
     public static String taoMaPhieuKeMoi() {
         String sql = "SELECT TOP 1 MaPK FROM PhieuKe ORDER BY MaPK DESC";
         try (Connection conn = new MyConnection().getConnection();
@@ -107,7 +106,7 @@ public class XuatHangDao {
         return "PK01";
     }
 
-    // 3. Giao dịch (Transaction): Lưu phiếu kê, Trừ Tồn Kho, Cộng Kệ Hàng
+    // 3. Lưu phiếu kê, Trừ Tồn Kho, Cộng Kệ Hàng
     public static boolean luuPhieuXuatKe(String maPK, String ghiChu, javax.swing.JTable tbl) {
         String sqlPhieu = "INSERT INTO PhieuKe (MaPK, NgayLenKe, GhiChu) VALUES (?, GETDATE(), ?)";
         String sqlChiTiet = "INSERT INTO ChiTietPhieuKe (MaPK, MaSP, SoLuong) VALUES (?, ?, ?)";
@@ -164,7 +163,7 @@ public class XuatHangDao {
         }
     }
     
-    // 1. Hàm lấy Danh Sách Phiếu Kê (Bảng bên trái) kèm theo các điều kiện lọc
+    // 1. Lấy Danh Sách Phiếu Kê (Bảng bên trái) kèm theo các điều kiện lọc
     public static List<Object[]> layDanhSachPhieuKe(String maPK, Date tuNgay, Date denNgay, String cbbLuaChon) {
         List<Object[]> ds = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT MaPK, NgayLenKe, GhiChu FROM PhieuKe WHERE MaPK LIKE ? ");
