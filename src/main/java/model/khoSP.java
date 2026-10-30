@@ -9,7 +9,7 @@ public class khoSP {
     private String TenSP;
     private String TenLoaiSP;
     private String TenNCC;
-    private double TonKho;
+    private int TonKho;
     private Date NgayNhap;
 
     public khoSP() {
@@ -20,7 +20,7 @@ public class khoSP {
         this.TenSP = TenSP;
         this.TenLoaiSP = TenLoaiSP;
         this.TenNCC = TenNCC;
-        this.TonKho = TonKho;
+        setTonKho(TonKho);
         this.NgayNhap = NgayNhap;
     }
 
@@ -61,7 +61,15 @@ public class khoSP {
     }
 
     public void setTonKho(double TonKho) {
-        this.TonKho = TonKho;
+        if (!Double.isFinite(TonKho) || TonKho < 0
+                || TonKho > Integer.MAX_VALUE || TonKho != Math.floor(TonKho)) {
+            throw new IllegalArgumentException("Tồn kho phải là số nguyên không âm.");
+        }
+        this.TonKho = (int) TonKho;
+    }
+
+    public int getSoLuongKho() {
+        return TonKho;
     }
 
     public Date getNgayNhap() {
@@ -74,6 +82,6 @@ public class khoSP {
 
      @Override
     public String toString() {
-        return this.TenSP;
+        return this.MaSP+" "+this.TenSP;
     }
 }

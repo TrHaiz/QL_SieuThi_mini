@@ -1,6 +1,8 @@
 
 package design;
 import DAO.sanphamDAO;
+import DAO.loaiSPDao;
+import model.LoaiSP;
 import java.awt.Color;
 import model.SanPham;
 import java.util.ArrayList;
@@ -17,6 +19,10 @@ import DAO.ReloadData;
 public class SPPanel extends javax.swing.JPanel implements ReloadData{
 
     DefaultComboBoxModel<String> cbomodelLoai = new DefaultComboBoxModel<>();
+    DefaultComboBoxModel<String> cbomodelLoaiNhap = new DefaultComboBoxModel<>();
+    ArrayList<LoaiSP> listLoaiSP = new ArrayList<>();
+    private boolean dangTaiLoai = true;
+    private boolean dangTaiBang;
     ArrayList<SanPham> listSanPham = new ArrayList<>();
     DefaultTableModel tablemodel = new DefaultTableModel(){
         @Override
@@ -30,14 +36,15 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
     public SPPanel() {
         initComponents();      
         cbbloai.setModel(cbomodelLoai);
-        cbbloaisp.setModel(cbomodelLoai);
+        cbbloaisp.setModel(cbomodelLoaiNhap);
         tblsanpham.setModel(tablemodel);
-        loaddatatocombobox();
         inittable();
+        loaddatatocombobox();
         loaddatatable();
         clearForm();
-        cbbloai.addActionListener(e -> loaddatatable());
-        cbbloaisp.addActionListener(e -> loaddatatable());
+        txtgiaban.setEditable(false);
+        txtgianhap.setEditable(false);
+
     }
     
     @Override
@@ -52,25 +59,39 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
         txtten.setEnabled(editable);
         cbbloaisp.setEnabled(editable);
         txtdv.setEnabled(editable);
-        txtgianhap.setEnabled(editable);
-        txtgiaban.setEnabled(editable);
-        txttrangthai.setEnabled(editable);
     }
 
     public void loaddatatocombobox() {
-    Object dangChon = cbomodelLoai.getSelectedItem();
-    cbomodelLoai.removeAllElements();
-    cbomodelLoai.addElement("-- Tất cả loại --");
-    ArrayList<String> listLoai = new sanphamDAO().getAllLoai();
-    for (String loai : listLoai) {
-        cbomodelLoai.addElement(loai);
+        String maLoc = maLoaiTai(cbbloai.getSelectedIndex());
+        String maNhap = maLoaiTai(cbbloaisp.getSelectedIndex());
+        dangTaiLoai = true;
+        try {
+            listLoaiSP = new loaiSPDao().getAll("");
+            cbomodelLoai.removeAllElements();
+            cbomodelLoaiNhap.removeAllElements();
+            cbomodelLoai.addElement("-- Tất cả loại --");
+            cbomodelLoaiNhap.addElement("-- Chọn loại --");
+            for (LoaiSP loai : listLoaiSP) {
+                cbomodelLoai.addElement(loai.getTenLoaiSP());
+                cbomodelLoaiNhap.addElement(loai.getTenLoaiSP());
+            }
+            cbbloai.setSelectedIndex(chiSoLoai(maLoc));
+            cbbloaisp.setSelectedIndex(chiSoLoai(maNhap));
+        } finally {
+            dangTaiLoai = false;
+        }
     }
 
-    if (dangChon != null && cbomodelLoai.getIndexOf(dangChon) >= 0) {
-        cbomodelLoai.setSelectedItem(dangChon);
-    } else {
-        cbomodelLoai.setSelectedItem("-- Tất cả loại --");
+    private String maLoaiTai(int index) {
+        return index > 0 && index <= listLoaiSP.size()
+                ? listLoaiSP.get(index - 1).getMaLoaiSP() : "";
     }
+
+    private int chiSoLoai(String maLoai) {
+        for (int i = 0; i < listLoaiSP.size(); i++) {
+            if (listLoaiSP.get(i).getMaLoaiSP().equals(maLoai)) return i + 1;
+        }
+        return 0;
     }
 
     public void inittable() {
@@ -78,6 +99,7 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
         tablemodel.setColumnIdentifiers(header);
         tblsanpham.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblsanpham.getSelectionModel().addListSelectionListener((e) -> {
+            if (e.getValueIsAdjusting() || dangTaiBang) return;
             int row = tblsanpham.getSelectedRow();
             if (row >= 0 && row < listSanPham.size()) {
                 sanPhamSelected = listSanPham.get(row);
@@ -90,64 +112,84 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
     }
 
     public void loaddatatable() {
-        String keyword = this.txttimkiem.getText().trim();
-            keyword = "";      
-        
-        String loaiChon = "";
-        if (this.cbbloai.getSelectedIndex() > 0 && this.cbbloai.getSelectedItem() != null) {
-            loaiChon = this.cbbloai.getSelectedItem().toString();
+        if (dangTaiLoai) return;
+        String keyword = txttimkiem.getText().trim();
+        if ("Nhập mã/Tên".equals(keyword)) keyword = "";
+        String maLoai = maLoaiTai(cbbloai.getSelectedIndex());
+        dangTaiBang = true;
+        try {
+            tblsanpham.clearSelection();
+            listSanPham = new sanphamDAO().getAll(maLoai, keyword);
+            tablemodel.setRowCount(0);
+            for (SanPham sp : listSanPham) {
+                tablemodel.addRow(new Object[]{
+                    sp.getMaSP(), 
+                    sp.getTenSP(), 
+                    sp.getTenLoaiSP(),
+                    sp.getDV(), 
+                    (sp.getGiaNhap()==-1 ? "" : sp.getGiaNhap()), 
+                    (sp.getGiaBan()==-1 ? "" : sp.getGiaBan()), 
+                    sp.getTrangThai()});
+            }
+        } finally {
+            dangTaiBang = false;
         }
-        if (this.cbbloaisp.getSelectedIndex() > 0 && this.cbbloaisp.getSelectedItem() != null) {
-            loaiChon = this.cbbloaisp.getSelectedItem().toString();
-        }
-
-        // Lấy danh sách kết hợp lọc theo loại và từ khóa
-        listSanPham = new sanphamDAO().getAll(loaiChon, keyword);
-        tablemodel.setRowCount(0);
-        for (SanPham sp : listSanPham) {
-            tablemodel.addRow(new Object[]{
-                sp.getMaSP(), 
-                sp.getTenSP(), 
-                sp.getTenLoaiSP(),
-                sp.getDV(), 
-                sp.getGiaNhap(),
-                sp.getGiaBan(),
-                sp.getTrangThai()
-            });
-        }
+        clearForm();
     }
 
     public void hienthithongtin() {
         if (sanPhamSelected != null) {
             txtmaSP.setText(sanPhamSelected.getMaSP());
             txtten.setText(sanPhamSelected.getTenSP());
-            txtdv.setText(String.valueOf(sanPhamSelected.getDV()));
-            txtgianhap.setText(String.valueOf(sanPhamSelected.getGiaNhap()));
-            txtgiaban.setText(String.valueOf(sanPhamSelected.getGiaBan()));
-            txttrangthai.setText(sanPhamSelected.getTrangThai());
+            cbbloaisp.setSelectedIndex(chiSoLoai(sanPhamSelected.getMaLoaiSP()));
+            txtdv.setText(sanPhamSelected.getDV());
+            txtgianhap.setText(sanPhamSelected.getGiaNhap()!=-1 ? String.valueOf(sanPhamSelected.getGiaNhap()) : "");
+            txtgiaban.setText(sanPhamSelected.getGiaBan()!=-1 ? String.valueOf(sanPhamSelected.getGiaBan()) : "");
 
             setEditableFields(true);
             txtmaSP.setEditable(false);
-            txtgianhap.setEditable(false);
-            txtgiaban.setEditable(false);
             btncapnhat.setEnabled(true);
             btnxoa.setEnabled(true);
         }
     }
 
     public void clearForm() {
+        txtmaSP.setEditable(true);
+        cbbloaisp.setSelectedIndex(0);
         txtmaSP.setText("");
         txtten.setText("");
         txtdv.setText("");
         txtgianhap.setText("");
         txtgiaban.setText("");
-        txttrangthai.setText("");
         tblsanpham.clearSelection();
         sanPhamSelected = null;
         setEditableFields(true);
         btncapnhat.setEnabled(false);
         btnxoa.setEnabled(false);
     }
+    private SanPham docSanPhamTuForm(String ma) {
+        String ten = txtten.getText().trim();
+        String dv = txtdv.getText().trim();
+        int index = cbbloaisp.getSelectedIndex();
+        if (ma.isEmpty() || ten.isEmpty() || dv.isEmpty() 
+                || index <= 0 || index > listLoaiSP.size()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ dữ liệu và chọn loại sản phẩm!");
+            return null;
+        }
+        try {
+            
+            double gianhap=!txtgianhap.getText().trim().isEmpty() ? Double.parseDouble(txtgianhap.getText()) : -1;
+            double giaban=!txtgiaban.getText().trim().isEmpty() ? Double.parseDouble(txtgiaban.getText()) : -1;
+            LoaiSP loai = listLoaiSP.get(index - 1);
+            SanPham sp = new SanPham(ma, ten, loai.getTenLoaiSP(), dv, gianhap, giaban, "Đang kinh doanh");
+            sp.setMaLoaiSP(loai.getMaLoaiSP());
+            return sp;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi!");
+            return null;
+        }
+    }
+
     public int getCellInt(Cell cell) {
     try {
         if (cell == null) {
@@ -267,8 +309,6 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
         btncapnhat = new javax.swing.JButton();
         btnthem = new javax.swing.JButton();
         btnxoa = new javax.swing.JButton();
-        jLabel17 = new javax.swing.JLabel();
-        txttrangthai = new javax.swing.JTextField();
         cbbloaisp = new javax.swing.JComboBox<>();
 
         jLabel1.setText("Product");
@@ -351,13 +391,14 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
         jLabel16.setText("Nhập mã/Tên");
 
         txttimkiem.setForeground(new java.awt.Color(255, 102, 102));
-        txttimkiem.setText("Nhập mã/Tên");
         txttimkiem.addActionListener(this::txttimkiemActionPerformed);
 
         btnsearch.setBackground(new java.awt.Color(0, 204, 204));
         btnsearch.setForeground(new java.awt.Color(255, 255, 255));
         btnsearch.setText("Tìm kiếm");
         btnsearch.addActionListener(this::btnsearchActionPerformed);
+
+        cbbloai.addActionListener(this::cbbloaiActionPerformed);
 
         btnxuatexcel.setBackground(new java.awt.Color(0, 204, 204));
         btnxuatexcel.setForeground(new java.awt.Color(255, 255, 255));
@@ -410,8 +451,6 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
         btnxoa.setText("Xóa");
         btnxoa.addActionListener(this::btnxoaActionPerformed);
 
-        jLabel17.setText("Trạng Thái");
-
         cbbloaisp.addActionListener(this::cbbloaispActionPerformed);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -439,7 +478,6 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
                                     .addComponent(cbbloaisp, 0, 214, Short.MAX_VALUE))))))
                 .addGap(93, 93, 93)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel17)
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel15)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -450,7 +488,6 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(46, 46, 46)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txttrangthai)
                             .addComponent(txtdv, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
                             .addComponent(txtgiaban)
                             .addComponent(txtgianhap))
@@ -481,15 +518,12 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
                     .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtgianhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbbloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
-                    .addComponent(txttrangthai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btncapnhat)
-                    .addComponent(btnxoa, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnthem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnxoa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btncapnhat)
+                        .addComponent(btnthem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(35, 35, 35))
         );
 
@@ -510,7 +544,7 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
                 .addGap(20, 20, 20)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -564,88 +598,37 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
     }// </editor-fold>//GEN-END:initComponents
 
     private void btncapnhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncapnhatActionPerformed
-   if (sanPhamSelected == null) {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần cập nhật trên bảng!");
-        return;
-    }
-
-    String ma = sanPhamSelected.getMaSP();
-    String ten = txtten.getText().trim();
-    String loai = txtloai.getText().trim();
-    String DV = txtdv.getText().trim();
-    String gianhapStr = txtgianhap.getText().trim();
-    String giabanStr = txtgiaban.getText().trim();
-    String trangthai = txttrangthai.getText().trim();
-
-    if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || DV.isEmpty() || gianhapStr.isEmpty() || giabanStr.isEmpty()|| trangthai.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ các dữ liệu!");
-        return;
-    }
-    try {
-        double gianhap =Double.parseDouble(gianhapStr);
-        double giaban = Double.parseDouble(giabanStr);
-        
-        if (gianhap < 0 || giaban < 0) {
-            JOptionPane.showMessageDialog(this, "Tồn kho và giá bán phải lớn hơn hoặc bằng 0!");
+        if (sanPhamSelected == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần cập nhật!");
             return;
         }
-
-        SanPham sp = new SanPham(ma, ten, loai, DV, gianhap, giaban,trangthai);
-        
-        sanphamDAO dao = new sanphamDAO();
-        int kq = dao.update(sp);
-
-        if (kq > 0) {
+        SanPham sp = docSanPhamTuForm(sanPhamSelected.getMaSP());
+        if (sp == null) return;
+        if (new sanphamDAO().update(sp) > 0) {
             JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
-            loaddatatable();
-            loaddatatocombobox();
-            clearForm();
+            reloadData();
         } else {
             JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số cho Tồn kho và Giá bán!");
-    }
     }//GEN-LAST:event_btncapnhatActionPerformed
 
     private void btnthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemActionPerformed
- String ma = txtmaSP.getText().trim();
-    String ten = txtten.getText().trim();
-    String loai = txtloai.getText().trim();
-    String DV = txtdv.getText().trim();
-    String gianhapStr = txtgiaban.getText().trim();
-    String giabanStr = txtgianhap.getText().trim();
-    String trangthai = txttrangthai.getText().trim();
-
-    if (ma.isEmpty() || ten.isEmpty() || loai.isEmpty() || DV.isEmpty() || gianhapStr.isEmpty() || giabanStr.isEmpty()|| trangthai.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ các dữ liệu!");
-        return;
-    }
-    try {
-        double gianhap =Double.parseDouble(gianhapStr);
-        double giaban = Double.parseDouble(giabanStr);
-
-        if (gianhap < 0 || giaban < 0) {
-            JOptionPane.showMessageDialog(this, "giá nhập và giá bán phải lớn hơn hoặc bằng 0!");
+        if (sanPhamSelected != null) {
+            clearForm();
+            txtmaSP.requestFocusInWindow();
             return;
         }
-
-        SanPham sp = new SanPham(ma, ten, loai, DV, gianhap, giaban,trangthai);
+        SanPham sp = docSanPhamTuForm(txtmaSP.getText().trim());
+        if (sp == null) return;
         int kq = new sanphamDAO().insert(sp);
-
         if (kq > 0) {
             JOptionPane.showMessageDialog(this, "Thêm thành công!");
-            loaddatatocombobox();
-            loaddatatable();
-            clearForm();
+            reloadData();
         } else if (kq == -2) {
             JOptionPane.showMessageDialog(this, "Mã sản phẩm đã tồn tại!");
         } else {
             JOptionPane.showMessageDialog(this, "Thêm thất bại!");
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Vui lòng kiểm tra lại kiểu dữ liệu số cho Tồn kho và Giá bán!");
-    }
     }//GEN-LAST:event_btnthemActionPerformed
 
     private void btnxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaActionPerformed
@@ -683,7 +666,7 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
     }//GEN-LAST:event_btnxuatexcelActionPerformed
 
     private void txttimkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txttimkiemActionPerformed
-        // TODO add your handling code here:
+        loaddatatable();
     }//GEN-LAST:event_txttimkiemActionPerformed
 
     private void txtloaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtloaiActionPerformed
@@ -691,8 +674,13 @@ public class SPPanel extends javax.swing.JPanel implements ReloadData{
     }//GEN-LAST:event_txtloaiActionPerformed
 
     private void cbbloaispActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbloaispActionPerformed
-        loaddatatable();
+
     }//GEN-LAST:event_cbbloaispActionPerformed
+
+    private void cbbloaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbloaiActionPerformed
+        // TODO add your handling code here:
+        loaddatatable();
+    }//GEN-LAST:event_cbbloaiActionPerformed
 public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Quản Lý Sản Phẩm");
@@ -721,7 +709,6 @@ public static void main(String[] args) {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -743,6 +730,5 @@ public static void main(String[] args) {
     private javax.swing.JTextField txtmaSP;
     private javax.swing.JTextField txtten;
     private javax.swing.JTextField txttimkiem;
-    private javax.swing.JTextField txttrangthai;
     // End of variables declaration//GEN-END:variables
 }

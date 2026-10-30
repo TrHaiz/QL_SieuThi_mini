@@ -9,22 +9,22 @@ import model.LoaiSP;
 public class sanphamDAO {
 
     public int insert(SanPham sp) {
-        String sql = "INSERT INTO SanPham VALUES (?,?,?,?,?,?)";
-        try (Connection conn = new MyConnection().getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaLoaiSP, DV, GiaNhap, GiaBan, Trangthai) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = new MyConnection().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, sp.getMaSP());
             ps.setString(2, sp.getTenSP());
-            ps.setString(3, sp.getTenLoaiSP());
+            ps.setString(3, sp.getMaLoaiSP());
             ps.setString(4, sp.getDV());
             ps.setDouble(5, sp.getGiaNhap());
             ps.setDouble(6, sp.getGiaBan());
             ps.setString(7, sp.getTrangThai());
 
-            ps.executeUpdate();
-            return 1;
+            return ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            if (e.getErrorCode() == 2627) {
+            if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
                 return -2;
             }
         }
@@ -32,10 +32,10 @@ public class sanphamDAO {
     }
 
     public int update(SanPham sp) {
-        String sql = "UPDATE SanPham SET TenSP = ?, MaLoaiSP = ?, DV = ?, GiaNhap = ?, GiaBan = ?, TrangThai=? , WHERE MaSP = ?";
+        String sql = "UPDATE SanPham SET TenSP = ?, MaLoaiSP = ?, DV = ?, GiaNhap = ?, GiaBan = ?, Trangthai = ? WHERE MaSP = ?";
         try (Connection conn =new MyConnection().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, sp.getTenSP());
-            st.setString(2, sp.getTenLoaiSP());
+            st.setString(2, sp.getMaLoaiSP());
             st.setString(3, sp.getDV());
             st.setDouble(4, sp.getGiaNhap());
             st.setDouble(5, sp.getGiaBan());
@@ -51,11 +51,10 @@ public class sanphamDAO {
     public int delete(String maSP) {
         String sql = "UPDATE SanPham SET TrangThai = N'Ngừng kinh doanh' WHERE MaSP = ?";
     
-   try (Connection conn = new MyConnection().getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(sql);
+   try (Connection conn = new MyConnection().getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setString(1, maSP);       
-           ps.executeUpdate();
-            return 1;
+        return ps.executeUpdate();
         
     } catch (SQLException e) {
         e.printStackTrace();
@@ -68,7 +67,11 @@ public class sanphamDAO {
    }
     public ArrayList<SanPham> getAll(String loai, String key) {
         ArrayList<SanPham> list = new ArrayList<>();
-        String sql = "SELECT sp.*, lsp.TenLoaiSP FROM SanPham sp JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP WHERE (sp.MaLoaiSP LIKE ? OR TenSP LIKE ?) AND (? = '' OR sp.MaLoaiSP = ?)";
+        String sql = "SELECT sp.*, lsp.TenLoaiSP FROM SanPham sp "
+                   + "LEFT JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP "
+                   + "WHERE (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) "
+                   + "AND (? = '' OR sp.MaLoaiSP = ? OR lsp.TenLoaiSP = ?) "
+                   + "ORDER BY sp.MaSP";
 
         try (Connection conn = new MyConnection().getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -78,12 +81,14 @@ public class sanphamDAO {
             ps.setString(2, searchPattern);
             ps.setString(3, loai == null ? "" : loai.trim());
             ps.setString(4, loai == null ? "" : loai.trim());
+            ps.setString(5, loai == null ? "" : loai.trim());
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    SanPham sp = new SanPham(sql, sql, sql, sql, 0, 0, sql);
+                    SanPham sp = new SanPham();
                 sp.setMaSP(rs.getString("MaSP"));
                 sp.setTenSP(rs.getString("TenSP"));
+                sp.setMaLoaiSP(rs.getString("MaLoaiSP"));
                 sp.setTenLoaiSP(rs.getString("TenLoaiSP")); 
                 sp.setDV(rs.getString("DV"));
                 sp.setGiaNhap(rs.getDouble("GiaNhap"));
@@ -100,7 +105,7 @@ public class sanphamDAO {
 
     public ArrayList<String> getAllLoai() {
         ArrayList<String> list = new ArrayList<>();
-        String sql = "SELECT DISTINCT   lsp.TenLoaiSP FROM SanPham sp JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP ORDER BY lsp.TenLoaiSP";
+        String sql = "SELECT TenLoaiSP FROM LoaiSanPham ORDER BY TenLoaiSP, MaLoaiSP";
         try (Connection c = new MyConnection().getConnection(); 
                 PreparedStatement ps = c.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
