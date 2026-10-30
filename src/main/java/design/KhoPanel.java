@@ -1,13 +1,11 @@
 
 package design;
 import DAO.khoDao;
-import DAO.sanphamDAO;
 import java.awt.Color;
 import model.khoSP;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;  
-import model.SanPham;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -37,6 +35,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         clearForm();
     }
     
+     
     @Override
     public void reloadData() {
             loaddatatable();
@@ -59,7 +58,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
     }
     }
        public void inittable() {
-        String[] header = new String[]{"Mã SP", "Tên SP", "Loại SP", "Mã NCC", "Tồn Kho", "Ngày Nhập"};
+        String[] header = new String[]{"Mã SP", "Tên SP", "Loại SP", "Tên NCC", "Tồn Kho", "Ngày Nhập"};
         tablemodel.setColumnIdentifiers(header);
         tblkho.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblkho.getSelectionModel().addListSelectionListener((e) -> {
@@ -82,7 +81,6 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
             loaiChon = this.cbbloai.getSelectedItem().toString();
         }
 
-        // Lấy danh sách kết hợp lọc theo loại và từ khóa
         listkho = new khoDao().getAll(loaiChon, keyword);
         tablemodel.setRowCount(0);
         for (khoSP sp : listkho) {
@@ -90,16 +88,14 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
                 sp.getMaSP(), 
                 sp.getTenSP(), 
                 sp.getTenLoaiSP(), 
-                sp.getMaNCC(), 
+                sp.getTenNCC(), 
                 sp.getTonKho(), 
                 sp.getNgayNhap()
             });
         }
-        System.out.println(listkho.size());
     }
         public void hienthithongtin() {
         if (khoSelected != null) {
-
         }
     }
 
@@ -119,7 +115,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
             if (value.isEmpty()) {
                 return 0;
             }
-            return Integer.parseInt(value);   // dòng bổ sung
+            return Integer.parseInt(value);   
         }
     } catch (NumberFormatException numberFormatException) {
         System.out.println("Lỗi chuyển đổi dữ liệu");
@@ -158,7 +154,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
     try (Workbook w = new XSSFWorkbook();
          java.io.FileOutputStream fo = new java.io.FileOutputStream(file)) {
         Sheet sheet = w.createSheet("Kho Sản Phẩm");
-        String[] header = {"STT", "MÃ SP", "TÊN SP", "LOẠI SP", "Mã NCC", "Tồn Kho", "Ngày Nhập"};
+        String[] header = {"STT", "MÃ SP", "TÊN SP", "LOẠI SP", "Tên NCC", "Tồn Kho", "Ngày Nhập"};
         Row rowHeader = sheet.createRow(0);
         for (int i = 0; i < header.length; i++) {
             rowHeader.createCell(i).setCellValue(header[i]);
@@ -170,7 +166,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
             row.createCell(1).setCellValue(sp.getMaSP());
             row.createCell(2).setCellValue(sp.getTenSP());
             row.createCell(3).setCellValue(sp.getTenLoaiSP());
-            row.createCell(4).setCellValue(sp.getMaNCC());
+            row.createCell(4).setCellValue(sp.getTenNCC());
             row.createCell(5).setCellValue(sp.getTonKho());
             row.createCell(6).setCellValue(sp.getNgayNhap());
             stt++;
@@ -193,19 +189,22 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        btntaomoi = new javax.swing.JButton();
-        btnxuat = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         txttimkiem = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         btntimkiem = new javax.swing.JButton();
         cbbloai = new javax.swing.JComboBox<>();
+        btntaomoi = new javax.swing.JButton();
+        btnxuat = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblkho = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         jLabel4.setText("jLabel4");
+
+        setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -213,38 +212,21 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         jLabel2.setForeground(new java.awt.Color(51, 255, 255));
         jLabel2.setText("Quản Lý Kho Hàng");
 
-        btntaomoi.setBackground(new java.awt.Color(51, 255, 255));
-        btntaomoi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btntaomoi.setForeground(new java.awt.Color(255, 255, 255));
-        btntaomoi.setText("Tạo mới SP");
-
-        btnxuat.setBackground(new java.awt.Color(51, 255, 255));
-        btnxuat.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnxuat.setForeground(new java.awt.Color(255, 255, 255));
-        btnxuat.setText("Xuất SP");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btntaomoi)
-                .addGap(45, 45, 45)
-                .addComponent(btnxuat)
-                .addGap(54, 54, 54))
+                .addContainerGap(879, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(btntaomoi)
-                    .addComponent(btnxuat))
-                .addContainerGap(15, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(28, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -259,32 +241,59 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         btntimkiem.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btntimkiem.setForeground(new java.awt.Color(255, 255, 255));
         btntimkiem.setText("Tìm kiếm ");
+        btntimkiem.addActionListener(this::btntimkiemActionPerformed);
+
+        cbbloai.addActionListener(this::cbbloaiActionPerformed);
+
+        btntaomoi.setBackground(new java.awt.Color(51, 255, 255));
+        btntaomoi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btntaomoi.setForeground(new java.awt.Color(255, 255, 255));
+        btntaomoi.setText("Tạo mới SP Kho");
+        btntaomoi.addActionListener(this::btntaomoiActionPerformed);
+
+        btnxuat.setBackground(new java.awt.Color(51, 255, 255));
+        btnxuat.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnxuat.setForeground(new java.awt.Color(255, 255, 255));
+        btnxuat.setText("Xuất SP");
+        btnxuat.addActionListener(this::btnxuatActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(btntimkiem)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 596, Short.MAX_VALUE)
-                .addComponent(cbbloai, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btntaomoi)
+                        .addGap(44, 44, 44)
+                        .addComponent(btnxuat, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(btntimkiem)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbbloai, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(57, 57, 57))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btntaomoi))
+                    .addComponent(btnxuat))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btntimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbbloai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -298,7 +307,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "Mã SP", "Tên SP", "Loại SP", "Mã NCC", "Tồn Kho", "Ngày Nhập"
+                "Mã SP", "Tên SP", "Loại SP", "Tên NCC", "Tồn Kho", "Ngày Nhập"
             }
         ));
         jScrollPane1.setViewportView(tblkho);
@@ -308,24 +317,34 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Danh Sách Kho Sản Phẩm ");
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(51, 255, 255));
+        jLabel5.setText("Danh Sách Kho");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1047, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1140, 1140, 1140)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addGap(789, 789, 789)
                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(213, 213, 213))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1043, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 578, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(102, Short.MAX_VALUE))
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -337,7 +356,8 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1113, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -346,10 +366,33 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(36, 36, 36)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btntimkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntimkiemActionPerformed
+        loaddatatable();
+    }//GEN-LAST:event_btntimkiemActionPerformed
+
+    private void cbbloaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbloaiActionPerformed
+         loaddatatable();
+    }//GEN-LAST:event_cbbloaiActionPerformed
+
+    private void btnxuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxuatActionPerformed
+        if (listkho == null || listkho.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Không có dữ liệu", "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+    exportSanPhamToExcel(listkho);
+    }//GEN-LAST:event_btnxuatActionPerformed
+
+    private void btntaomoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntaomoiActionPerformed
+    new khospDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true, khoSelected).setVisible(true);
+    loaddatatable();
+    }//GEN-LAST:event_btntaomoiActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -361,6 +404,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

@@ -1,21 +1,25 @@
 
 package model;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class khoSP {
     private String MaSP;
+
+   
     private String TenSP;
     private String TenLoaiSP;
-    private String MaNCC;
+    private String TenNCC;
     private double TonKho;
     private Date NgayNhap;
 
-    public khoSP(String MaSP, String TenSP, String TenLoaiSP, String MaNCC, double TonKho, Date NgayNhap) {
+    public khoSP() {
+    }
+
+    public khoSP(String MaSP, String TenSP, String TenLoaiSP, String TenNCC, double TonKho, Date NgayNhap) {
         this.MaSP = MaSP;
         this.TenSP = TenSP;
         this.TenLoaiSP = TenLoaiSP;
-        this.MaNCC = MaNCC;
+        this.TenNCC = TenNCC;
         this.TonKho = TonKho;
         this.NgayNhap = NgayNhap;
     }
@@ -44,12 +48,12 @@ public class khoSP {
         this.TenLoaiSP = TenLoaiSP;
     }
 
-    public String getMaNCC() {
-        return MaNCC;
+    public String getTenNCC() {
+        return TenNCC;
     }
 
-    public void setMaNCC(String MaNCC) {
-        this.MaNCC = MaNCC;
+    public void setTenNCC(String TenNCC) {
+        this.TenNCC = TenNCC;
     }
 
     public double getTonKho() {
@@ -68,10 +72,8 @@ public class khoSP {
         this.NgayNhap = NgayNhap;
     }
 
-    @Override
+     @Override
     public String toString() {
-        return  this.MaSP +" - "+ this.TenSP;
+        return this.TenSP;
     }
-    
-
 }

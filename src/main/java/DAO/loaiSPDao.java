@@ -16,7 +16,6 @@ public class loaiSPDao {
             ps.setString(1, sp.getMaLoaiSP());
             ps.setString(2, sp.getTenLoaiSP());
             ps.setString(3, sp.getMoTa());
-
             ps.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -68,12 +67,12 @@ public class loaiSPDao {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String ma = rs.getString("MaLoaiSP");
-                    String ten = rs.getString("TenLoaiSP");
-                    String mota = rs.getString("MoTa");
-
-
-                    list.add(new LoaiSP(maloai, maloai, mota));
+                LoaiSP l = new LoaiSP();
+                l.setMaLoaiSP(rs.getString("MaLoaiSP"));
+                l.setTenLoaiSP(rs.getString("TenLoaiSP"));
+                l.setMoTa(rs.getString("MoTa")); 
+                
+                list.add(l);
                 }
             }
         } catch (Exception e) {

@@ -14,7 +14,7 @@ public class khoDao {
             ps.setString(1, sp.getMaSP());
             ps.setString(2, sp.getTenSP());
             ps.setString(3, sp.getTenLoaiSP());
-            ps.setString(4, sp.getMaNCC());
+            ps.setString(4, sp.getTenNCC());
             ps.setDouble(5, sp.getTonKho());
             ps.setDate(6, new java.sql.Date(sp.getNgayNhap().getTime()));
 
@@ -29,12 +29,11 @@ public class khoDao {
         return -1;
     }
     public int update(khoSP sp) {
-        String sql = "UPDATE KhoSanPham SET TenSP = ?, MaLoaiSP = ?, MaNCC = ?, "
-                + "TonKho = ?, GiaNhap = ?, WHERE MaSP = ?";
+        String sql = "UPDATE KhoSanPham SET TenSP = ?, TenLoaiSP = ?, TenNCC = ?,TonKho = ?, GiaNhap = ?, WHERE MaSP = ?";
         try (Connection conn =new MyConnection().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, sp.getTenSP());
             st.setString(2, sp.getTenLoaiSP());
-            st.setString(3, sp.getMaNCC());
+            st.setString(3, sp.getTenNCC());
             st.setDouble(4, sp.getTonKho());
             st.setDate(5,  new java.sql.Date(sp.getNgayNhap().getTime()));
             st.setString(6, sp.getMaSP());
@@ -46,8 +45,7 @@ public class khoDao {
     }
     public int delete(String maSP) {
         String sql = "DELETE FROM KhoSanPham WHERE MaLoaiSP = ?";
-        try (Connection conn = new MyConnection().getConnection(); 
-            PreparedStatement st = conn.prepareStatement(sql)) {
+        try (Connection conn = new MyConnection().getConnection(); PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, maSP);
             return st.executeUpdate();
         } catch (SQLException ex) {
@@ -61,41 +59,40 @@ public class khoDao {
    public ArrayList<khoSP> getAll(String loai, String key) {
     ArrayList<khoSP> list = new ArrayList<>();
 
-    String sql = "SELECT DISTINCT " +
+    String sql = "SELECT Distinct" +
                  "    sp.MaSP, " +
                  "    sp.TenSP, " +
                  "    lsp.TenLoaiSP, " +
-                 "    pn.MaNCC, " +
+                 "    ncc.TenNCC, " +
                  "    tk.SoLuongKho AS TonKho, " +
-                 "    pn.NgayNhap " +
-                 "FROM SanPham spgetal " +
+                 "    MAX(pn.NgayNhap) AS NgayNhap " +
+                 "FROM SanPham sp " +
                  "LEFT JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP " +
                  "LEFT JOIN TonKho tk ON sp.MaSP = tk.MaSP " +
                  "LEFT JOIN ChiTietPhieuNhap ctpn ON sp.MaSP = ctpn.MaSP " +
                  "LEFT JOIN PhieuNhap pn ON ctpn.MaPN = pn.MaPN " +
+                 "LEFT JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC "+
                  "WHERE (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) " +
-                 "AND (? = '' OR lsp.TenLoaiSP = ?)";
-      
+                 "AND (? = '' OR lsp.TenLoaiSP = ?)"+
+                 " GROUP BY sp.MaSP, sp.TenSP, lsp.TenLoaiSP, tk.SoLuongKho, ncc.TenNCC";
+     
     try (Connection conn = new MyConnection().getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
 
         String searchPattern = "%" + (key == null ? "" : key.trim()) + "%";
-        ps.setString(1, searchPattern); 
-        ps.setString(2, searchPattern); 
-
-        String loaiFilter = (loai == null || loai.equals("-- Chọn loại sản phẩm --") || loai.trim().isEmpty()) ? "" : loai.trim();
-        ps.setString(3, loaiFilter); 
-        ps.setString(4, loaiFilter); 
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
+            ps.setString(3, loai == null ? "" : loai.trim());
+            ps.setString(4, loai == null ? "" : loai.trim()); 
 
         try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                khoSP sp = new khoSP("","","","",0,null);
+                khoSP sp = new khoSP();
                 sp.setMaSP(rs.getString("MaSP"));
                 sp.setTenSP(rs.getString("TenSP"));
-                sp.setTenLoaiSP(rs.getString("TenLoaiSP"));  
-                sp.setMaNCC(rs.getString("MaNCC"));
-                sp.setTonKho(rs.getDouble("TonKho")); 
-                
+                sp.setTenLoaiSP(rs.getString("TenLoaiSP"));            
+                sp.setTenNCC(rs.getString("TenNCC"));
+                sp.setTonKho(rs.getDouble("TonKho"));     
                 java.sql.Date sqlDate = rs.getDate("NgayNhap");
                 if (sqlDate != null) {
                     sp.setNgayNhap(new java.util.Date(sqlDate.getTime()));
