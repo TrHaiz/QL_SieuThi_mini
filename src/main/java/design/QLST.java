@@ -56,7 +56,7 @@ public class QLST extends javax.swing.JFrame {
       setActiveButton(QLSPBtn);
     this.pack();
     this.setLocationRelativeTo(null);
-    this.setResizable(true);
+    this.setResizable(false);
 }
 
     /**

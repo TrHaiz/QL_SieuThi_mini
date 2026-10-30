@@ -66,6 +66,7 @@ public class RegisterScreen extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Ngày sinh");
 
+        jDateChooser1.setDateFormatString("dd/MM/yyyy");
         jDateChooser1.setMaxSelectableDate(new java.util.Date(1830276078000L));
         jDateChooser1.setMinSelectableDate(new java.util.Date(-2209010322000L));
 

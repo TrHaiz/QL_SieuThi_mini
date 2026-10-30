@@ -10,29 +10,28 @@ import java.util.ArrayList;
 
 public class loaiSPDao {
     public int insert(LoaiSP sp) {
-        String sql = "INSERT INTO LoaiSanPham VALUES (?,?,?)";
-        try (Connection conn = new MyConnection().getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        String sql = "INSERT INTO LoaiSanPham (MaLoaiSP, TenLoaiSP, MoTa) VALUES (?, ?, ?)";
+        try (Connection conn = new MyConnection().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, sp.getMaLoaiSP());
             ps.setString(2, sp.getTenLoaiSP());
             ps.setString(3, sp.getMoTa());
-            ps.executeUpdate();
-            return 1;
+            return ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            if (e.getErrorCode() == 2627) {
+            if (e.getErrorCode() == 2627 || e.getErrorCode() == 2601) {
                 return -2;
             }
         }
         return -1;
     }
       public int update(LoaiSP sp) {
-        String sql = "UPDATE LoaiSanPham SET TenLoaiSP = ? , MoTa=?, WHERE MaLoaiSP = ?";
+        String sql = "UPDATE LoaiSanPham SET TenLoaiSP = ?, MoTa = ? WHERE MaLoaiSP = ?";
         try (Connection conn =new MyConnection().getConnection(); 
             PreparedStatement st = conn.prepareStatement(sql)) {
             st.setString(1, sp.getTenLoaiSP());
             st.setString(2, sp.getMoTa());         
-            st.setString(6, sp.getMaLoaiSP());
+            st.setString(3, sp.getMaLoaiSP());
             return st.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -45,6 +44,9 @@ public class loaiSPDao {
             st.setString(1, maloaiSP);
             return st.executeUpdate();
         } catch (SQLException ex) {
+            if (ex.getErrorCode() == 547) {
+                return -2; // Loại sản phẩm đang được hàng hóa sử dụng.
+            }
             ex.printStackTrace();
         }
         return 0;
@@ -54,7 +56,7 @@ public class loaiSPDao {
    }
     public ArrayList<LoaiSP> getAll(String maloai, String key) {
         ArrayList<LoaiSP> list = new ArrayList<>();
-        String sql = "SELECT * FROM LoaiSanPham WHERE (MaLoaiSP LIKE ? OR TenLoaiSP LIKE ?) AND (? = '' OR MaLoaiSP = ?)";
+        String sql = "SELECT * FROM LoaiSanPham WHERE (MaLoaiSP LIKE ? OR TenLoaiSP LIKE ?) AND (? = '' OR MaLoaiSP = ?) ORDER BY MaLoaiSP";
 
         try (Connection conn = new MyConnection().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

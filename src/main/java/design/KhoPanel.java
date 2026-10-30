@@ -24,44 +24,50 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         }
     };
     khoSP khoSelected = null;
+    private boolean dangTaiLoai = true;
+    private boolean dangTaiBang;
     
     public KhoPanel() {
         initComponents();
         cbbloai.setModel(cbomodelLoai);
         tblkho.setModel(tablemodel);
-        loaddatatocombobox();
         inittable();
+        loaddatatocombobox();
         loaddatatable();
         clearForm();
+        txttimkiem.addActionListener(e -> loaddatatable());
     }
     
      
     @Override
     public void reloadData() {
-            loaddatatable();
-            loaddatatocombobox();
-        }
+        loaddatatocombobox();
+        loaddatatable();
+        clearForm();
+    }
     
     public void loaddatatocombobox() {
-    Object dangChon = cbomodelLoai.getSelectedItem();
-    cbomodelLoai.removeAllElements();
-    cbomodelLoai.addElement("-- Tất cả loại --");
-    ArrayList<String> listLoai = new khoDao().getAllLoai();
-    for (String loai : listLoai) {
-        cbomodelLoai.addElement(loai);
-    }
-
-    if (dangChon != null && cbomodelLoai.getIndexOf(dangChon) >= 0) {
-        cbomodelLoai.setSelectedItem(dangChon);
-    } else {
-        cbomodelLoai.setSelectedItem("-- Tất cả loại --");
-    }
+        Object dangChon = cbomodelLoai.getSelectedItem();
+        dangTaiLoai = true;
+        try {
+            cbomodelLoai.removeAllElements();
+            cbomodelLoai.addElement("-- Tất cả loại --");
+            for (String loai : new khoDao().getAllLoai()) cbomodelLoai.addElement(loai);
+            if (dangChon != null && cbomodelLoai.getIndexOf(dangChon) >= 0) {
+                cbomodelLoai.setSelectedItem(dangChon);
+            } else {
+                cbbloai.setSelectedIndex(0);
+            }
+        } finally {
+            dangTaiLoai = false;
+        }
     }
        public void inittable() {
         String[] header = new String[]{"Mã SP", "Tên SP", "Loại SP", "Tên NCC", "Tồn Kho", "Ngày Nhập"};
         tablemodel.setColumnIdentifiers(header);
         tblkho.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblkho.getSelectionModel().addListSelectionListener((e) -> {
+            if (e.getValueIsAdjusting() || dangTaiBang) return;
             int row = tblkho.getSelectedRow();
             if (row >= 0 && row < listkho.size()) {
                 khoSelected = listkho.get(row);
@@ -73,26 +79,24 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         jScrollPane1.getViewport().setBackground(Color.white);
     }
            public void loaddatatable() {
-        String keyword = this.txttimkiem.getText().trim();
-            keyword = "";      
-        
-        String loaiChon = "";
-        if (this.cbbloai.getSelectedIndex() > 0 && this.cbbloai.getSelectedItem() != null) {
-            loaiChon = this.cbbloai.getSelectedItem().toString();
+        if (dangTaiLoai) return;
+        String keyword = txttimkiem.getText().trim();
+        String loai = cbbloai.getSelectedIndex() > 0 ? cbbloai.getSelectedItem().toString() : "";
+        dangTaiBang = true;
+        try {
+            tblkho.clearSelection();
+            listkho = new khoDao().getAll(loai, keyword);
+            tablemodel.setRowCount(0);
+            java.text.SimpleDateFormat dinhDangNgay = new java.text.SimpleDateFormat("dd/MM/yyyy");
+            for (khoSP sp : listkho) {
+                String ngayNhap = sp.getNgayNhap() == null ? "" : dinhDangNgay.format(sp.getNgayNhap());
+                tablemodel.addRow(new Object[]{sp.getMaSP(), sp.getTenSP(), sp.getTenLoaiSP(),
+                    sp.getTenNCC(), sp.getSoLuongKho(), ngayNhap});
+            }
+        } finally {
+            dangTaiBang = false;
         }
-
-        listkho = new khoDao().getAll(loaiChon, keyword);
-        tablemodel.setRowCount(0);
-        for (khoSP sp : listkho) {
-            tablemodel.addRow(new Object[]{
-                sp.getMaSP(), 
-                sp.getTenSP(), 
-                sp.getTenLoaiSP(), 
-                sp.getTenNCC(), 
-                sp.getTonKho(), 
-                sp.getNgayNhap()
-            });
-        }
+        clearForm();
     }
         public void hienthithongtin() {
         if (khoSelected != null) {
@@ -100,6 +104,7 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
     }
 
     public void clearForm() {
+        tblkho.clearSelection();
         khoSelected = null;
     }
     public int getCellInt(Cell cell) {
@@ -142,45 +147,51 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
     return "";
 }
   public void exportSanPhamToExcel(ArrayList<khoSP> list) {
-    JFileChooser chooser = new JFileChooser();
-    chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("File Excel", "xlsx"));
-    if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
-        return;
-    }
-    java.io.File file = chooser.getSelectedFile();
-    if (!file.getName().toLowerCase().endsWith(".xlsx")) {
-        file = new java.io.File(file.getAbsolutePath() + ".xlsx");
-    }
-    try (Workbook w = new XSSFWorkbook();
-         java.io.FileOutputStream fo = new java.io.FileOutputStream(file)) {
-        Sheet sheet = w.createSheet("Kho Sản Phẩm");
-        String[] header = {"STT", "MÃ SP", "TÊN SP", "LOẠI SP", "Tên NCC", "Tồn Kho", "Ngày Nhập"};
-        Row rowHeader = sheet.createRow(0);
-        for (int i = 0; i < header.length; i++) {
-            rowHeader.createCell(i).setCellValue(header[i]);
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("File Excel", "xlsx"));
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return;
+        java.io.File file = chooser.getSelectedFile();
+        if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+            file = new java.io.File(file.getAbsolutePath() + ".xlsx");
         }
-        int stt = 1;
-        for (khoSP sp : list) {
-            Row row = sheet.createRow(stt);
-            row.createCell(0).setCellValue(stt);
-            row.createCell(1).setCellValue(sp.getMaSP());
-            row.createCell(2).setCellValue(sp.getTenSP());
-            row.createCell(3).setCellValue(sp.getTenLoaiSP());
-            row.createCell(4).setCellValue(sp.getTenNCC());
-            row.createCell(5).setCellValue(sp.getTonKho());
-            row.createCell(6).setCellValue(sp.getNgayNhap());
-            stt++;
+        try {
+            ghiDanhSachKhoRaExcel(list, file);
+            JOptionPane.showMessageDialog(this, "Xuất dữ liệu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi xuất Excel: " + e.getMessage(), "Thông báo", JOptionPane.ERROR_MESSAGE);
         }
-        for (int i = 0; i < header.length; i++) {
-            sheet.autoSizeColumn(i);
-        }
-        w.write(fo);
-        JOptionPane.showMessageDialog(this, "Xuất dữ liệu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Lỗi xuất Excel: " + e.getMessage(), "Thông báo", JOptionPane.ERROR_MESSAGE);
     }
-}
     // </editor-fold>                        
+
+    void ghiDanhSachKhoRaExcel(ArrayList<khoSP> list, java.io.File file) throws java.io.IOException {
+        try (Workbook w = new XSSFWorkbook();
+             java.io.FileOutputStream fo = new java.io.FileOutputStream(file)) {
+            Sheet sheet = w.createSheet("Kho Sản Phẩm");
+            org.apache.poi.ss.usermodel.CellStyle kieuNgay = w.createCellStyle();
+            kieuNgay.setDataFormat(w.createDataFormat().getFormat("dd/MM/yyyy"));
+            String[] header = {"STT", "MÃ SP", "TÊN SP", "LOẠI SP", "Tên NCC", "Tồn Kho", "Ngày Nhập"};
+            Row rowHeader = sheet.createRow(0);
+            for (int i = 0; i < header.length; i++) rowHeader.createCell(i).setCellValue(header[i]);
+            int stt = 1;
+            for (khoSP sp : list) {
+                Row row = sheet.createRow(stt);
+                row.createCell(0).setCellValue(stt);
+                row.createCell(1).setCellValue(sp.getMaSP());
+                row.createCell(2).setCellValue(sp.getTenSP());
+                row.createCell(3).setCellValue(sp.getTenLoaiSP());
+                row.createCell(4).setCellValue(sp.getTenNCC());
+                row.createCell(5).setCellValue(sp.getSoLuongKho());
+                Cell ngayNhap = row.createCell(6);
+                if (sp.getNgayNhap() != null) {
+                    ngayNhap.setCellValue(sp.getNgayNhap());
+                    ngayNhap.setCellStyle(kieuNgay);
+                }
+                stt++;
+            }
+            for (int i = 0; i < header.length; i++) sheet.autoSizeColumn(i);
+            w.write(fo);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -282,10 +293,9 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btntaomoi))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btntaomoi)
                     .addComponent(btnxuat))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -390,8 +400,12 @@ public class KhoPanel extends javax.swing.JPanel implements ReloadData{
     }//GEN-LAST:event_btnxuatActionPerformed
 
     private void btntaomoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntaomoiActionPerformed
-    new khospDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true, khoSelected).setVisible(true);
-    loaddatatable();
+    khospDialog dialog=new khospDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this), true, khoSelected);
+    dialog.setLocationRelativeTo(this);
+    dialog.setVisible(true);
+    if (dialog.isDaLuuThanhCong()) {
+        loaddatatable();
+    }
     }//GEN-LAST:event_btntaomoiActionPerformed
 
 

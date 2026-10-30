@@ -11,6 +11,7 @@ package model;
 public class SanPham {
     private String MaSP;
     private String TenSP;
+    private String MaLoaiSP;
     private String TenLoaiSP;
     private String DV;
     private double GiaNhap;
@@ -48,6 +49,14 @@ public class SanPham {
 
     public String getTenLoaiSP() {
         return TenLoaiSP;
+    }
+
+    public String getMaLoaiSP() {
+        return MaLoaiSP;
+    }
+
+    public void setMaLoaiSP(String MaLoaiSP) {
+        this.MaLoaiSP = MaLoaiSP;
     }
 
     public void setTenLoaiSP(String TenLoaiSP) {

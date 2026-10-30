@@ -361,6 +361,7 @@ public class VPanel extends javax.swing.JPanel {
         startDate.setDate(null);
         endDate1.setDate(null);
         jTable1.clearSelection();
+        addButton1.setEnabled(true);
     }
 
     

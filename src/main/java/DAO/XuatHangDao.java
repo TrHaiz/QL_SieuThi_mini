@@ -23,7 +23,7 @@ public class XuatHangDao {
             "FROM KeHang k " +
             "INNER JOIN SanPham sp ON k.MaSP = sp.MaSP " +
             "INNER JOIN LoaiSanPham lsp ON sp.MaLoaiSP = lsp.MaLoaiSP " +
-            "WHERE k.SoLuongTrenKe > 0 AND (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) "
+            "WHERE k.SoLuongTrenKe > 0 AND (sp.MaSP LIKE ? OR sp.TenSP LIKE ?) and sp.Trangthai = N'Đang kinh doanh' "
         );
 
         // 1. Xử lý điều kiện Khoảng Giá (Dựa vào index của jComboBox2)

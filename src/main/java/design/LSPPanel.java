@@ -32,7 +32,8 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
      tblloaisp.setModel(tablemodel);
      inittable();
      loaddatatable();
-     clearForm();    
+     clearForm();
+     jTabbedPane1.addChangeListener(e -> reloadData());
     }
     
      @Override
@@ -44,9 +45,9 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
         } 
        
         else if (selectedIndex == 1) {
-            inittable();
            loaddatatable();
            clearForm();
+            setEditableFields(true);
         }
     }
     
@@ -60,6 +61,7 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
         tablemodel.setColumnIdentifiers(header);
         tblloaisp.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblloaisp.getSelectionModel().addListSelectionListener((e) -> {
+            if (e.getValueIsAdjusting()) return;
             int row = tblloaisp.getSelectedRow();
             if (row >= 0 && row < listloai.size()) {
                 loaiSelected = listloai.get(row);
@@ -71,7 +73,8 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
         jScrollPane1.getViewport().setBackground(Color.white);
     }
         public void loaddatatable() {
-        String keyword = this.txttimkiem.getText().trim();     
+        String keyword = this.txttimkiem.getText().trim();
+        if ("Nhập mã/Tên".equals(keyword)) keyword = "";
            String maloai = "";
         listloai = new loaiSPDao().getAll(maloai, keyword);
         tablemodel.setRowCount(0);
@@ -82,7 +85,7 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
                 sp.getMoTa()
             });
         }
-
+        clearForm();
     }
        public void hienthithongtin() {
         if (loaiSelected != null) {
@@ -97,6 +100,7 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
         }
     }
    public void clearForm() {
+        txtmaloai.setEditable(true);
         txtmaloai.setText("");
         txttenloaisp.setText("");
         txtmota.setText("");
@@ -350,6 +354,11 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemActionPerformed
+    if (loaiSelected != null) {
+        clearForm();
+        txtmaloai.requestFocusInWindow();
+        return;
+    }
     String ma =txtmaloai.getText().trim();
     String ten = txttenloaisp.getText().trim();
     String mota = txtmota.getText().trim();
@@ -372,6 +381,8 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
             JOptionPane.showMessageDialog(this, "Thêm mới loại sản phẩm thành công!");
             loaddatatable();    
             clearForm();         
+        } else if (kq == -2) {
+            JOptionPane.showMessageDialog(this, "Mã loại sản phẩm đã tồn tại!");
         } else {
             JOptionPane.showMessageDialog(this, "Thêm mới thất bại!");
         }
@@ -430,6 +441,8 @@ public class LSPPanel extends javax.swing.JPanel implements ReloadData{
                 loaddatatable();
                 clearForm();
                 loaiSelected = null;
+            } else if (kq == -2) {
+                JOptionPane.showMessageDialog(this, "Loại sản phẩm đang được sử dụng, không thể xóa!");
             } else {
                 JOptionPane.showMessageDialog(this, "Xóa thất bại");
             }
